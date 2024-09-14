@@ -54,7 +54,8 @@
                             @if (@isset($employees) && !@empty($employees))
                                 @foreach ($employees as $info)
                                     <option value="{{ $info->employees_code }}"> {{ $info->emp_name }}
-                                        ({{ $info->employees_code }}) </option>
+                                        ({{ $info->employees_code }})
+                                    </option>
                                 @endforeach
                             @endif
                         </select>
@@ -103,7 +104,7 @@
                             <th>تاريخ الاضافة</th>
                             <th>تاريخ التحديث</th>
                             <th>الحالة</th>
-
+                            <th>العمليات</th>
 
                         </thead>
                         <tbody>
@@ -152,12 +153,16 @@
                                         @if ($info->is_open != 0)
                                             <a href="#" class="btn btn-sm btn-success">عرض</a>
                                         @endif
+                                    </td>
 
 
+                                    <td>
 
+                                        <button data-id="{{ $info->id }}" data-main_sal_id="{{$info->main_salary_employee_id}}"
+                                            class="btn btn-sm btn-success load_edit_this_row">تعديل</button>
 
-
-
+                                            <button data-id="{{ $info->id }}" data-main_sal_id="{{$info->main_salary_employee_id}}"
+                                                class="btn btn-sm btn-danger are_you_shur delete_this_row">حذف</button>
                                     </td>
 
                                 </tr>
@@ -390,16 +395,18 @@
                                 success: function(data) {
                                     ajax_search();
                                     setTimeout(() => {
-                                        $('#backup_freeze_modal').modal('hide');
+                                        $('#backup_freeze_modal').modal(
+                                            'hide');
                                     }, 1000);
 
                                 },
                                 error: function() {
 
                                     setTimeout(() => {
-                                        $('#backup_freeze_modal').modal('hide');
+                                        $('#backup_freeze_modal').modal(
+                                            'hide');
                                     }, 1000);
-                                    alert("عفواً حدث خطأ")
+                                    alert("عفواً حدث خطأ");
                                 }
 
                             });
@@ -502,6 +509,43 @@
 
 
             });
+
+        
+
         }
+
+        $(document).on('click', '.delete_this_row', function(e) {
+              
+
+                var id = $(this).data('id');
+                var the_finance_cin_periods_id = $("#the_finance_cin_periods_id").val();
+                var main_salary_employee_id=$(this).data("main_sal_id");
+                $("#backup_freeze_modal").modal("show");
+                jQuery.ajax({
+                    url: '{{ route('MainSalarySanctions.delete_row') }}',
+                    type: 'post',
+                    dataType: 'json',
+                    cache: false,
+                    data: {
+                        "_token": '{{ csrf_token() }}',
+                        id: id,
+                        the_finance_cin_periods_id: the_finance_cin_periods_id,
+                        main_salary_employee_id:main_salary_employee_id,
+                    },
+
+                    success: function(data) {
+                        ajax_search();
+                        setTimeout(() => {
+                            $("#backup_freeze_modal").modal("hide");
+                        }, 1000);
+                    },
+                    error: function() {
+                        setTimeout(() => {
+                            $("#backup_freeze_modal").modal("hide");
+                        }, 1000);
+                        alert("عفواً حدث خطأ");
+                    }
+                });
+            });
     </script>
 @endsection

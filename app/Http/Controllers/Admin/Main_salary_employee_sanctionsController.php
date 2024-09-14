@@ -107,7 +107,6 @@ class Main_salary_employee_sanctionsController extends Controller
             $sactions_type=$request->sactions_type;
             $is_archived=$request->is_archived;
             $the_finance_cin_periods_id=$request->the_finance_cin_periods_id;
-            $query = Main_salary_employee_sanctions::query();
     
             if($employees_code=='all'){
                 $field1="id";
@@ -152,6 +151,26 @@ class Main_salary_employee_sanctionsController extends Controller
             return view('admin.Main_salary_employee_sanctions.ajax_search', ['data'=>$data]);
         }
     }
+
+    public function delete_row(Request $request) {
+
+        
+        if($request->ajax()){
+            $com_code = auth()->user()->com_code;
+            $finance_cin_periods_data=get_cols_where_row(new Finance_cin_periods(),array("id"),array('com_code'=>$com_code,'id'=>$request->the_finance_cin_periods_id,'is_open'=>1));
+            $main_salary_employee_data=get_cols_where_row(new Main_salary_employee(),array("id"),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'id'=>$request->main_salary_employee_id,'is_archived'=>0));
+            $data_row=get_cols_where_row(new Main_salary_employee_sanctions(),array("id"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+            if(!empty($finance_cin_periods_data) and !empty($data_row) and !empty($main_salary_employee_data)){
+
+                destroy(new Main_salary_employee_sanctions(),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+            
+               return json_encode("done");
+            }
+        
+            
+        }
+    }
+
 
 
    

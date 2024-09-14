@@ -211,6 +211,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
             Route::post('/MainSalarySanctions/checkExsistsBefor', [Main_salary_employee_sanctionsController::class, 'checkExsistsBefor'])->name('MainSalarySanctions.checkExsistsBefor');
             Route::post('/MainSalarySanctions/store', [Main_salary_employee_sanctionsController::class, 'store'])->name('MainSalarySanctions.store');
             Route::post('/MainSalarySanctions/ajaxSearch', [Main_salary_employee_sanctionsController::class, 'ajax_search'])->name('MainSalarySanctions.ajaxSearch');
+            Route::post('/MainSalarySanctions/delete_row', [Main_salary_employee_sanctionsController::class, 'delete_row'])->name('MainSalarySanctions.delete_row');
+            Route::post('/MainSalarySanctions/load_edit_row', [Main_salary_employee_sanctionsController::class, 'load_edit_row'])->name('MainSalarySanctions.load_edit_row');
 
             //----------------نهاية جزءات الراتب---------------------
           
