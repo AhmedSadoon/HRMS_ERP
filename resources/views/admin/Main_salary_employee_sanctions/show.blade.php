@@ -158,11 +158,13 @@
 
                                     <td>
 
-                                        <button data-id="{{ $info->id }}" data-main_sal_id="{{$info->main_salary_employee_id}}"
+                                        <button data-id="{{ $info->id }}"
+                                            data-main_sal_id="{{ $info->main_salary_employee_id }}"
                                             class="btn btn-sm btn-success load_edit_this_row">تعديل</button>
 
-                                            <button data-id="{{ $info->id }}" data-main_sal_id="{{$info->main_salary_employee_id}}"
-                                                class="btn btn-sm btn-danger are_you_shur delete_this_row">حذف</button>
+                                        <button data-id="{{ $info->id }}"
+                                            data-main_sal_id="{{ $info->main_salary_employee_id }}"
+                                            class="btn btn-sm btn-danger are_you_shur delete_this_row">حذف</button>
                                     </td>
 
                                 </tr>
@@ -181,7 +183,7 @@
             </div>
         </div>
     </div>
-
+    {{-- مودل الاضافة --}}
     <div class="modal fade" id="AddModal">
         <div class="modal-dialog modal-xl">
             <div class="modal-content bg-info">
@@ -281,6 +283,29 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
+
+    {{-- مودل التعديل --}}
+
+    <div class="modal fade" id="EditModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content bg-info">
+                <div class="modal-header">
+                    <h4 class="modal-title">تعديل جزاءات للموظفين بالشهر المالي</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="EditModalBady" style="background-color: white; color: black;">
+
+
+                </div>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
 
 @endsection
 
@@ -433,6 +458,32 @@
 
         });
 
+        $(document).on('change', '#employees_code_edit', function(e) {
+            if ($(this).val == "") {
+                $(".related_employees_edit").hide();
+                $("#emp_salary_edit").val(0);
+                $("#day_price_edit").val(0);
+
+            } else {
+                var salary = $("#employees_code_edit option:selected").data("s");
+                var day_price = $("#employees_code_edit option:selected").data("dp");
+
+                $("#emp_salary_edit").val(salary * 1);
+                $("#day_price_edit").val(day_price * 1);
+                $(".related_employees_edit").show();
+            }
+        });
+
+        $(document).on('input', '#value_edit', function(e) {
+            var value_edit = $(this).val();
+            if (value_edit == "") {
+                value_edit = 0;
+            }
+
+            var day_price_edit = $("#day_price_edit").val();
+            $("#total_edit").val(value_edit * day_price_edit * 1);
+        });
+
         $(document).on('change', '#employees_code_search', function(e) {
             ajax_search();
 
@@ -510,42 +561,150 @@
 
             });
 
-        
+
 
         }
 
         $(document).on('click', '.delete_this_row', function(e) {
-              
+            var id = $(this).data('id');
+            var the_finance_cin_periods_id = $("#the_finance_cin_periods_id").val();
+            var main_salary_employee_id = $(this).data("main_sal_id");
+            $("#backup_freeze_modal").modal("show");
+            jQuery.ajax({
+                url: '{{ route('MainSalarySanctions.delete_row') }}',
+                type: 'post',
+                dataType: 'json',
+                cache: false,
+                data: {
+                    "_token": '{{ csrf_token() }}',
+                    id: id,
+                    the_finance_cin_periods_id: the_finance_cin_periods_id,
+                    main_salary_employee_id: main_salary_employee_id,
+                },
 
-                var id = $(this).data('id');
-                var the_finance_cin_periods_id = $("#the_finance_cin_periods_id").val();
-                var main_salary_employee_id=$(this).data("main_sal_id");
-                $("#backup_freeze_modal").modal("show");
-                jQuery.ajax({
-                    url: '{{ route('MainSalarySanctions.delete_row') }}',
-                    type: 'post',
-                    dataType: 'json',
-                    cache: false,
-                    data: {
-                        "_token": '{{ csrf_token() }}',
-                        id: id,
-                        the_finance_cin_periods_id: the_finance_cin_periods_id,
-                        main_salary_employee_id:main_salary_employee_id,
-                    },
-
-                    success: function(data) {
-                        ajax_search();
-                        setTimeout(() => {
-                            $("#backup_freeze_modal").modal("hide");
-                        }, 1000);
-                    },
-                    error: function() {
-                        setTimeout(() => {
-                            $("#backup_freeze_modal").modal("hide");
-                        }, 1000);
-                        alert("عفواً حدث خطأ");
-                    }
-                });
+                success: function(data) {
+                    ajax_search();
+                    setTimeout(() => {
+                        $("#backup_freeze_modal").modal("hide");
+                    }, 1000);
+                },
+                error: function() {
+                    setTimeout(() => {
+                        $("#backup_freeze_modal").modal("hide");
+                    }, 1000);
+                    alert("عفواً حدث خطأ");
+                }
             });
+        });
+
+
+        // تعديل
+
+        $(document).on('click', '.load_edit_this_row', function(e) {
+            var id = $(this).data('id');
+            var the_finance_cin_periods_id = $("#the_finance_cin_periods_id").val();
+            var main_salary_employee_id = $(this).data("main_sal_id");
+            jQuery.ajax({
+                url: '{{ route('MainSalarySanctions.load_edit_row') }}',
+                type: 'post',
+                dataType: 'html',
+                cache: false,
+                data: {
+                    "_token": '{{ csrf_token() }}',
+                    id: id,
+                    the_finance_cin_periods_id: the_finance_cin_periods_id,
+                    main_salary_employee_id: main_salary_employee_id
+                },
+
+                success: function(data) {
+                    $("#EditModalBady").html(data);
+                    $("#EditModal").modal("show");
+                    $('.select2').select2();
+                },
+                error: function() {
+                    alert("عفواً حدث خطأ")
+                }
+
+            });
+        });
+
+        $(document).on('click', '#do_edit_now', function(e) {
+            var employees_code_edit = $("#employees_code_edit").val();
+            var main_salary_employee_id = $(this).data("main_sal_id");
+            var id = $(this).data("id");
+
+            if (employees_code_edit == "") {
+                alert("من فضلك اختر الموظف");
+                $("#employees_code_edit").focus();
+                return false;
+            }
+
+            var sactions_type_edit = $("#sactions_type_edit").val();
+            if (sactions_type_edit == "") {
+                alert("من فضلك اختر نوع الجزاء");
+                $("#sactions_type_edit").focus();
+                return false;
+            }
+
+            var value_edit = $("#value_edit").val();
+            if (value_edit == "") {
+                alert("من فضلك ادخل عدد ايام الجزاء");
+                $("#value_edit").focus();
+                return false;
+            }
+
+            var total_edit = $("#total_edit").val();
+            if (total_edit == "") {
+                alert("من فضلك ادخل اجمالي الجزاء");
+                $("#total_edit").focus();
+                return false;
+            }
+
+            var notes_edit = $("#notes_edit").val();
+            var day_price_edit = $("#day_price_edit").val();
+
+
+            var the_finance_cin_periods_id = $('#the_finance_cin_periods_id').val();
+            $('#backup_freeze_modal').modal('show');
+
+            jQuery.ajax({
+                url: '{{ route('MainSalarySanctions.do_edit_row') }}',
+                type: 'post',
+                dataType: 'html',
+                cache: false,
+                data: {
+                    "_token": '{{ csrf_token() }}',
+                    employees_code: employees_code_edit,
+                    the_finance_cin_periods_id: the_finance_cin_periods_id,
+                    sactions_type: sactions_type_edit,
+                    value: value_edit,
+                    total: total_edit,
+                    notes: notes_edit,
+                    day_price: day_price_edit,
+                    main_salary_employee_id:main_salary_employee_id,
+                    id:id
+
+                },
+
+                success: function(data) {
+                    ajax_search();
+                    setTimeout(() => {
+                        $('#backup_freeze_modal').modal(
+                            'hide');
+                    }, 1000);
+
+                },
+                error: function() {
+
+                    setTimeout(() => {
+                        $('#backup_freeze_modal').modal(
+                            'hide');
+                    }, 1000);
+                    alert("عفواً حدث خطأ");
+                }
+
+            });
+
+        });
     </script>
 @endsection

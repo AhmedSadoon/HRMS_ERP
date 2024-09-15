@@ -171,7 +171,55 @@ class Main_salary_employee_sanctionsController extends Controller
         }
     }
 
+    public function load_edit_row(Request $request) {
+        if($request->ajax()){
+            $com_code = auth()->user()->com_code;
+            $finance_cin_periods_data=get_cols_where_row(new Finance_cin_periods(),array("id"),array('com_code'=>$com_code,'id'=>$request->the_finance_cin_periods_id,'is_open'=>1));
+            $main_salary_employee_data=get_cols_where_row(new Main_salary_employee(),array("id"),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'id'=>$request->main_salary_employee_id,'is_archived'=>0));
+            $data_row=get_cols_where_row(new Main_salary_employee_sanctions(),array("*"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+            $employees=get_cols_where(new Employee(),array("employees_code","emp_name","emp_salary","day_price"),array('com_code'=>$com_code),'employees_code','ASC');
 
+
+            return view('admin.Main_salary_employee_sanctions.load_edit_row',['finance_cin_periods_data'=>$finance_cin_periods_data,'main_salary_employee_data'=>$main_salary_employee_data,'data_row'=>$data_row,'employees'=>$employees]);
+        }
+
+    }
+
+    
+    public function do_edit_row(Request $request){
+        $com_code = auth()->user()->com_code;
+
+        if($request->ajax()){
+            $finance_cin_periods_data=get_cols_where_row(new Finance_cin_periods(),array("*"),array('com_code'=>$com_code,'id'=>$request->the_finance_cin_periods_id,'is_open'=>1));
+            $main_salary_employee_data=get_cols_where_row(new Main_salary_employee(),array("id"),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'employees_code'=>$request->employees_code,'is_archived'=>0));
+            $data_row=get_cols_where_row(new Main_salary_employee_sanctions(),array("*"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+
+            if(!empty($finance_cin_periods_data) && !empty($main_salary_employee_data) && !empty($data_row)){
+
+                DB::beginTransaction();
+
+                $dataToUdate=[
+                   
+                    'employees_code'=>$request->employees_code ,
+                    'day_price'=>$request->day_price ,
+                    'sactions_type'=>$request->sactions_type ,
+                    'value'=>$request->value ,
+                    'total'=>$request->total ,
+                    'notes'=>$request->notes ,
+                    'updated_by'=>auth()->user()->id,
+                   
+                ];
+
+                
+            update(new Main_salary_employee_sanctions(),$dataToUdate,array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+            DB::commit();
+
+            return json_encode("done");
+                
+            }
+            
+        }
+    }
 
    
 }
