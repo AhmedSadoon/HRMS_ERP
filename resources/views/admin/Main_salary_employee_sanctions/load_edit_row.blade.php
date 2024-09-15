@@ -7,8 +7,8 @@
                     <option disabled selected value="">اختر الموظف</option>
                     @if (@isset($employees) && !@empty($employees))
                         @foreach ($employees as $info)
-                            <option @if ($info->employees_code==$data_row['employees_code']) selected @endif value="{{ $info->employees_code }}" data-s="{{ $info->emp_salary }}"
-                                data-dp="{{ $info->day_price }}"> {{ $info->emp_name }}
+                            <option @if ($info->employees_code==$data_row['employees_code']) selected @endif value="{{ $info->employees_code }}" data-s="{{ $info->EmployeeData['emp_salary'] }}"
+                                data-dp="{{ $info->EmployeeData['day_price'] }}"> {{ $info->EmployeeData['emp_name'] }}
                                 ({{ $info->employees_code }})
                             </option>
                         @endforeach

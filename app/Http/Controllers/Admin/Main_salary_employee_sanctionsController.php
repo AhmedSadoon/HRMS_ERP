@@ -45,8 +45,16 @@ class Main_salary_employee_sanctionsController extends Controller
             }
         }
 
-        $employees=get_cols_where(new Employee(),array("employees_code","emp_name","emp_salary","day_price"),array('com_code'=>$com_code),'employees_code','ASC');
-        return view('admin.Main_salary_employee_sanctions.show', ['data'=>$data,'finance_cin_periods_data'=>$finance_cin_periods_data,'employees'=>$employees]);
+        $employees=Main_salary_employee::where('com_code','=',$com_code)->where('finance_cin_periods_id','=',$finance_cin_periods_id)->distinct()->get('employees_code');
+        
+        if(!empty($employees)){
+            foreach($employees as $info){
+                $info->EmployeeData=get_cols_where_row(new Employee(),array("employees_code","emp_name","emp_salary","day_price"),array('com_code'=>$com_code,'employees_code'=>$info->employees_code));
+            }
+        }
+
+        $employees_search=get_cols_where(new Employee(),array("employees_code","emp_name","emp_salary","day_price"),array('com_code'=>$com_code),'employees_code','ASC');
+        return view('admin.Main_salary_employee_sanctions.show', ['data'=>$data,'finance_cin_periods_data'=>$finance_cin_periods_data,'employees'=>$employees,'employees_search'=>$employees_search]);
 
 
     }
@@ -177,8 +185,14 @@ class Main_salary_employee_sanctionsController extends Controller
             $finance_cin_periods_data=get_cols_where_row(new Finance_cin_periods(),array("id"),array('com_code'=>$com_code,'id'=>$request->the_finance_cin_periods_id,'is_open'=>1));
             $main_salary_employee_data=get_cols_where_row(new Main_salary_employee(),array("id"),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'id'=>$request->main_salary_employee_id,'is_archived'=>0));
             $data_row=get_cols_where_row(new Main_salary_employee_sanctions(),array("*"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
-            $employees=get_cols_where(new Employee(),array("employees_code","emp_name","emp_salary","day_price"),array('com_code'=>$com_code),'employees_code','ASC');
-
+            
+            $employees=Main_salary_employee::where('com_code','=',$com_code)->where('finance_cin_periods_id','=',$request->the_finance_cin_periods_id)->distinct()->get('employees_code');
+        
+            if(!empty($employees)){
+                foreach($employees as $info){
+                    $info->EmployeeData=get_cols_where_row(new Employee(),array("employees_code","emp_name","emp_salary","day_price"),array('com_code'=>$com_code,'employees_code'=>$info->employees_code));
+                }
+            }
 
             return view('admin.Main_salary_employee_sanctions.load_edit_row',['finance_cin_periods_data'=>$finance_cin_periods_data,'main_salary_employee_data'=>$main_salary_employee_data,'data_row'=>$data_row,'employees'=>$employees]);
         }

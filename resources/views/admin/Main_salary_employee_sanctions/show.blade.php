@@ -51,8 +51,8 @@
                         <label>بحث بالموظفين</label>
                         <select name="employees_code_search" id="employees_code_search" class="form-control select2">
                             <option value="all">بحث بالكل</option>
-                            @if (@isset($employees) && !@empty($employees))
-                                @foreach ($employees as $info)
+                            @if (@isset($employees_search) && !@empty($employees_search))
+                                @foreach ($employees_search as $info)
                                     <option value="{{ $info->employees_code }}"> {{ $info->emp_name }}
                                         ({{ $info->employees_code }})
                                     </option>
@@ -66,7 +66,7 @@
                 <div class="col-md-3 ">
                     <div class="form-group">
                         <label> بحث بنوع الجزاء</label>
-                        <select name="sactions_type_search" id="sactions_type_search" class="form-control">
+                        <select name="sactions_type_search" id="sactions_type_search" class="form-control select2">
                             <option value="all">بحث بالكل</option>
                             <option value="1">جزاء ايام</option>
                             <option value="2">جزاء بصمة</option>
@@ -78,11 +78,18 @@
                 <div class="col-md-3 ">
                     <div class="form-group">
                         <label> بحث بحالة الارشفة</label>
-                        <select name="is_archived_search" id="is_archived_search" class="form-control">
+                        <select name="is_archived_search" id="is_archived_search" class="form-control select2">
                             <option value="all">بحث بالكل</option>
                             <option value="1">مؤرشف</option>
                             <option value="0">مفتوح</option>
                         </select>
+                    </div>
+                </div>
+
+                <div class="col-md-2 ">
+                    <div class="form-group">
+                        <button class="btn btn-sm btn-primary custom_button">طباعة البحث</button>
+                        
                     </div>
                 </div>
 
@@ -202,8 +209,8 @@
                                     <option disabled selected value="">اختر الموظف</option>
                                     @if (@isset($employees) && !@empty($employees))
                                         @foreach ($employees as $info)
-                                            <option value="{{ $info->employees_code }}" data-s="{{ $info->emp_salary }}"
-                                                data-dp="{{ $info->day_price }}"> {{ $info->emp_name }}
+                                            <option value="{{ $info->employees_code }}" data-s="{{ $info->EmployeeData['emp_salary'] }}"
+                                                data-dp="{{ $info->EmployeeData['day_price'] }}"> {{ $info->EmployeeData['emp_name'] }}
                                                 ({{ $info->employees_code }})
                                             </option>
                                         @endforeach
@@ -706,5 +713,7 @@
             });
 
         });
+
+
     </script>
 @endsection
