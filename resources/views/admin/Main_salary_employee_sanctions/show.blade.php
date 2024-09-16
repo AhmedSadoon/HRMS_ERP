@@ -124,6 +124,10 @@
 
                                     <td>
                                         {{ $info->emp_name }}
+                                        @if (!@empty($info->notes))
+                                            <br>
+                                            <span style="color: brown">ملاحظة:</span>{{$info->notes}}
+                                        @endif
                                     </td>
 
                                     <td>
