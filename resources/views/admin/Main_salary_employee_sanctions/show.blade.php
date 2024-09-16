@@ -37,11 +37,14 @@
                     ({{ $finance_cin_periods_data['month']->name }} لسنة {{ $finance_cin_periods_data['finance_yr'] }})
 
                 </h3>
-                <input type="hidden" id="the_finance_cin_periods_id" value="{{ $finance_cin_periods_data['id'] }}">
                 @if ($finance_cin_periods_data['is_open'] == 1)
                     <button data-toggle="modal" data-target="#AddModal" class="btn btn-sm btn-success">اضافة جديد</button>
                 @endif
             </div>
+
+           <form action="{{route('MainSalarySanctions.print_search')}}" method="POST" target="_blank">
+            @csrf
+            <input type="hidden" name="the_finance_cin_periods_id" id="the_finance_cin_periods_id" value="{{ $finance_cin_periods_data['id'] }}">
 
             <div class="row" style="padding: 5px">
 
@@ -88,7 +91,7 @@
 
                 <div class="col-md-2 ">
                     <div class="form-group">
-                        <button class="btn btn-sm btn-primary custom_button">طباعة البحث</button>
+                        <button type="post" class="btn btn-sm btn-primary custom_button">طباعة البحث</button>
                         
                     </div>
                 </div>
@@ -97,6 +100,7 @@
 
 
             </div>
+           </form>
             <div class="card-body" id="ajax_ersponce_searchdiv" style="padding: 0px 5px">
 
                 @if (@isset($data) and !@empty($data) and count($data) > 0)

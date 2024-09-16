@@ -18,7 +18,7 @@
         </div>
         <div class="card-body">
             @if (@isset($data) and !@empty($data))
-                <form action="{{ route('admin_panel_settings.update') }}" method="POST">
+                <form action="{{ route('admin_panel_settings.update') }}" method="POST" enctype="multipart/form-data">
                     
                     <div class="row">
                         @csrf
@@ -208,6 +208,16 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>شعار الشركة</label>
+                                <input autofocus type="file" name="image" id="image"
+                                    class="form-control" >
+
+                            </div>
+                        </div>
+
                         <div class="col-md-12 text-center">
                             <div class="form-group">
                                 <button type="submit" class="btn btn-success">تحديث</button>

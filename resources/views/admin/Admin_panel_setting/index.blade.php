@@ -119,6 +119,17 @@
                     </tr>
 
                     <tr>
+                        <td class="width30">شعار الشركة</td>
+                        <td>  
+                            <img src="{{ asset('assets/admin/uploads') . '/' . $data['image'] }}"
+                            style="border-radius: 50%; width: 80px; height: 80px;"
+                            class="rounded-circle" alt="شعار الشركة"> 
+                        </td>
+                    </tr>
+
+
+
+                    <tr>
                         <td colspan="2" class="text-center">
                             <a href="{{route('admin_panel_settings.edit')}}" class="btn btn-sm btn-danger">تعديل</a>
                         </td>

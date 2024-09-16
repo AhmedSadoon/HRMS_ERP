@@ -32,6 +32,8 @@ class Admin_panel_settingsController extends Controller
 
 
         $com_code = auth()->user()->com_code;
+        $data = admin_panel_setting::select('image')->where('com_code', $com_code)->first();
+
         $dataToUpdate['company_name'] = $request->company_name;
         $dataToUpdate['phone'] = $request->phone;
         $dataToUpdate['address'] = $request->address;
@@ -49,6 +51,19 @@ class Admin_panel_settingsController extends Controller
         $dataToUpdate['sanctions_value_thaird_abcence'] = $request->sanctions_value_thaird_abcence;
         $dataToUpdate['sanctions_value_forth_abcence'] = $request->sanctions_value_forth_abcence;
         $dataToUpdate['updated_by'] = auth()->user()->id;
+
+        if ($request->has('image')) {
+            $request->validate([
+                'image' => 'required|mimes:png,jpg,jpeg|max:2000'
+            ]);
+
+            $the_file_path = uploadImage('assets/admin/uploads', $request->image);
+            $dataToUpdate['image'] = $the_file_path;
+
+            if (file_exists('assets/admin/uploads/' . $data['image']) && !empty($data['image'])) {
+                unlink('assets/admin/uploads/' . $data['image']);
+            }
+        }
 
         admin_panel_setting::where(['com_code' => $com_code])->update($dataToUpdate);
 

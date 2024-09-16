@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\admin_panel_setting;
 use App\Models\Employee;
 use App\Models\Finance_calender;
 use App\Models\Finance_cin_periods;
@@ -235,5 +236,59 @@ class Main_salary_employee_sanctionsController extends Controller
         }
     }
 
-   
+    public function print_search(Request $request) {
+
+            $employees_code=$request->employees_code_search;
+            $sactions_type=$request->sactions_type_search;
+            $is_archived=$request->is_archived_search;
+            $the_finance_cin_periods_id=$request->the_finance_cin_periods_id;
+
+            if($employees_code=='all'){
+                $field1="id";
+                $operator1=">";
+                $value1=0;
+            }else{
+                $field1="employees_code";
+                $operator1="=";
+                $value1=$employees_code;
+            }
+
+            if($sactions_type=='all'){
+                $field2="id";
+                $operator2=">";
+                $value2=0;
+            }else{
+                $field2="sactions_type";
+                $operator2="=";
+                $value2=$sactions_type;
+            }
+
+            if($is_archived=='all'){
+                $field3="id";
+                $operator3=">";
+                $value3=0;
+            }else{
+                $field3="is_archived";
+                $operator3="=";
+                $value3=$is_archived;
+            }
+    
+            $com_code = auth()->user()->com_code;
+            $other['value_sum']=0;
+            $other['total_sum']=0;
+            $data = Main_salary_employee_sanctions::select("*")->where($field1,$operator1,$value1)->where($field2,$operator2,$value2)->where($field3,$operator3,$value3)->where('finance_cin_periods_id','=',$the_finance_cin_periods_id)->where('com_code','=',$com_code)->orderBy('id','DESC')->get();
+            $finance_cin_periods_data=get_cols_where_row(new Finance_cin_periods(),array("*"),array('com_code'=>$com_code,'id'=>$the_finance_cin_periods_id));
+
+            if(!empty($data)){
+                foreach($data as $info){
+                    $info->emp_name=get_field_value(new Employee(),'emp_name',array('com_code'=>$com_code,'employees_code'=>$info->employees_code));
+                    $other['value_sum']+=$info->value;
+                    $other['total_sum']+=$info->total;
+                }
+            }
+        
+            $systemData=get_cols_where_row(new admin_panel_setting(),array('company_name','image','phone','address'),array('com_code'=>$com_code));
+            return view('admin.Main_salary_employee_sanctions.print_search', ['data'=>$data,'finance_cin_periods_data'=>$finance_cin_periods_data,'systemData'=>$systemData,'other'=>$other]);
+        
+    }
 }
