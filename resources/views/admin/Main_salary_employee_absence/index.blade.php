@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    الاجور
+    الغيابات
 @endsection
 
 @section('contentheader')
@@ -9,7 +9,7 @@
 @endsection
 
 @section('contentheaderactivelink')
-    <a href="{{ route('MainSalarySanctions.index') }}">الجزاءات</a>
+    <a href="{{ route('MainSalaryAbsence.index') }}">الغيابات</a>
 @endsection
 
 @section('contentheaderactive')
@@ -21,11 +21,11 @@
         <div class="card">
 
             <div class="card-header">
-                <h3 class="card-title card_title_center">بيانات جزاءات الرواتب
+                <h3 class="card-title card_title_center">بيانات الغيابات
                 </h3>
             </div>
 
-        
+          
             <div class="card-body" id="ajax_ersponce_searchdiv" style="padding: 0px 5px">
 
                 @if (@isset($Finance_cin_periods) and !@empty($Finance_cin_periods) and count($Finance_cin_periods) > 0)
@@ -85,7 +85,7 @@
 
                                       
                                                 @if ($info->is_open != 0 )
-                                                    <a href="{{route('MainSalarySanctions.show',$info->id)}}" class="btn btn-sm btn-success">عرض</a>
+                                                    <a href="{{route('MainSalaryAbsence.show',$info->id)}}" class="btn btn-sm btn-success">عرض</a>
                                                 @endif
                                          
 

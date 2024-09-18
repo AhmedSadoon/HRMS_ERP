@@ -67,14 +67,15 @@
 
 
                 <td>
+                    @if ($info->is_archived == 0)
+                        <button data-id="{{ $info->id }}"
+                            data-main_sal_id="{{ $info->main_salary_employee_id }}"
+                            class="btn btn-sm btn-success load_edit_this_row">تعديل</button>
 
-                    <button data-id="{{ $info->id }}"
-                        data-main_sal_id="{{ $info->main_salary_employee_id }}"
-                        class="btn btn-sm btn-success load_edit_this_row">تعديل</button>
-
-                    <button data-id="{{ $info->id }}"
-                        data-main_sal_id="{{ $info->main_salary_employee_id }}"
-                        class="btn btn-sm btn-danger are_you_shur delete_this_row">حذف</button>
+                        <button data-id="{{ $info->id }}"
+                            data-main_sal_id="{{ $info->main_salary_employee_id }}"
+                            class="btn btn-sm btn-danger are_you_shur delete_this_row">حذف</button>
+                    @endif
                 </td>
 
             </tr>

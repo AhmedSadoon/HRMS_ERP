@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    الاجور
+    الغيابات
 @endsection
 
 @section('css')
@@ -14,7 +14,7 @@
 @endsection
 
 @section('contentheaderactivelink')
-    <a href="{{ route('MainSalarySanctions.index') }}">الجزاءات</a>
+    <a href="{{ route('MainSalaryAbsence.index') }}">الغيابات</a>
 @endsection
 
 @section('contentheaderactive')
@@ -33,7 +33,7 @@
         <div class="card">
 
             <div class="card-header">
-                <h3 class="card-title card_title_center">بيانات جزاءات الرواتب للشهر المالي
+                <h3 class="card-title card_title_center">بيانات الغيابات للشهر المالي
                     ({{ $finance_cin_periods_data['month']->name }} لسنة {{ $finance_cin_periods_data['finance_yr'] }})
 
                 </h3>
@@ -42,66 +42,57 @@
                 @endif
             </div>
 
-            <form action="{{ route('MainSalarySanctions.print_search') }}" method="POST" target="_blank">
-                @csrf
-                <input type="hidden" name="the_finance_cin_periods_id" id="the_finance_cin_periods_id"
-                    value="{{ $finance_cin_periods_data['id'] }}">
+            {{-- البحث --}}
+           <form action="{{route('MainSalaryAbsence.print_search')}}" method="POST" target="_blank">
+            @csrf
+            <input type="hidden" name="the_finance_cin_periods_id" id="the_finance_cin_periods_id" value="{{ $finance_cin_periods_data['id'] }}">
 
-                <div class="row" style="padding: 5px">
+            <div class="row" style="padding: 5px">
 
 
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>بحث بالموظفين</label>
-                            <select name="employees_code_search" id="employees_code_search" class="form-control select2">
-                                <option value="all">بحث بالكل</option>
-                                @if (@isset($employees_search) && !@empty($employees_search))
-                                    @foreach ($employees_search as $info)
-                                        <option value="{{ $info->employees_code }}"> {{ $info->emp_name }}
-                                            ({{ $info->employees_code }})
-                                        </option>
-                                    @endforeach
-                                @endif
-                            </select>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>بحث بالموظفين</label>
+                        <select name="employees_code_search" id="employees_code_search" class="form-control select2">
+                            <option value="all">بحث بالكل</option>
+                            @if (@isset($employees_search) && !@empty($employees_search))
+                                @foreach ($employees_search as $info)
+                                    <option value="{{ $info->employees_code }}"> {{ $info->emp_name }}
+                                        ({{ $info->employees_code }})
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
 
-                        </div>
                     </div>
-
-                    <div class="col-md-3 ">
-                        <div class="form-group">
-                            <label> بحث بنوع الجزاء</label>
-                            <select name="sactions_type_search" id="sactions_type_search" class="form-control select2">
-                                <option value="all">بحث بالكل</option>
-                                <option value="1">جزاء ايام</option>
-                                <option value="2">جزاء بصمة</option>
-                                <option value="3">جزاء تحقيق</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 ">
-                        <div class="form-group">
-                            <label> بحث بحالة الارشفة</label>
-                            <select name="is_archived_search" id="is_archived_search" class="form-control select2">
-                                <option value="all">بحث بالكل</option>
-                                <option value="1">مؤرشف</option>
-                                <option value="0">مفتوح</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 ">
-                        <div class="form-group">
-                            <button type="post" class="btn btn-sm btn-primary custom_button">طباعة البحث</button>
-
-                        </div>
-                    </div>
-
-
-
-
                 </div>
-            </form>
+
+            
+
+                <div class="col-md-3 ">
+                    <div class="form-group">
+                        <label> بحث بحالة الارشفة</label>
+                        <select name="is_archived_search" id="is_archived_search" class="form-control select2">
+                            <option value="all">بحث بالكل</option>
+                            <option value="1">مؤرشف</option>
+                            <option value="0">مفتوح</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-2 ">
+                    <div class="form-group">
+                        <button type="post" class="btn btn-sm btn-primary custom_button">طباعة البحث</button>
+                        
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+           </form>
             <div class="card-body" id="ajax_ersponce_searchdiv" style="padding: 0px 5px">
 
                 @if (@isset($data) and !@empty($data) and count($data) > 0)
@@ -110,7 +101,6 @@
                         <thead class="custom_thead">
 
                             <th>اسم الموظف</th>
-                            <th>نوع الجزاء</th>
                             <th>عدد الايام</th>
                             <th>اجمالي</th>
                             <th>تاريخ الاضافة</th>
@@ -127,21 +117,11 @@
                                         {{ $info->emp_name }}
                                         @if (!@empty($info->notes))
                                             <br>
-                                            <span style="color: brown">ملاحظة:</span>{{ $info->notes }}
+                                            <span style="color: brown">ملاحظة:</span>{{$info->notes}}
                                         @endif
                                     </td>
 
-                                    <td>
-                                        @if ($info->sactions_type == 1)
-                                            جزاء ايام
-                                        @elseif ($info->sactions_type == 2)
-                                            جزاء بصمة
-                                        @elseif ($info->sactions_type == 3)
-                                            جزاء تحقيق
-                                        @else
-                                            لم يحدد
-                                        @endif
-                                    </td>
+                              
 
                                     <td>
                                         {{ $info->value * 1 }}
@@ -174,12 +154,10 @@
 
                                     <td>
                                         @if ($info->is_archived == 0)
-                                            <button data-id="{{ $info->id }}"
-                                                data-main_sal_id="{{ $info->main_salary_employee_id }}"
+                                            <button data-id="{{ $info->id }}" data-main_sal_id="{{ $info->main_salary_employee_id }}"
                                                 class="btn btn-sm btn-success load_edit_this_row">تعديل</button>
-
-                                            <button data-id="{{ $info->id }}"
-                                                data-main_sal_id="{{ $info->main_salary_employee_id }}"
+                
+                                            <button data-id="{{ $info->id }}" data-main_sal_id="{{ $info->main_salary_employee_id }}"
                                                 class="btn btn-sm btn-danger are_you_shur delete_this_row">حذف</button>
                                         @endif
                                     </td>
@@ -219,10 +197,8 @@
                                     <option disabled selected value="">اختر الموظف</option>
                                     @if (@isset($employees) && !@empty($employees))
                                         @foreach ($employees as $info)
-                                            <option value="{{ $info->employees_code }}"
-                                                data-s="{{ $info->EmployeeData['emp_salary'] }}"
-                                                data-dp="{{ $info->EmployeeData['day_price'] }}">
-                                                {{ $info->EmployeeData['emp_name'] }}
+                                            <option value="{{ $info->employees_code }}" data-s="{{ $info->EmployeeData['emp_salary'] }}"
+                                                data-dp="{{ $info->EmployeeData['day_price'] }}"> {{ $info->EmployeeData['emp_name'] }}
                                                 ({{ $info->employees_code }})
                                             </option>
                                         @endforeach
@@ -243,27 +219,17 @@
                         <div class="col-md-3 related_employees_add" style="display: none">
                             <div class="form-group">
                                 <label>اجر اليوم الواحد</label>
-                                <input readonly type="text" name="day_price_add" id="day_price_add"
-                                    class="form-control" value="0">
+                                <input readonly type="text" name="day_price_add" id="day_price_add" class="form-control"
+                                    value="0">
                             </div>
                         </div>
 
 
-                        <div class="col-md-3 ">
-                            <div class="form-group">
-                                <label>نوع الجزاء</label>
-                                <select name="sactions_type_add" id="sactions_type_add" class="form-control">
-                                    <option disabled selected value="">اختر النوع</option>
-                                    <option value="1">جزاء ايام</option>
-                                    <option value="2">جزاء بصمة</option>
-                                    <option value="3">جزاء تحقيق</option>
-                                </select>
-                            </div>
-                        </div>
+                 
 
                         <div class="col-md-3 ">
                             <div class="form-group">
-                                <label>عدد اليوم الجزاء</label>
+                                <label>عدد ايام الغياب</label>
                                 <input type="text" name="value_add" id="value_add" class="form-control"
                                     oninput="this.value=this.value.replace(/[^0-9.]/g,'');" value="">
                             </div>
@@ -271,7 +237,7 @@
 
                         <div class="col-md-3 ">
                             <div class="form-group">
-                                <label>اجمالي قيمة الجزاء</label>
+                                <label>اجمالي قيمة الغياب</label>
                                 <input type="text" readonly name="total_add" id="total_add" class="form-control"
                                     value="0">
                             </div>
@@ -285,10 +251,11 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
-                            <div class="form-group text-left">
-                                <button style="margin-top: 33px" id="do_add_now" class="btn btn-sm btn-danger"
-                                    type="submit" name="submit">اضف الجزاء</button>
+                        <div class="col-md-12">
+                            <div class="form-group text-center">
+                                <hr>
+                                <button  id="do_add_now" class="btn btn-sm btn-danger"
+                                    type="submit" name="submit">اضف الغياب</button>
                             </div>
                         </div>
 
@@ -362,23 +329,18 @@
                     return false;
                 }
 
-                var sactions_type_add = $("#sactions_type_add").val();
-                if (sactions_type_add == "") {
-                    alert("من فضلك اختر نوع الجزاء");
-                    $("#sactions_type_add").focus();
-                    return false;
-                }
+              
 
                 var value_add = $("#value_add").val();
                 if (value_add == "") {
-                    alert("من فضلك ادخل عدد ايام الجزاء");
+                    alert("من فضلك ادخل عدد ايام الغياب");
                     $("#value_add").focus();
                     return false;
                 }
 
                 var total_add = $("#total_add").val();
                 if (total_add == "") {
-                    alert("من فضلك ادخل اجمالي الجزاء");
+                    alert("من فضلك ادخل اجمالي الغياب");
                     $("#total_add").focus();
                     return false;
                 }
@@ -389,7 +351,7 @@
 
                 var the_finance_cin_periods_id = $('#the_finance_cin_periods_id').val();
                 jQuery.ajax({
-                    url: '{{ route('MainSalarySanctions.checkExsistsBefor') }}',
+                    url: '{{ route('MainSalaryAbsence.checkExsistsBefor') }}',
                     type: 'post',
                     dataType: 'json',
                     cache: false,
@@ -403,7 +365,7 @@
                     success: function(data) {
                         if (data == 'exsists_befor') {
                             var result = confirm(
-                                "يوجد سجل جزاءات سابقة مسجلة للموظف من قبل هل تريد الاستمرار"
+                                "يوجد سجل غياب سابقة مسجلة للموظف من قبل هل تريد الاستمرار"
                             );
                             if (result == true) {
                                 var flagResult = true;
@@ -420,7 +382,7 @@
                             $('#backup_freeze_modal').modal('show');
 
                             jQuery.ajax({
-                                url: '{{ route('MainSalarySanctions.store') }}',
+                                url: '{{ route('MainSalaryAbsence.store') }}',
                                 type: 'post',
                                 dataType: 'html',
                                 cache: false,
@@ -428,7 +390,6 @@
                                     "_token": '{{ csrf_token() }}',
                                     employees_code: employees_code_Add,
                                     finance_cin_periods_id: the_finance_cin_periods_id,
-                                    sactions_type: sactions_type_add,
                                     value: value_add,
                                     total: total_add,
                                     notes: notes_add,
@@ -508,10 +469,7 @@
 
         });
 
-        $(document).on('change', '#sactions_type_search', function(e) {
-            ajax_search();
-
-        });
+   
 
         $(document).on('change', '#is_archived_search', function(e) {
             ajax_search();
@@ -520,19 +478,17 @@
 
         function ajax_search() {
             var employees_code = $("#employees_code_search").val();
-            var sactions_type = $("#sactions_type_search").val();
             var is_archived = $("#is_archived_search").val();
             var the_finance_cin_periods_id = $('#the_finance_cin_periods_id').val();
 
             jQuery.ajax({
-                url: '{{ route('MainSalarySanctions.ajaxSearch') }}',
+                url: '{{ route('MainSalaryAbsence.ajaxSearch') }}',
                 type: 'post',
                 dataType: 'html',
                 cache: false,
                 data: {
                     "_token": '{{ csrf_token() }}',
                     employees_code: employees_code,
-                    sactions_type: sactions_type,
                     is_archived: is_archived,
                     the_finance_cin_periods_id: the_finance_cin_periods_id
                 },
@@ -550,7 +506,6 @@
 
                 e.preventDefault();
                 var employees_code = $("#employees_code_search").val();
-                var sactions_type = $("#sactions_type_search").val();
                 var is_archived = $("#is_archived_search").val();
                 var the_finance_cin_periods_id = $('#the_finance_cin_periods_id').val();
                 var linkurl = $(this).attr("href");
@@ -563,7 +518,6 @@
                     data: {
                         "_token": '{{ csrf_token() }}',
                         employees_code: employees_code,
-                        sactions_type: sactions_type,
                         is_archived: is_archived,
                         the_finance_cin_periods_id: the_finance_cin_periods_id
                     },
@@ -590,7 +544,7 @@
             var main_salary_employee_id = $(this).data("main_sal_id");
             $("#backup_freeze_modal").modal("show");
             jQuery.ajax({
-                url: '{{ route('MainSalarySanctions.delete_row') }}',
+                url: '{{ route('MainSalaryAbsence.delete_row') }}',
                 type: 'post',
                 dataType: 'json',
                 cache: false,
@@ -624,7 +578,7 @@
             var the_finance_cin_periods_id = $("#the_finance_cin_periods_id").val();
             var main_salary_employee_id = $(this).data("main_sal_id");
             jQuery.ajax({
-                url: '{{ route('MainSalarySanctions.load_edit_row') }}',
+                url: '{{ route('MainSalaryAbsence.load_edit_row') }}',
                 type: 'post',
                 dataType: 'html',
                 cache: false,
@@ -658,23 +612,18 @@
                 return false;
             }
 
-            var sactions_type_edit = $("#sactions_type_edit").val();
-            if (sactions_type_edit == "") {
-                alert("من فضلك اختر نوع الجزاء");
-                $("#sactions_type_edit").focus();
-                return false;
-            }
+         
 
             var value_edit = $("#value_edit").val();
             if (value_edit == "") {
-                alert("من فضلك ادخل عدد ايام الجزاء");
+                alert("من فضلك ادخل عدد ايام الغياب");
                 $("#value_edit").focus();
                 return false;
             }
 
             var total_edit = $("#total_edit").val();
             if (total_edit == "") {
-                alert("من فضلك ادخل اجمالي الجزاء");
+                alert("من فضلك ادخل اجمالي الغياب");
                 $("#total_edit").focus();
                 return false;
             }
@@ -687,7 +636,7 @@
             $('#backup_freeze_modal').modal('show');
 
             jQuery.ajax({
-                url: '{{ route('MainSalarySanctions.do_edit_row') }}',
+                url: '{{ route('MainSalaryAbsence.do_edit_row') }}',
                 type: 'post',
                 dataType: 'html',
                 cache: false,
@@ -695,13 +644,12 @@
                     "_token": '{{ csrf_token() }}',
                     employees_code: employees_code_edit,
                     the_finance_cin_periods_id: the_finance_cin_periods_id,
-                    sactions_type: sactions_type_edit,
                     value: value_edit,
                     total: total_edit,
                     notes: notes_edit,
                     day_price: day_price_edit,
-                    main_salary_employee_id: main_salary_employee_id,
-                    id: id
+                    main_salary_employee_id:main_salary_employee_id,
+                    id:id
 
                 },
 
@@ -725,5 +673,7 @@
             });
 
         });
+
+
     </script>
 @endsection

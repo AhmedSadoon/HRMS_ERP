@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\EmployeesController;
 use App\Http\Controllers\Admin\Finance_calenderController;
 use App\Http\Controllers\Admin\JobsCategoriesController;
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\Admin\Main_salary_employee_AbsenceController;
 use App\Http\Controllers\Admin\Main_salary_employee_sanctionsController;
 use App\Http\Controllers\Admin\MainSalaryRecordController;
 use App\Http\Controllers\Admin\NationalitiesController;
@@ -218,6 +219,19 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
 
             //----------------نهاية جزءات الراتب---------------------
           
+                    //----------------بداية الغيابات ---------------------
+                    Route::get('/MainSalaryAbsence', [Main_salary_employee_AbsenceController::class, 'index'])->name('MainSalaryAbsence.index');
+                    Route::get('/MainSalaryAbsence/show/{id}', [Main_salary_employee_AbsenceController::class, 'show'])->name('MainSalaryAbsence.show');
+                    Route::post('/MainSalaryAbsence/checkExsistsBefor', [Main_salary_employee_AbsenceController::class, 'checkExsistsBefor'])->name('MainSalaryAbsence.checkExsistsBefor');
+                    Route::post('/MainSalaryAbsence/store', [Main_salary_employee_AbsenceController::class, 'store'])->name('MainSalaryAbsence.store');
+                    Route::post('/MainSalaryAbsence/ajaxSearch', [Main_salary_employee_AbsenceController::class, 'ajax_search'])->name('MainSalaryAbsence.ajaxSearch');
+                    Route::post('/MainSalaryAbsence/delete_row', [Main_salary_employee_AbsenceController::class, 'delete_row'])->name('MainSalaryAbsence.delete_row');
+                    Route::post('/MainSalaryAbsence/load_edit_row', [Main_salary_employee_AbsenceController::class, 'load_edit_row'])->name('MainSalaryAbsence.load_edit_row');
+                    Route::post('/MainSalaryAbsence/do_edit_row', [Main_salary_employee_AbsenceController::class, 'do_edit_row'])->name('MainSalaryAbsence.do_edit_row');
+                    Route::post('/MainSalaryAbsence/print_search', [Main_salary_employee_AbsenceController::class, 'print_search'])->name('MainSalaryAbsence.print_search');
+        
+                    //----------------نهاية الغيابات---------------------
+                  
 
 
 });
