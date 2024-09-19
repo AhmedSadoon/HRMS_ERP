@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\Finance_calenderController;
 use App\Http\Controllers\Admin\JobsCategoriesController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\Main_salary_employee_AbsenceController;
+use App\Http\Controllers\Admin\Main_salary_employee_AdditionController;
 use App\Http\Controllers\Admin\Main_salary_employee_sanctionsController;
 use App\Http\Controllers\Admin\MainSalaryRecordController;
 use App\Http\Controllers\Admin\NationalitiesController;
@@ -232,6 +233,18 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
         
                     //----------------نهاية الغيابات---------------------
                   
+                            //----------------بداية اضافي الراتب---------------------
+            Route::get('/MainSalaryAddition', [Main_salary_employee_AdditionController::class, 'index'])->name('MainSalaryAddition.index');
+            Route::get('/MainSalaryAddition/show/{id}', [Main_salary_employee_AdditionController::class, 'show'])->name('MainSalaryAddition.show');
+            Route::post('/MainSalaryAddition/checkExsistsBefor', [Main_salary_employee_AdditionController::class, 'checkExsistsBefor'])->name('MainSalaryAddition.checkExsistsBefor');
+            Route::post('/MainSalaryAddition/store', [Main_salary_employee_AdditionController::class, 'store'])->name('MainSalaryAddition.store');
+            Route::post('/MainSalaryAddition/ajaxSearch', [Main_salary_employee_AdditionController::class, 'ajax_search'])->name('MainSalaryAddition.ajaxSearch');
+            Route::post('/MainSalaryAddition/delete_row', [Main_salary_employee_AdditionController::class, 'delete_row'])->name('MainSalaryAddition.delete_row');
+            Route::post('/MainSalaryAddition/load_edit_row', [Main_salary_employee_AdditionController::class, 'load_edit_row'])->name('MainSalaryAddition.load_edit_row');
+            Route::post('/MainSalaryAddition/do_edit_row', [Main_salary_employee_AdditionController::class, 'do_edit_row'])->name('MainSalaryAddition.do_edit_row');
+            Route::post('/MainSalaryAddition/print_search', [Main_salary_employee_AdditionController::class, 'print_search'])->name('MainSalaryAddition.print_search');
+
+            //----------------نهاية اضافي الراتب---------------------
 
 
 });
