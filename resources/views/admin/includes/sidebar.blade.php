@@ -172,8 +172,8 @@
 
               {{-- بداية الرواتب --}}
 
-              <li class="nav-item has-treeview  {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')  ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')  ? 'active' : '' }} ">
+              <li class="nav-item has-treeview  {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')   ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')   ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     <p>
                         قائمة رواتب الموظفين
@@ -214,8 +214,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ route('MainSalaryRecord.index') }}"
-                            class="nav-link {{ request()->is('admin/MainSalaryRecord*') ? 'active' : '' }}">
+                        <a href="{{ route('MainSalaryDiscount.index') }}"
+                            class="nav-link {{ request()->is('admin/MainSalaryDiscount*') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>الخصومات المالية</p>
                         </a>

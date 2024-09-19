@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\JobsCategoriesController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\Main_salary_employee_AbsenceController;
 use App\Http\Controllers\Admin\Main_salary_employee_AdditionController;
+use App\Http\Controllers\Admin\Main_salary_employee_DiscountController;
 use App\Http\Controllers\Admin\Main_salary_employee_sanctionsController;
 use App\Http\Controllers\Admin\MainSalaryRecordController;
 use App\Http\Controllers\Admin\NationalitiesController;
@@ -245,6 +246,26 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
             Route::post('/MainSalaryAddition/print_search', [Main_salary_employee_AdditionController::class, 'print_search'])->name('MainSalaryAddition.print_search');
 
             //----------------نهاية اضافي الراتب---------------------
+
+                 //----------------بداية الخصومات الراتب---------------------
+                 Route::get('/MainSalaryDiscount', [Main_salary_employee_DiscountController::class, 'index'])->name('MainSalaryDiscount.index');
+                 Route::get('/MainSalaryDiscount/show/{id}', [Main_salary_employee_DiscountController::class, 'show'])->name('MainSalaryDiscount.show');
+                 Route::post('/MainSalaryDiscount/checkExsistsBefor', [Main_salary_employee_DiscountController::class, 'checkExsistsBefor'])->name('MainSalaryDiscount.checkExsistsBefor');
+                 Route::post('/MainSalaryDiscount/store', [Main_salary_employee_DiscountController::class, 'store'])->name('MainSalaryDiscount.store');
+                 Route::post('/MainSalaryDiscount/ajaxSearch', [Main_salary_employee_DiscountController::class, 'ajax_search'])->name('MainSalaryDiscount.ajaxSearch');
+                 Route::post('/MainSalaryDiscount/delete_row', [Main_salary_employee_DiscountController::class, 'delete_row'])->name('MainSalaryDiscount.delete_row');
+                 Route::post('/MainSalaryDiscount/load_edit_row', [Main_salary_employee_DiscountController::class, 'load_edit_row'])->name('MainSalaryDiscount.load_edit_row');
+                 Route::post('/MainSalaryDiscount/do_edit_row', [Main_salary_employee_DiscountController::class, 'do_edit_row'])->name('MainSalaryDiscount.do_edit_row');
+                 Route::post('/MainSalaryDiscount/print_search', [Main_salary_employee_DiscountController::class, 'print_search'])->name('MainSalaryDiscount.print_search');
+     
+                 //----------------نهاية الخصومات الراتب---------------------
+
+
+
+
+
+
+
 
 
 });

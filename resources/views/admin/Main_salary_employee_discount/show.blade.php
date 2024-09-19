@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    الاضافي
+    الخصومات
 @endsection
 
 @section('css')
@@ -10,11 +10,11 @@
 @endsection
 
 @section('contentheader')
-    قائمة الاضافي
+    قائمة الخصومات
 @endsection
 
 @section('contentheaderactivelink')
-    <a href="{{ route('MainSalaryAddition.index') }}">الاضافي</a>
+    <a href="{{ route('MainSalaryDiscount.index') }}">الخصومات</a>
 @endsection
 
 @section('contentheaderactive')
@@ -33,7 +33,7 @@
         <div class="card">
 
             <div class="card-header">
-                <h3 class="card-title card_title_center">بيانات اضافي الرواتب للشهر المالي
+                <h3 class="card-title card_title_center">بيانات خصومات الرواتب للشهر المالي
                     ({{ $finance_cin_periods_data['month']->name }} لسنة {{ $finance_cin_periods_data['finance_yr'] }})
 
                 </h3>
@@ -42,7 +42,7 @@
                 @endif
             </div>
 
-            <form action="{{ route('MainSalaryAddition.print_search') }}" method="POST" target="_blank">
+            <form action="{{ route('MainSalaryDiscount.print_search') }}" method="POST" target="_blank">
                 @csrf
                 <input type="hidden" name="the_finance_cin_periods_id" id="the_finance_cin_periods_id"
                     value="{{ $finance_cin_periods_data['id'] }}">
@@ -69,11 +69,11 @@
 
                     <div class="col-md-3 ">
                         <div class="form-group">
-                            <label> بحث بنوع الاضافي</label>
-                            <select name="additional_types_search" id="additional_types_search" class="form-control select2">
+                            <label> بحث بنوع الخصم</label>
+                            <select name="discount_type_search" id="discount_type_search" class="form-control select2">
                                 <option value="all">بحث بالكل</option>
-                                @if (@isset($additional_types) && !@empty($additional_types))
-                                    @foreach ($additional_types as $info)
+                                @if (@isset($discount_type) && !@empty($discount_type))
+                                    @foreach ($discount_type as $info)
                                         <option value="{{ $info->id }}"> {{ $info->name }}
                                             
                                         </option>
@@ -114,8 +114,8 @@
                         <thead class="custom_thead">
 
                             <th>اسم الموظف</th>
-                            <th>نوع الاضافي</th>
-                            <th>قيمة الاضافي</th>
+                            <th>نوع الخصم</th>
+                            <th>قيمة الخصم</th>
                             <th>تاريخ الاضافة</th>
                             <th>تاريخ التحديث</th>
                             <th>الحالة</th>
@@ -136,7 +136,7 @@
 
 
                                     <td>
-                                        {{ $info->additional_name }}
+                                        {{ $info->discount_type_name }}
                                     </td>
 
                                     <td>
@@ -243,11 +243,11 @@
 
                         <div class="col-md-3 ">
                             <div class="form-group">
-                                <label>نوع الاضافي</label>
-                                <select name="additional_types_add" id="additional_types_add" class="form-control">
+                                <label>نوع الخصم</label>
+                                <select name="discount_type_add" id="discount_type_add" class="form-control">
                                     <option disabled selected value="">اختر النوع</option>
-                                    @if (@isset($additional_types) && !@empty($additional_types))
-                                    @foreach ($additional_types as $info)
+                                    @if (@isset($discount_type) && !@empty($discount_type))
+                                    @foreach ($discount_type as $info)
                                         <option value="{{ $info->id }}"> {{ $info->name }}
                                             
                                         </option>
@@ -261,7 +261,7 @@
 
                         <div class="col-md-3 ">
                             <div class="form-group">
-                                <label>اجمالي قيمة الاضافي</label>
+                                <label>اجمالي قيمة الخصم</label>
                                 <input type="text" name="total_add" id="total_add" class="form-control"
                                     value="">
                             </div>
@@ -278,8 +278,8 @@
                         <div class="col-md-12">
                             <hr>
                             <div class="form-group text-center">
-                                <button style="margin-top: 33px" id="do_add_now" class="btn btn-sm btn-danger"
-                                    type="submit" name="submit">اضف الاضافي</button>
+                                <button  id="do_add_now" class="btn btn-sm btn-danger"
+                                    type="submit" name="submit">اضف الخصم</button>
                             </div>
                         </div>
 
@@ -300,7 +300,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content bg-info">
                 <div class="modal-header">
-                    <h4 class="modal-title">تعديل جزاءات للموظفين بالشهر المالي</h4>
+                    <h4 class="modal-title">تعديل خصومات الموظفين بالشهر المالي</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span></button>
                 </div>
@@ -353,16 +353,16 @@
                     return false;
                 }
 
-                var additional_types_add = $("#additional_types_add").val();
-                if (additional_types_add == "") {
-                    alert("من فضلك اختر نوع الاضافي");
-                    $("#additional_types_add").focus();
+                var discount_type_add = $("#discount_type_add").val();
+                if (discount_type_add == "") {
+                    alert("من فضلك اختر نوع الخصم");
+                    $("#discount_type_add").focus();
                     return false;
                 }
 
                 var total_add = $("#total_add").val();
                 if (total_add == "") {
-                    alert("من فضلك ادخل اجمالي الاضافي");
+                    alert("من فضلك ادخل اجمالي الخصم");
                     $("#total_add").focus();
                     return false;
                 }
@@ -373,7 +373,7 @@
 
                 var the_finance_cin_periods_id = $('#the_finance_cin_periods_id').val();
                 jQuery.ajax({
-                    url: '{{ route('MainSalaryAddition.checkExsistsBefor') }}',
+                    url: '{{ route('MainSalaryDiscount.checkExsistsBefor') }}',
                     type: 'post',
                     dataType: 'json',
                     cache: false,
@@ -387,7 +387,7 @@
                     success: function(data) {
                         if (data == 'exsists_befor') {
                             var result = confirm(
-                                "يوجد سجل الاضافي مسجلة سابقة للموظف هل تريد الاستمرار"
+                                "يوجد سجل خصومات سابقة مسجلة للموظف هل تريد الاستمرار"
                             );
                             if (result == true) {
                                 var flagResult = true;
@@ -404,7 +404,7 @@
                             $('#backup_freeze_modal').modal('show');
 
                             jQuery.ajax({
-                                url: '{{ route('MainSalaryAddition.store') }}',
+                                url: '{{ route('MainSalaryDiscount.store') }}',
                                 type: 'post',
                                 dataType: 'html',
                                 cache: false,
@@ -412,7 +412,7 @@
                                     "_token": '{{ csrf_token() }}',
                                     employees_code: employees_code_Add,
                                     finance_cin_periods_id: the_finance_cin_periods_id,
-                                    additional_types_add: additional_types_add, 
+                                    discount_type_add: discount_type_add, 
                                     total: total_add,
                                     notes: notes_add,
                                     day_price: day_price_add,
@@ -476,22 +476,14 @@
             }
         });
 
-        $(document).on('input', '#value_edit', function(e) {
-            var value_edit = $(this).val();
-            if (value_edit == "") {
-                value_edit = 0;
-            }
-
-            var day_price_edit = $("#day_price_edit").val();
-            $("#total_edit").val(value_edit * day_price_edit * 1);
-        });
+     
 
         $(document).on('change', '#employees_code_search', function(e) {
             ajax_search();
 
         });
 
-        $(document).on('change', '#additional_types_search', function(e) {
+        $(document).on('change', '#discount_type_search', function(e) {
             ajax_search();
 
         });
@@ -503,19 +495,19 @@
 
         function ajax_search() {
             var employees_code = $("#employees_code_search").val();
-            var additional_types_search = $("#additional_types_search").val();
+            var discount_type_search = $("#discount_type_search").val();
             var is_archived = $("#is_archived_search").val();
             var the_finance_cin_periods_id = $('#the_finance_cin_periods_id').val();
 
             jQuery.ajax({
-                url: '{{ route('MainSalaryAddition.ajaxSearch') }}',
+                url: '{{ route('MainSalaryDiscount.ajaxSearch') }}',
                 type: 'post',
                 dataType: 'html',
                 cache: false,
                 data: {
                     "_token": '{{ csrf_token() }}',
                     employees_code: employees_code,
-                    additional_types_search: additional_types_search,
+                    discount_type_search: discount_type_search,
                     is_archived: is_archived,
                     the_finance_cin_periods_id: the_finance_cin_periods_id
                 },
@@ -533,7 +525,7 @@
 
                 e.preventDefault();
                 var employees_code = $("#employees_code_search").val();
-                var additional_types_search = $("#additional_types_search").val();
+                var discount_type_search = $("#discount_type_search").val();
                 var is_archived = $("#is_archived_search").val();
                 var the_finance_cin_periods_id = $('#the_finance_cin_periods_id').val();
                 var linkurl = $(this).attr("href");
@@ -546,7 +538,7 @@
                     data: {
                         "_token": '{{ csrf_token() }}',
                         employees_code: employees_code,
-                        additional_types_search: additional_types_search,
+                        discount_type_search: discount_type_search,
                         is_archived: is_archived,
                         the_finance_cin_periods_id: the_finance_cin_periods_id
                     },
@@ -573,7 +565,7 @@
             var main_salary_employee_id = $(this).data("main_sal_id");
             $("#backup_freeze_modal").modal("show");
             jQuery.ajax({
-                url: '{{ route('MainSalaryAddition.delete_row') }}',
+                url: '{{ route('MainSalaryDiscount.delete_row') }}',
                 type: 'post',
                 dataType: 'json',
                 cache: false,
@@ -607,7 +599,7 @@
             var the_finance_cin_periods_id = $("#the_finance_cin_periods_id").val();
             var main_salary_employee_id = $(this).data("main_sal_id");
             jQuery.ajax({
-                url: '{{ route('MainSalaryAddition.load_edit_row') }}',
+                url: '{{ route('MainSalaryDiscount.load_edit_row') }}',
                 type: 'post',
                 dataType: 'html',
                 cache: false,
@@ -641,10 +633,10 @@
                 return false;
             }
 
-            var additional_types_edit = $("#additional_types_edit").val();
-            if (additional_types_edit == "") {
-                alert("من فضلك اختر نوع الاضافي");
-                $("#additional_types_edit").focus();
+            var discount_types_edit = $("#discount_types_edit").val();
+            if (discount_types_edit == "") {
+                alert("من فضلك اختر نوع الخصم");
+                $("#discount_types_edit").focus();
                 return false;
             }
 
@@ -652,7 +644,7 @@
 
             var total_edit = $("#total_edit").val();
             if (total_edit == "" || total_edit==0) {
-                alert("من فضلك ادخل اجمالي الاضافي");
+                alert("من فضلك ادخل اجمالي الخصم");
                 $("#total_edit").focus();
                 return false;
             }
@@ -665,7 +657,7 @@
             $('#backup_freeze_modal').modal('show');
 
             jQuery.ajax({
-                url: '{{ route('MainSalaryAddition.do_edit_row') }}',
+                url: '{{ route('MainSalaryDiscount.do_edit_row') }}',
                 type: 'post',
                 dataType: 'html',
                 cache: false,
@@ -673,7 +665,7 @@
                     "_token": '{{ csrf_token() }}',
                     employees_code: employees_code_edit,
                     the_finance_cin_periods_id: the_finance_cin_periods_id,
-                    additional_types_edit: additional_types_edit,                    
+                    discount_types_edit: discount_types_edit,                    
                     total: total_edit,
                     notes: notes_edit,
                     day_price: day_price_edit,
