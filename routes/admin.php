@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\JobsCategoriesController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\Main_salary_employee_AbsenceController;
 use App\Http\Controllers\Admin\Main_salary_employee_AdditionController;
+use App\Http\Controllers\Admin\Main_salary_employee_AllowancesController;
 use App\Http\Controllers\Admin\Main_salary_employee_DiscountController;
 use App\Http\Controllers\Admin\Main_salary_employee_RewardsController;
 use App\Http\Controllers\Admin\Main_salary_employee_sanctionsController;
@@ -275,6 +276,19 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
 
       //----------------نهاية مكافئات الراتب---------------------
 
+            //----------------بداية بدلات الراتب---------------------
+            Route::get('/MainSalaryAllowances', [Main_salary_employee_AllowancesController::class, 'index'])->name('MainSalaryAllowances.index');
+            Route::get('/MainSalaryAllowances/show/{id}', [Main_salary_employee_AllowancesController::class, 'show'])->name('MainSalaryAllowances.show');
+            Route::post('/MainSalaryAllowances/checkExsistsBefor', [Main_salary_employee_AllowancesController::class, 'checkExsistsBefor'])->name('MainSalaryAllowances.checkExsistsBefor');
+            Route::post('/MainSalaryAllowances/store', [Main_salary_employee_AllowancesController::class, 'store'])->name('MainSalaryAllowances.store');
+            Route::post('/MainSalaryAllowances/ajaxSearch', [Main_salary_employee_AllowancesController::class, 'ajax_search'])->name('MainSalaryAllowances.ajaxSearch');
+            Route::post('/MainSalaryAllowances/delete_row', [Main_salary_employee_AllowancesController::class, 'delete_row'])->name('MainSalaryAllowances.delete_row');
+            Route::post('/MainSalaryAllowances/load_edit_row', [Main_salary_employee_AllowancesController::class, 'load_edit_row'])->name('MainSalaryAllowances.load_edit_row');
+            Route::post('/MainSalaryAllowances/do_edit_row', [Main_salary_employee_AllowancesController::class, 'do_edit_row'])->name('MainSalaryAllowances.do_edit_row');
+            Route::post('/MainSalaryAllowances/print_search', [Main_salary_employee_AllowancesController::class, 'print_search'])->name('MainSalaryAllowances.print_search');
+      
+            //----------------نهاية بدلات الراتب---------------------
+      
 
 
 

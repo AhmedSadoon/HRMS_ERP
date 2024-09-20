@@ -172,8 +172,8 @@
 
               {{-- بداية الرواتب --}}
 
-              <li class="nav-item has-treeview  {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')||request()->is('admin/MainSalaryRewards*')   ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')||request()->is('admin/MainSalaryRewards*')   ? 'active' : '' }} ">
+              <li class="nav-item has-treeview  {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')||request()->is('admin/MainSalaryRewards*')||request()->is('admin/MainSalaryAllowances*')   ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')||request()->is('admin/MainSalaryRewards*')||request()->is('admin/MainSalaryAllowances*')   ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     <p>
                         قائمة رواتب الموظفين
@@ -230,8 +230,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ route('MainSalaryRecord.index') }}"
-                            class="nav-link {{ request()->is('admin/MainSalaryRecord*') ? 'active' : '' }}">
+                        <a href="{{ route('MainSalaryAllowances.index') }}"
+                            class="nav-link {{ request()->is('admin/MainSalaryAllowances*') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>البدلات المتغيرة</p>
                         </a>
