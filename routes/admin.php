@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\Main_salary_employee_AbsenceController;
 use App\Http\Controllers\Admin\Main_salary_employee_AdditionController;
 use App\Http\Controllers\Admin\Main_salary_employee_AllowancesController;
 use App\Http\Controllers\Admin\Main_salary_employee_DiscountController;
+use App\Http\Controllers\Admin\Main_salary_employee_LoansController;
 use App\Http\Controllers\Admin\Main_salary_employee_RewardsController;
 use App\Http\Controllers\Admin\Main_salary_employee_sanctionsController;
 use App\Http\Controllers\Admin\MainSalaryRecordController;
@@ -290,6 +291,19 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
             //----------------نهاية بدلات الراتب---------------------
       
 
+                     //----------------بداية السلف الشهرية ---------------------
+                     Route::get('/MainSalaryLoans', [Main_salary_employee_LoansController::class, 'index'])->name('MainSalaryLoans.index');
+                     Route::get('/MainSalaryLoans/show/{id}', [Main_salary_employee_LoansController::class, 'show'])->name('MainSalaryLoans.show');
+                     Route::post('/MainSalaryLoans/checkExsistsBefor', [Main_salary_employee_LoansController::class, 'checkExsistsBefor'])->name('MainSalaryLoans.checkExsistsBefor');
+                     Route::post('/MainSalaryLoans/store', [Main_salary_employee_LoansController::class, 'store'])->name('MainSalaryLoans.store');
+                     Route::post('/MainSalaryLoans/ajaxSearch', [Main_salary_employee_LoansController::class, 'ajax_search'])->name('MainSalaryLoans.ajaxSearch');
+                     Route::post('/MainSalaryLoans/delete_row', [Main_salary_employee_LoansController::class, 'delete_row'])->name('MainSalaryLoans.delete_row');
+                     Route::post('/MainSalaryLoans/load_edit_row', [Main_salary_employee_LoansController::class, 'load_edit_row'])->name('MainSalaryLoans.load_edit_row');
+                     Route::post('/MainSalaryLoans/do_edit_row', [Main_salary_employee_LoansController::class, 'do_edit_row'])->name('MainSalaryLoans.do_edit_row');
+                     Route::post('/MainSalaryLoans/print_search', [Main_salary_employee_LoansController::class, 'print_search'])->name('MainSalaryLoans.print_search');
+               
+                     //----------------نهاية السلف الشهرية ---------------------
+               
 
 
 
