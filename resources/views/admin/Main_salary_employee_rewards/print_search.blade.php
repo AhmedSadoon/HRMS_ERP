@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title> بحث بأظافي الايام الرواتب</title>
+    <title> بحث بالمكافئات المالية</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css') }}">
     <style>
@@ -44,7 +44,7 @@
                text-align: center;
                color: red;
                border: 1px solid black; border-radius: 10px !important">
-                    بحث بأظافي الايام برواتب للشهر المالي ({{ $finance_cin_periods_data['month']->name }} لسنة
+                    بحث بالمكافئات المالية للشهر المالي ({{ $finance_cin_periods_data['month']->name }} لسنة
                     {{ $finance_cin_periods_data['finance_yr'] }})
                 </span>
             </td>
@@ -95,8 +95,8 @@
 
                 <th style="width: 5%">تسلسل</th>
                 <th style="width: 5%">كود</th>
-                <th style="width: 30%">اسم الموظف</th>
-                <th style="width: 10%">عدد الايام</th>
+                <th style="width: 25%">اسم الموظف</th>
+                <th style="width: 15%">نوع المكافئة</th>
                 <th style="width: 15%">اجمالي</th>        
                 <th style="width: 20%">بواسطة</th>        
                 <th style="width: 15%">الحالة</th>
@@ -128,7 +128,7 @@
                    
 
                         <td>
-                            {{ $info->value*1 }}
+                            {{ $info->additional_name }}
                         </td>
 
                         <td>
@@ -156,19 +156,14 @@
                  @endphp
                 @endforeach
                 <tr>
-                    <td style="background-color:lightsalmon;" colspan="3"> الاجمالي
+                    <td style="background-color:lightsalmon;" colspan="4"> الاجمالي
 
                     </td>
                     
-                    <td style="background-color: lightgreen;text-align: right; ">
-                        {{ $other['value_sum'] * 1 }} ايام
-                    </td>
 
                     <td style="background-color: lightgreen;text-align: right; " colspan="4">
                         {{ $other['total_sum'] * 1 }} دينار
                     </td>
-
-                  
                    
                 </tr>
             </tbody>

@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    الاضافي
+    المكافئات المالية
 @endsection
 
 @section('css')
@@ -10,11 +10,11 @@
 @endsection
 
 @section('contentheader')
-    قائمة الاضافي
+    قائمة المكافئات
 @endsection
 
 @section('contentheaderactivelink')
-    <a href="{{ route('MainSalaryAddition.index') }}">الاضافي</a>
+    <a href="{{ route('MainSalaryRewards.index') }}">المكافئات</a>
 @endsection
 
 @section('contentheaderactive')
@@ -33,7 +33,7 @@
         <div class="card">
 
             <div class="card-header">
-                <h3 class="card-title card_title_center">بيانات اضافي الرواتب للشهر المالي
+                <h3 class="card-title card_title_center">بيانات المكافئات المالية للشهر المالي
                     ({{ $finance_cin_periods_data['month']->name }} لسنة {{ $finance_cin_periods_data['finance_yr'] }})
 
                 </h3>
@@ -42,7 +42,7 @@
                 @endif
             </div>
 
-            <form action="{{ route('MainSalaryAddition.print_search') }}" method="POST" target="_blank">
+            <form action="{{ route('MainSalaryRewards.print_search') }}" method="POST" target="_blank">
                 @csrf
                 <input type="hidden" name="the_finance_cin_periods_id" id="the_finance_cin_periods_id"
                     value="{{ $finance_cin_periods_data['id'] }}">
@@ -50,7 +50,7 @@
                 <div class="row" style="padding: 5px">
 
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>بحث بالموظفين</label>
                             <select name="employees_code_search" id="employees_code_search" class="form-control select2">
@@ -67,9 +67,23 @@
                         </div>
                     </div>
 
-              
+                    <div class="col-md-3 ">
+                        <div class="form-group">
+                            <label> بحث بنوع المكافئة</label>
+                            <select name="additional_types_search" id="additional_types_search" class="form-control select2">
+                                <option value="all">بحث بالكل</option>
+                                @if (@isset($additional_types) && !@empty($additional_types))
+                                    @foreach ($additional_types as $info)
+                                        <option value="{{ $info->id }}"> {{ $info->name }}
+                                            
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                    </div>
 
-                    <div class="col-md-4 ">
+                    <div class="col-md-3 ">
                         <div class="form-group">
                             <label> بحث بحالة الارشفة</label>
                             <select name="is_archived_search" id="is_archived_search" class="form-control select2">
@@ -100,8 +114,8 @@
                         <thead class="custom_thead">
 
                             <th>اسم الموظف</th>
-                            <th>عدد الايام</th>
-                            <th>الاجمالي</th>
+                            <th>نوع المكافئة</th>
+                            <th>قيمة المكافئة</th>
                             <th>تاريخ الاضافة</th>
                             <th>تاريخ التحديث</th>
                             <th>الحالة</th>
@@ -122,7 +136,7 @@
 
 
                                     <td>
-                                        {{ $info->value*1 }}
+                                        {{ $info->additional_name }}
                                     </td>
 
                                     <td>
@@ -183,7 +197,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content bg-info">
                 <div class="modal-header">
-                    <h4 class="modal-title">اضافة جزاءات للموظفين بالشهر المالي</h4>
+                    <h4 class="modal-title">اضافة مكافئات مالية للموظفين بالشهر المالي</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span></button>
                 </div>
@@ -226,19 +240,28 @@
                             </div>
                         </div>
 
+
                         <div class="col-md-3 ">
                             <div class="form-group">
-                                <label>عدد ايام الاضافي</label>
-                                <input type="text" name="value_add" id="value_add" class="form-control"
-                                    oninput="this.value=this.value.replace(/[^0-9.]/g,'');" value="">
+                                <label>نوع المكافئة</label>
+                                <select name="additional_types_add" id="additional_types_add" class="form-control">
+                                    <option disabled selected value="">اختر النوع</option>
+                                    @if (@isset($additional_types) && !@empty($additional_types))
+                                    @foreach ($additional_types as $info)
+                                        <option value="{{ $info->id }}"> {{ $info->name }}
+                                            
+                                        </option>
+                                    @endforeach
+                                @endif
+                                </select>
                             </div>
                         </div>
 
-                                            
+                      
 
                         <div class="col-md-3 ">
                             <div class="form-group">
-                                <label>اجمالي قيمة الاضافي</label>
+                                <label>اجمالي قيمة المكافئة</label>
                                 <input type="text" name="total_add" id="total_add" class="form-control"
                                     value="">
                             </div>
@@ -256,7 +279,7 @@
                             <hr>
                             <div class="form-group text-center">
                                 <button style="margin-top: 33px" id="do_add_now" class="btn btn-sm btn-danger"
-                                    type="submit" name="submit">اضف الاضافي</button>
+                                    type="submit" name="submit">اضف المكافئة</button>
                             </div>
                         </div>
 
@@ -277,7 +300,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content bg-info">
                 <div class="modal-header">
-                    <h4 class="modal-title">تعديل جزاءات للموظفين بالشهر المالي</h4>
+                    <h4 class="modal-title">تعديل مكافئة مالية للموظفين بالشهر المالي</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span></button>
                 </div>
@@ -330,16 +353,16 @@
                     return false;
                 }
 
-                var value_add = $("#value_add").val();
-                if (value_add == "") {
-                    alert("من فضلك ادخل عدد ايام الاضافي");
-                    $("#value_add").focus();
+                var additional_types_add = $("#additional_types_add").val();
+                if (additional_types_add == "") {
+                    alert("من فضلك اختر نوع المكافئة");
+                    $("#additional_types_add").focus();
                     return false;
                 }
 
                 var total_add = $("#total_add").val();
                 if (total_add == "") {
-                    alert("من فضلك ادخل اجمالي الاضافي");
+                    alert("من فضلك ادخل اجمالي المكافئة");
                     $("#total_add").focus();
                     return false;
                 }
@@ -350,7 +373,7 @@
 
                 var the_finance_cin_periods_id = $('#the_finance_cin_periods_id').val();
                 jQuery.ajax({
-                    url: '{{ route('MainSalaryAddition.checkExsistsBefor') }}',
+                    url: '{{ route('MainSalaryRewards.checkExsistsBefor') }}',
                     type: 'post',
                     dataType: 'json',
                     cache: false,
@@ -364,7 +387,7 @@
                     success: function(data) {
                         if (data == 'exsists_befor') {
                             var result = confirm(
-                                "يوجد سجل الاضافي مسجلة سابقة للموظف هل تريد الاستمرار"
+                                "يوجد سجل المكافئة مسجلة سابقة للموظف هل تريد الاستمرار"
                             );
                             if (result == true) {
                                 var flagResult = true;
@@ -381,7 +404,7 @@
                             $('#backup_freeze_modal').modal('show');
 
                             jQuery.ajax({
-                                url: '{{ route('MainSalaryAddition.store') }}',
+                                url: '{{ route('MainSalaryRewards.store') }}',
                                 type: 'post',
                                 dataType: 'html',
                                 cache: false,
@@ -389,7 +412,7 @@
                                     "_token": '{{ csrf_token() }}',
                                     employees_code: employees_code_Add,
                                     finance_cin_periods_id: the_finance_cin_periods_id,
-                                    value: value_add, 
+                                    additional_types_add: additional_types_add, 
                                     total: total_add,
                                     notes: notes_add,
                                     day_price: day_price_add,
@@ -485,7 +508,7 @@
             var the_finance_cin_periods_id = $('#the_finance_cin_periods_id').val();
 
             jQuery.ajax({
-                url: '{{ route('MainSalaryAddition.ajaxSearch') }}',
+                url: '{{ route('MainSalaryRewards.ajaxSearch') }}',
                 type: 'post',
                 dataType: 'html',
                 cache: false,
@@ -550,7 +573,7 @@
             var main_salary_employee_id = $(this).data("main_sal_id");
             $("#backup_freeze_modal").modal("show");
             jQuery.ajax({
-                url: '{{ route('MainSalaryAddition.delete_row') }}',
+                url: '{{ route('MainSalaryRewards.delete_row') }}',
                 type: 'post',
                 dataType: 'json',
                 cache: false,
@@ -584,7 +607,7 @@
             var the_finance_cin_periods_id = $("#the_finance_cin_periods_id").val();
             var main_salary_employee_id = $(this).data("main_sal_id");
             jQuery.ajax({
-                url: '{{ route('MainSalaryAddition.load_edit_row') }}',
+                url: '{{ route('MainSalaryRewards.load_edit_row') }}',
                 type: 'post',
                 dataType: 'html',
                 cache: false,
@@ -618,10 +641,10 @@
                 return false;
             }
 
-            var value_edit = $("#value_edit").val();
-            if (value_edit == "") {
-                alert("من فضلك ادخل عدد ايام الاضافي");
-                $("#value_edit").focus();
+            var additional_types_edit = $("#additional_types_edit").val();
+            if (additional_types_edit == "") {
+                alert("من فضلك اختر نوع المكافئة");
+                $("#additional_types_edit").focus();
                 return false;
             }
 
@@ -629,7 +652,7 @@
 
             var total_edit = $("#total_edit").val();
             if (total_edit == "" || total_edit==0) {
-                alert("من فضلك ادخل اجمالي الاضافي");
+                alert("من فضلك ادخل اجمالي المكافئة");
                 $("#total_edit").focus();
                 return false;
             }
@@ -642,7 +665,7 @@
             $('#backup_freeze_modal').modal('show');
 
             jQuery.ajax({
-                url: '{{ route('MainSalaryAddition.do_edit_row') }}',
+                url: '{{ route('MainSalaryRewards.do_edit_row') }}',
                 type: 'post',
                 dataType: 'html',
                 cache: false,
@@ -650,7 +673,7 @@
                     "_token": '{{ csrf_token() }}',
                     employees_code: employees_code_edit,
                     the_finance_cin_periods_id: the_finance_cin_periods_id,
-                    value: value_edit,                    
+                    additional_types_edit: additional_types_edit,                    
                     total: total_edit,
                     notes: notes_edit,
                     day_price: day_price_edit,

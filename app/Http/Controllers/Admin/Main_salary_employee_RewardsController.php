@@ -9,11 +9,11 @@ use App\Models\Employee;
 use App\Models\Finance_calender;
 use App\Models\Finance_cin_periods;
 use App\Models\Main_salary_employee;
-use App\Models\Main_salary_employee_addition;
+use App\Models\Main_salary_employee_rewards;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class Main_salary_employee_AdditionController extends Controller
+class Main_salary_employee_RewardsController extends Controller
 {
     public function index()
     {
@@ -30,7 +30,7 @@ class Main_salary_employee_AdditionController extends Controller
             }
         }
 
-        return view('admin.Main_salary_employee_addition.index', compact('Finance_cin_periods'));
+        return view('admin.Main_salary_employee_rewards.index', compact('Finance_cin_periods'));
     }
 
     public function show($finance_cin_periods_id){
@@ -40,10 +40,11 @@ class Main_salary_employee_AdditionController extends Controller
             return redirect()->route('MainSalaryRecord.index')->with('error','عفواً غير قادر للوصول الى البينات المطلوبة');
         }
 
-        $data = get_cols_where_paginate(new Main_salary_employee_addition(), array('*'), array('com_code' => $com_code,'finance_cin_periods_id'=>$finance_cin_periods_id),'id','DESC',PAGINATION_COUNTER);
+        $data = get_cols_where_paginate(new Main_salary_employee_rewards(), array('*'), array('com_code' => $com_code,'finance_cin_periods_id'=>$finance_cin_periods_id),'id','DESC',PAGINATION_COUNTER);
         if(!empty($data)){
             foreach($data as $info){
                 $info->emp_name=get_field_value(new Employee(),'emp_name',array('com_code'=>$com_code,'employees_code'=>$info->employees_code));
+                $info->additional_name=get_field_value(new Additional_type(),'name',array('com_code'=>$com_code,'id'=>$info->additional_types_id));
             }
         }
 
@@ -55,8 +56,9 @@ class Main_salary_employee_AdditionController extends Controller
             }
         }
 
+        $additional_types=get_cols_where(new Additional_type(),array("id","name"),array("com_code"=>$com_code));
         $employees_search=get_cols_where(new Employee(),array("employees_code","emp_name","emp_salary","day_price"),array('com_code'=>$com_code),'employees_code','ASC');
-        return view('admin.Main_salary_employee_addition.show', ['data'=>$data,'finance_cin_periods_data'=>$finance_cin_periods_data,'employees'=>$employees,'employees_search'=>$employees_search]);
+        return view('admin.Main_salary_employee_rewards.show', ['data'=>$data,'finance_cin_periods_data'=>$finance_cin_periods_data,'employees'=>$employees,'employees_search'=>$employees_search,'additional_types'=>$additional_types]);
 
 
     }
@@ -66,7 +68,7 @@ class Main_salary_employee_AdditionController extends Controller
         $com_code = auth()->user()->com_code;
 
         if($request->ajax()){
-            $checkExsistsBeforCounter=get_count_where(new Main_salary_employee_addition(),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'employees_code'=>$request->employees_code));
+            $checkExsistsBeforCounter=get_count_where(new Main_salary_employee_rewards(),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'employees_code'=>$request->employees_code));
             if($checkExsistsBeforCounter>0){
                 return json_encode("exsists_befor");
             }else{
@@ -92,7 +94,7 @@ class Main_salary_employee_AdditionController extends Controller
                     'employees_code'=>$request->employees_code ,
                     'is_auto'=>1 ,
                     'day_price'=>$request->day_price ,
-                    'value'=>$request->value ,
+                    'additional_types_id'=>$request->additional_types_add ,
                     'total'=>$request->total ,
                     'notes'=>$request->notes ,
                     'added_by'=>auth()->user()->id,
@@ -100,7 +102,7 @@ class Main_salary_employee_AdditionController extends Controller
                 ];
 
                 
-            insert(new Main_salary_employee_addition(),$dataToInsert);
+            insert(new Main_salary_employee_rewards(),$dataToInsert);
             DB::commit();
 
             return json_encode("done");
@@ -113,6 +115,7 @@ class Main_salary_employee_AdditionController extends Controller
     public function ajax_search(Request $request) {
         if($request->ajax()){
             $employees_code=$request->employees_code;
+            $additional_types_search=$request->additional_types_search;
             $is_archived=$request->is_archived;
             $the_finance_cin_periods_id=$request->the_finance_cin_periods_id;
     
@@ -126,29 +129,38 @@ class Main_salary_employee_AdditionController extends Controller
                 $value1=$employees_code;
             }
 
-         
-
-            if($is_archived=='all'){
+            if($additional_types_search=='all'){
                 $field2="id";
                 $operator2=">";
                 $value2=0;
             }else{
-                $field2="is_archived";
+                $field2="additional_types_id";
                 $operator2="=";
-                $value2=$is_archived;
+                $value2=$additional_types_search;
+            }
+
+            if($is_archived=='all'){
+                $field3="id";
+                $operator3=">";
+                $value3=0;
+            }else{
+                $field3="is_archived";
+                $operator3="=";
+                $value3=$is_archived;
             }
     
             $com_code = auth()->user()->com_code;
-            $data = Main_salary_employee_addition::select("*")->where($field1,$operator1,$value1)->where($field2,$operator2,$value2)->where('finance_cin_periods_id','=',$the_finance_cin_periods_id)->where('com_code','=',$com_code)->orderBy('id','DESC')->paginate(PAGINATION_COUNTER);
+            $data = Main_salary_employee_rewards::select("*")->where($field1,$operator1,$value1)->where($field2,$operator2,$value2)->where($field3,$operator3,$value3)->where('finance_cin_periods_id','=',$the_finance_cin_periods_id)->where('com_code','=',$com_code)->orderBy('id','DESC')->paginate(PAGINATION_COUNTER);
             
             if(!empty($data)){
                 foreach($data as $info){
                     $info->emp_name=get_field_value(new Employee(),'emp_name',array('com_code'=>$com_code,'employees_code'=>$info->employees_code));
+                    $info->additional_name=get_field_value(new Additional_type(),'name',array('com_code'=>$com_code,'id'=>$info->additional_types_id));
                 }
             }
         
             
-            return view('admin.Main_salary_employee_addition.ajax_search', ['data'=>$data]);
+            return view('admin.Main_salary_employee_rewards.ajax_search', ['data'=>$data]);
         }
     }
 
@@ -159,10 +171,10 @@ class Main_salary_employee_AdditionController extends Controller
             $com_code = auth()->user()->com_code;
             $finance_cin_periods_data=get_cols_where_row(new Finance_cin_periods(),array("id"),array('com_code'=>$com_code,'id'=>$request->the_finance_cin_periods_id,'is_open'=>1));
             $main_salary_employee_data=get_cols_where_row(new Main_salary_employee(),array("id"),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'id'=>$request->main_salary_employee_id,'is_archived'=>0));
-            $data_row=get_cols_where_row(new Main_salary_employee_addition(),array("id"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+            $data_row=get_cols_where_row(new Main_salary_employee_rewards(),array("id"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
             if(!empty($finance_cin_periods_data) and !empty($data_row) and !empty($main_salary_employee_data)){
 
-                destroy(new Main_salary_employee_addition(),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+                destroy(new Main_salary_employee_rewards(),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
             
                return json_encode("done");
             }
@@ -176,7 +188,7 @@ class Main_salary_employee_AdditionController extends Controller
             $com_code = auth()->user()->com_code;
             $finance_cin_periods_data=get_cols_where_row(new Finance_cin_periods(),array("id"),array('com_code'=>$com_code,'id'=>$request->the_finance_cin_periods_id,'is_open'=>1));
             $main_salary_employee_data=get_cols_where_row(new Main_salary_employee(),array("id"),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'id'=>$request->main_salary_employee_id,'is_archived'=>0));
-            $data_row=get_cols_where_row(new Main_salary_employee_addition(),array("*"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+            $data_row=get_cols_where_row(new Main_salary_employee_rewards(),array("*"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
             
             $employees=Main_salary_employee::where('com_code','=',$com_code)->where('finance_cin_periods_id','=',$request->the_finance_cin_periods_id)->distinct()->get('employees_code');
         
@@ -186,8 +198,9 @@ class Main_salary_employee_AdditionController extends Controller
                 }
             }
 
+            $additional_types=get_cols_where(new Additional_type(),array("id","name"),array("com_code"=>$com_code));
 
-            return view('admin.Main_salary_employee_addition.load_edit_row',['finance_cin_periods_data'=>$finance_cin_periods_data,'main_salary_employee_data'=>$main_salary_employee_data,'data_row'=>$data_row,'employees'=>$employees]);
+            return view('admin.Main_salary_employee_rewards.load_edit_row',['finance_cin_periods_data'=>$finance_cin_periods_data,'main_salary_employee_data'=>$main_salary_employee_data,'data_row'=>$data_row,'employees'=>$employees,'additional_types'=>$additional_types]);
         }
 
     }
@@ -199,7 +212,7 @@ class Main_salary_employee_AdditionController extends Controller
         if($request->ajax()){
             $finance_cin_periods_data=get_cols_where_row(new Finance_cin_periods(),array("*"),array('com_code'=>$com_code,'id'=>$request->the_finance_cin_periods_id,'is_open'=>1));
             $main_salary_employee_data=get_cols_where_row(new Main_salary_employee(),array("id"),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'employees_code'=>$request->employees_code,'is_archived'=>0));
-            $data_row=get_cols_where_row(new Main_salary_employee_addition(),array("*"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+            $data_row=get_cols_where_row(new Main_salary_employee_rewards(),array("*"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
 
             if(!empty($finance_cin_periods_data) && !empty($main_salary_employee_data) && !empty($data_row)){
 
@@ -209,7 +222,7 @@ class Main_salary_employee_AdditionController extends Controller
                    
                     'employees_code'=>$request->employees_code ,
                     'day_price'=>$request->day_price ,
-                    'value'=>$request->value ,
+                    'additional_types_id'=>$request->additional_types_edit ,
                     'total'=>$request->total ,
                     'notes'=>$request->notes ,
                     'updated_by'=>auth()->user()->id,
@@ -217,7 +230,7 @@ class Main_salary_employee_AdditionController extends Controller
                 ];
 
                 
-            update(new Main_salary_employee_addition(),$dataToUdate,array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+            update(new Main_salary_employee_rewards(),$dataToUdate,array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
             DB::commit();
 
             return json_encode("done");
@@ -230,6 +243,7 @@ class Main_salary_employee_AdditionController extends Controller
     public function print_search(Request $request) {
 
             $employees_code=$request->employees_code_search;
+            $additional_types_search=$request->additional_types_search;
             $is_archived=$request->is_archived_search;
             $the_finance_cin_periods_id=$request->the_finance_cin_periods_id;
 
@@ -243,34 +257,44 @@ class Main_salary_employee_AdditionController extends Controller
                 $value1=$employees_code;
             }
 
-          
-
-            if($is_archived=='all'){
+            if($additional_types_search=='all'){
                 $field2="id";
                 $operator2=">";
                 $value2=0;
             }else{
-                $field2="is_archived";
+                $field2="additional_types_id";
                 $operator2="=";
-                $value2=$is_archived;
+                $value2=$additional_types_search;
+            }
+
+            if($is_archived=='all'){
+                $field3="id";
+                $operator3=">";
+                $value3=0;
+            }else{
+                $field3="is_archived";
+                $operator3="=";
+                $value3=$is_archived;
             }
     
             $com_code = auth()->user()->com_code;
             $other['value_sum']=0;
             $other['total_sum']=0;
-            $data = Main_salary_employee_addition::select("*")->where($field1,$operator1,$value1)->where($field2,$operator2,$value2)->where('finance_cin_periods_id','=',$the_finance_cin_periods_id)->where('com_code','=',$com_code)->orderBy('id','DESC')->get();
+            $data = Main_salary_employee_rewards::select("*")->where($field1,$operator1,$value1)->where($field2,$operator2,$value2)->where($field3,$operator3,$value3)->where('finance_cin_periods_id','=',$the_finance_cin_periods_id)->where('com_code','=',$com_code)->orderBy('id','DESC')->get();
             $finance_cin_periods_data=get_cols_where_row(new Finance_cin_periods(),array("*"),array('com_code'=>$com_code,'id'=>$the_finance_cin_periods_id));
 
             if(!empty($data)){
                 foreach($data as $info){
                     $info->emp_name=get_field_value(new Employee(),'emp_name',array('com_code'=>$com_code,'employees_code'=>$info->employees_code));
+                    $info->additional_name=get_field_value(new Additional_type(),'name',array('com_code'=>$com_code,'id'=>$info->additional_types_id));
+
                     $other['value_sum']+=$info->value;
                     $other['total_sum']+=$info->total;
                 }
             }
         
             $systemData=get_cols_where_row(new admin_panel_setting(),array('company_name','image','phone','address'),array('com_code'=>$com_code));
-            return view('admin.Main_salary_employee_addition.print_search', ['data'=>$data,'finance_cin_periods_data'=>$finance_cin_periods_data,'systemData'=>$systemData,'other'=>$other]);
+            return view('admin.Main_salary_employee_rewards.print_search', ['data'=>$data,'finance_cin_periods_data'=>$finance_cin_periods_data,'systemData'=>$systemData,'other'=>$other]);
         
     }
 }

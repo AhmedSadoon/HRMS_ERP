@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('main_salary_employee_addition', function (Blueprint $table) {
+        Schema::create('main_salary_employee_rewards', function (Blueprint $table) {
             $table->id();
             $table->foreignId('main_salary_employee_id')->references('id')->on('main_salary_employee')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('finance_cin_periods_id')->comment('كود الشهر المالي')->references('id')->on('finance_cin_periods')->onUpdate('cascade');
             $table->integer('is_auto')->comment('هل تلقائي من النظام ام بشكل يدوي')->default(0);
             $table->bigInteger('employees_code');
             $table->decimal('day_price',10,2)->comment('اجر يوم الموظف');
-            $table->decimal('value',10,2)->comment('كم يوم اضافي');
-            $table->decimal('total',10,2)->comment('اجمالي الاضافي');
+            $table->foreignId('additional_types_id')->comment('نوع اضافي المكافئات')->references('id')->on('additional_types')->onUpdate('cascade');
+
+            $table->decimal('total',10,2)->comment('اجمالي المكافئات');
             $table->integer('is_archived')->comment('حالة الارشفة')->default(0);
             $table->foreignId('archived_by')->nullable()->references('id')->on('admins')->onUpdate('cascade');
             $table->dateTime('archived_at')->nullable();
@@ -37,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('main_salary_employee_addition');
+        Schema::dropIfExists('main_salary_employee_rewards');
     }
 };

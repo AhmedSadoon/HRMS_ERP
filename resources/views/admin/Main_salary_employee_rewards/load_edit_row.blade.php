@@ -34,19 +34,26 @@
             </div>
         </div>
 
+
         <div class="col-md-3 ">
             <div class="form-group">
-                <label>عدد ايام الاضافي</label>
-                <input type="text" name="value_edit" id="value_edit" class="form-control"
-                    oninput="this.value=this.value.replace(/[^0-9.]/g,'');" value="{{$data_row['value']*1}}">
+                <label>نوع المكافئة</label>
+                <select name="additional_types_edit" id="additional_types_edit" class="form-control">
+                    <option disabled selected value="">اختر النوع</option>
+                    @if (@isset($additional_types) && !@empty($additional_types))
+                    @foreach ($additional_types as $info)
+                        <option @if ($data_row['additional_types_id']==$info->id) selected @endif value="{{ $info->id }}"> {{ $info->name }}
+                            
+                        </option>
+                    @endforeach
+                @endif
+                </select>
             </div>
         </div>
 
-    
-
         <div class="col-md-3 ">
             <div class="form-group">
-                <label>اجمالي قيمة الاضافي</label>
+                <label>اجمالي قيمة المكافئة</label>
                 <input type="text" name="total_edit" id="total_edit" class="form-control" value="{{$data_row['total']*1}}">
             </div>
         </div>
@@ -62,7 +69,7 @@
             <div class="form-group text-left">
                 <button style="margin-top: 33px" id="do_edit_now" class="btn btn-sm btn-danger" type="submit" data-id="{{ $data_row['id'] }}"
                                             data-main_sal_id="{{ $data_row['main_salary_employee_id'] }}"
-                    name="submit">تعديل الاضافي</button>
+                    name="submit">تعديل المكافئة</button>
             </div>
         </div>
 

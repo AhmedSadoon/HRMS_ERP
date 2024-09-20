@@ -4,8 +4,8 @@
     <thead class="custom_thead">
 
         <th>اسم الموظف</th>
-        <th>عدد الايام</th>
-        <th>الاجمالي</th>
+        <th>نوع الاضافي</th>
+        <th>قيمة الاضافي</th>
         <th>تاريخ الاضافة</th>
         <th>تاريخ التحديث</th>
         <th>الحالة</th>
@@ -26,7 +26,7 @@
 
 
                 <td>
-                    {{ $info->value*1 }}
+                    {{ $info->additional_name }}
                 </td>
 
                 <td>

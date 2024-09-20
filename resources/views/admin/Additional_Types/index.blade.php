@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-انواع الاضافي
+انواع المكافئات
 @endsection
 
 @section('contentheader')
@@ -9,7 +9,7 @@
 @endsection
 
 @section('contentheaderactivelink')
-    <a href="{{ route('additionalTypes.index') }}">انواع الاضافي للراتب</a>
+    <a href="{{ route('additionalTypes.index') }}">انواع المكافئات للراتب</a>
 @endsection
 
 @section('contentheaderactive')
@@ -21,7 +21,7 @@
         <div class="card">
 
             <div class="card-header">
-                <h3 class="card-title card_title_center">بيانات انواع الاضافي للراتب
+                <h3 class="card-title card_title_center">بيانات انواع المكافئات المالية للراتب
                     <a class="btn btn-sm btn-warning" href="{{ route('additionalTypes.create') }}">اضافة جديد</a>
                 </h3>
             </div>

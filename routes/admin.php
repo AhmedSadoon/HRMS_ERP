@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\Main_salary_employee_AbsenceController;
 use App\Http\Controllers\Admin\Main_salary_employee_AdditionController;
 use App\Http\Controllers\Admin\Main_salary_employee_DiscountController;
+use App\Http\Controllers\Admin\Main_salary_employee_RewardsController;
 use App\Http\Controllers\Admin\Main_salary_employee_sanctionsController;
 use App\Http\Controllers\Admin\MainSalaryRecordController;
 use App\Http\Controllers\Admin\NationalitiesController;
@@ -260,6 +261,19 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
      
                  //----------------نهاية الخصومات الراتب---------------------
 
+
+      //----------------بداية مكافئات الراتب---------------------
+      Route::get('/MainSalaryRewards', [Main_salary_employee_RewardsController::class, 'index'])->name('MainSalaryRewards.index');
+      Route::get('/MainSalaryRewards/show/{id}', [Main_salary_employee_RewardsController::class, 'show'])->name('MainSalaryRewards.show');
+      Route::post('/MainSalaryRewards/checkExsistsBefor', [Main_salary_employee_RewardsController::class, 'checkExsistsBefor'])->name('MainSalaryRewards.checkExsistsBefor');
+      Route::post('/MainSalaryRewards/store', [Main_salary_employee_RewardsController::class, 'store'])->name('MainSalaryRewards.store');
+      Route::post('/MainSalaryRewards/ajaxSearch', [Main_salary_employee_RewardsController::class, 'ajax_search'])->name('MainSalaryRewards.ajaxSearch');
+      Route::post('/MainSalaryRewards/delete_row', [Main_salary_employee_RewardsController::class, 'delete_row'])->name('MainSalaryRewards.delete_row');
+      Route::post('/MainSalaryRewards/load_edit_row', [Main_salary_employee_RewardsController::class, 'load_edit_row'])->name('MainSalaryRewards.load_edit_row');
+      Route::post('/MainSalaryRewards/do_edit_row', [Main_salary_employee_RewardsController::class, 'do_edit_row'])->name('MainSalaryRewards.do_edit_row');
+      Route::post('/MainSalaryRewards/print_search', [Main_salary_employee_RewardsController::class, 'print_search'])->name('MainSalaryRewards.print_search');
+
+      //----------------نهاية مكافئات الراتب---------------------
 
 
 

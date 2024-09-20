@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-انواع الخصم
+انواع الخصومات
 @endsection
 
 @section('contentheader')
@@ -9,7 +9,7 @@
 @endsection
 
 @section('contentheaderactivelink')
-    <a href="{{ route('DiscountType.index') }}">انواع الخصم الراتب</a>
+    <a href="{{ route('DiscountType.index') }}">انواع الخصومات المالية</a>
 @endsection
 
 @section('contentheaderactive')
@@ -21,7 +21,7 @@
         <div class="card">
 
             <div class="card-header">
-                <h3 class="card-title card_title_center">بيانات انواع الخصم الراتب
+                <h3 class="card-title card_title_center">بيانات انواع الخصم المالي
                     <a class="btn btn-sm btn-warning" href="{{ route('DiscountType.create') }}">اضافة جديد</a>
                 </h3>
             </div>

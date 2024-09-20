@@ -144,7 +144,7 @@
                         <a href="{{ route('additionalTypes.index') }}"
                             class="nav-link {{ request()->is('admin/additionalTypes*') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>انواع الاضافي للراتب</p>
+                            <p>انواع المكفئات المالية</p>
                         </a>
                     </li>
 
@@ -152,7 +152,7 @@
                         <a href="{{ route('DiscountType.index') }}"
                             class="nav-link {{ request()->is('admin/DiscountType*') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>انواع خصم الراتب</p>
+                            <p>انواع الخصم المالي</p>
                         </a>
                     </li>
 
@@ -172,8 +172,8 @@
 
               {{-- بداية الرواتب --}}
 
-              <li class="nav-item has-treeview  {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')   ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')   ? 'active' : '' }} ">
+              <li class="nav-item has-treeview  {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')||request()->is('admin/MainSalaryRewards*')   ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')||request()->is('admin/MainSalaryRewards*')   ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     <p>
                         قائمة رواتب الموظفين
@@ -193,7 +193,7 @@
                         <a href="{{ route('MainSalarySanctions.index') }}"
                             class="nav-link {{ request()->is('admin/MainSalarySanctions*') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>الجزاءات</p>
+                            <p>جزاءات الايام</p>
                         </a>
                     </li>
 
@@ -201,7 +201,7 @@
                         <a href="{{ route('MainSalaryAbsence.index') }}"
                             class="nav-link {{ request()->is('admin/MainSalaryAbsence*') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>الغيابات</p>
+                            <p>غياب الايام</p>
                         </a>
                     </li>
 
@@ -209,7 +209,7 @@
                         <a href="{{ route('MainSalaryAddition.index') }}"
                             class="nav-link {{ request()->is('admin/MainSalaryAddition*') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>الاضافي</p>
+                            <p>اضافي الايام</p>
                         </a>
                     </li>
 
@@ -222,8 +222,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ route('MainSalaryRecord.index') }}"
-                            class="nav-link {{ request()->is('admin/MainSalaryRecord*') ? 'active' : '' }}">
+                        <a href="{{ route('MainSalaryRewards.index') }}"
+                            class="nav-link {{ request()->is('admin/MainSalaryRewards*') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>المكافئات المالية</p>
                         </a>
