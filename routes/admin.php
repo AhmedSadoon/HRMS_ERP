@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\Main_salary_employee_AdditionController;
 use App\Http\Controllers\Admin\Main_salary_employee_AllowancesController;
 use App\Http\Controllers\Admin\Main_salary_employee_DiscountController;
 use App\Http\Controllers\Admin\Main_salary_employee_LoansController;
+use App\Http\Controllers\Admin\Main_salary_employee_p_LoansController;
 use App\Http\Controllers\Admin\Main_salary_employee_RewardsController;
 use App\Http\Controllers\Admin\Main_salary_employee_sanctionsController;
 use App\Http\Controllers\Admin\MainSalaryRecordController;
@@ -191,119 +192,134 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
     Route::post('/DiscountType/update/{id}', [DiscountTypesController::class, 'update'])->name('DiscountType.update');
     //----------------نهاية الخصم على الراتب---------------------
 
-     //----------------بداية البدلات على الراتب---------------------
-     Route::get('/Allowances', [AllowanceController::class, 'index'])->name('Allowances.index');
-     Route::get('/Allowances/create', [AllowanceController::class, 'create'])->name('Allowances.create');
-     Route::post('/Allowances/store', [AllowanceController::class, 'store'])->name('Allowances.store');
-     Route::get('/Allowances/edit/{id}', [AllowanceController::class, 'edit'])->name('Allowances.edit');
-     Route::get('/Allowances/delete/{id}', [AllowanceController::class, 'destroy'])->name('Allowances.destroy');
-     Route::post('/Allowances/update/{id}', [AllowanceController::class, 'update'])->name('Allowances.update');
-     //----------------نهاية البدلات على الراتب---------------------
- 
-          //----------------بداية سجلات الراتب---------------------
-          Route::get('/MainSalaryRecord', [MainSalaryRecordController::class, 'index'])->name('MainSalaryRecord.index');
-          Route::post('/MainSalaryRecord/do_open_month/{id}', [MainSalaryRecordController::class, 'do_open_month'])->name('MainSalaryRecord.do_open_month');
-          Route::post('/MainSalaryRecord/store', [MainSalaryRecordController::class, 'store'])->name('MainSalaryRecord.store');
-          Route::get('/MainSalaryRecord/edit/{id}', [MainSalaryRecordController::class, 'edit'])->name('MainSalaryRecord.edit');
-          Route::get('/MainSalaryRecord/delete/{id}', [MainSalaryRecordController::class, 'destroy'])->name('MainSalaryRecord.destroy');
-          Route::post('/MainSalaryRecord/update/{id}', [MainSalaryRecordController::class, 'update'])->name('MainSalaryRecord.update');
-          Route::post('/MainSalaryRecord/load_open_month', [MainSalaryRecordController::class, 'load_open_month'])->name('MainSalaryRecord.load_open_month');
+    //----------------بداية البدلات على الراتب---------------------
+    Route::get('/Allowances', [AllowanceController::class, 'index'])->name('Allowances.index');
+    Route::get('/Allowances/create', [AllowanceController::class, 'create'])->name('Allowances.create');
+    Route::post('/Allowances/store', [AllowanceController::class, 'store'])->name('Allowances.store');
+    Route::get('/Allowances/edit/{id}', [AllowanceController::class, 'edit'])->name('Allowances.edit');
+    Route::get('/Allowances/delete/{id}', [AllowanceController::class, 'destroy'])->name('Allowances.destroy');
+    Route::post('/Allowances/update/{id}', [AllowanceController::class, 'update'])->name('Allowances.update');
+    //----------------نهاية البدلات على الراتب---------------------
 
-          //----------------نهاية سجلات الراتب---------------------
- 
-            //----------------بداية جزءات الراتب---------------------
-            Route::get('/MainSalarySanctions', [Main_salary_employee_sanctionsController::class, 'index'])->name('MainSalarySanctions.index');
-            Route::get('/MainSalarySanctions/show/{id}', [Main_salary_employee_sanctionsController::class, 'show'])->name('MainSalarySanctions.show');
-            Route::post('/MainSalarySanctions/checkExsistsBefor', [Main_salary_employee_sanctionsController::class, 'checkExsistsBefor'])->name('MainSalarySanctions.checkExsistsBefor');
-            Route::post('/MainSalarySanctions/store', [Main_salary_employee_sanctionsController::class, 'store'])->name('MainSalarySanctions.store');
-            Route::post('/MainSalarySanctions/ajaxSearch', [Main_salary_employee_sanctionsController::class, 'ajax_search'])->name('MainSalarySanctions.ajaxSearch');
-            Route::post('/MainSalarySanctions/delete_row', [Main_salary_employee_sanctionsController::class, 'delete_row'])->name('MainSalarySanctions.delete_row');
-            Route::post('/MainSalarySanctions/load_edit_row', [Main_salary_employee_sanctionsController::class, 'load_edit_row'])->name('MainSalarySanctions.load_edit_row');
-            Route::post('/MainSalarySanctions/do_edit_row', [Main_salary_employee_sanctionsController::class, 'do_edit_row'])->name('MainSalarySanctions.do_edit_row');
-            Route::post('/MainSalarySanctions/print_search', [Main_salary_employee_sanctionsController::class, 'print_search'])->name('MainSalarySanctions.print_search');
+    //----------------بداية سجلات الراتب---------------------
+    Route::get('/MainSalaryRecord', [MainSalaryRecordController::class, 'index'])->name('MainSalaryRecord.index');
+    Route::post('/MainSalaryRecord/do_open_month/{id}', [MainSalaryRecordController::class, 'do_open_month'])->name('MainSalaryRecord.do_open_month');
+    Route::post('/MainSalaryRecord/store', [MainSalaryRecordController::class, 'store'])->name('MainSalaryRecord.store');
+    Route::get('/MainSalaryRecord/edit/{id}', [MainSalaryRecordController::class, 'edit'])->name('MainSalaryRecord.edit');
+    Route::get('/MainSalaryRecord/delete/{id}', [MainSalaryRecordController::class, 'destroy'])->name('MainSalaryRecord.destroy');
+    Route::post('/MainSalaryRecord/update/{id}', [MainSalaryRecordController::class, 'update'])->name('MainSalaryRecord.update');
+    Route::post('/MainSalaryRecord/load_open_month', [MainSalaryRecordController::class, 'load_open_month'])->name('MainSalaryRecord.load_open_month');
 
-            //----------------نهاية جزءات الراتب---------------------
-          
-                    //----------------بداية الغيابات ---------------------
-                    Route::get('/MainSalaryAbsence', [Main_salary_employee_AbsenceController::class, 'index'])->name('MainSalaryAbsence.index');
-                    Route::get('/MainSalaryAbsence/show/{id}', [Main_salary_employee_AbsenceController::class, 'show'])->name('MainSalaryAbsence.show');
-                    Route::post('/MainSalaryAbsence/checkExsistsBefor', [Main_salary_employee_AbsenceController::class, 'checkExsistsBefor'])->name('MainSalaryAbsence.checkExsistsBefor');
-                    Route::post('/MainSalaryAbsence/store', [Main_salary_employee_AbsenceController::class, 'store'])->name('MainSalaryAbsence.store');
-                    Route::post('/MainSalaryAbsence/ajaxSearch', [Main_salary_employee_AbsenceController::class, 'ajax_search'])->name('MainSalaryAbsence.ajaxSearch');
-                    Route::post('/MainSalaryAbsence/delete_row', [Main_salary_employee_AbsenceController::class, 'delete_row'])->name('MainSalaryAbsence.delete_row');
-                    Route::post('/MainSalaryAbsence/load_edit_row', [Main_salary_employee_AbsenceController::class, 'load_edit_row'])->name('MainSalaryAbsence.load_edit_row');
-                    Route::post('/MainSalaryAbsence/do_edit_row', [Main_salary_employee_AbsenceController::class, 'do_edit_row'])->name('MainSalaryAbsence.do_edit_row');
-                    Route::post('/MainSalaryAbsence/print_search', [Main_salary_employee_AbsenceController::class, 'print_search'])->name('MainSalaryAbsence.print_search');
-        
-                    //----------------نهاية الغيابات---------------------
-                  
-                            //----------------بداية اضافي الراتب---------------------
-            Route::get('/MainSalaryAddition', [Main_salary_employee_AdditionController::class, 'index'])->name('MainSalaryAddition.index');
-            Route::get('/MainSalaryAddition/show/{id}', [Main_salary_employee_AdditionController::class, 'show'])->name('MainSalaryAddition.show');
-            Route::post('/MainSalaryAddition/checkExsistsBefor', [Main_salary_employee_AdditionController::class, 'checkExsistsBefor'])->name('MainSalaryAddition.checkExsistsBefor');
-            Route::post('/MainSalaryAddition/store', [Main_salary_employee_AdditionController::class, 'store'])->name('MainSalaryAddition.store');
-            Route::post('/MainSalaryAddition/ajaxSearch', [Main_salary_employee_AdditionController::class, 'ajax_search'])->name('MainSalaryAddition.ajaxSearch');
-            Route::post('/MainSalaryAddition/delete_row', [Main_salary_employee_AdditionController::class, 'delete_row'])->name('MainSalaryAddition.delete_row');
-            Route::post('/MainSalaryAddition/load_edit_row', [Main_salary_employee_AdditionController::class, 'load_edit_row'])->name('MainSalaryAddition.load_edit_row');
-            Route::post('/MainSalaryAddition/do_edit_row', [Main_salary_employee_AdditionController::class, 'do_edit_row'])->name('MainSalaryAddition.do_edit_row');
-            Route::post('/MainSalaryAddition/print_search', [Main_salary_employee_AdditionController::class, 'print_search'])->name('MainSalaryAddition.print_search');
+    //----------------نهاية سجلات الراتب---------------------
 
-            //----------------نهاية اضافي الراتب---------------------
+    //----------------بداية جزءات الراتب---------------------
+    Route::get('/MainSalarySanctions', [Main_salary_employee_sanctionsController::class, 'index'])->name('MainSalarySanctions.index');
+    Route::get('/MainSalarySanctions/show/{id}', [Main_salary_employee_sanctionsController::class, 'show'])->name('MainSalarySanctions.show');
+    Route::post('/MainSalarySanctions/checkExsistsBefor', [Main_salary_employee_sanctionsController::class, 'checkExsistsBefor'])->name('MainSalarySanctions.checkExsistsBefor');
+    Route::post('/MainSalarySanctions/store', [Main_salary_employee_sanctionsController::class, 'store'])->name('MainSalarySanctions.store');
+    Route::post('/MainSalarySanctions/ajaxSearch', [Main_salary_employee_sanctionsController::class, 'ajax_search'])->name('MainSalarySanctions.ajaxSearch');
+    Route::post('/MainSalarySanctions/delete_row', [Main_salary_employee_sanctionsController::class, 'delete_row'])->name('MainSalarySanctions.delete_row');
+    Route::post('/MainSalarySanctions/load_edit_row', [Main_salary_employee_sanctionsController::class, 'load_edit_row'])->name('MainSalarySanctions.load_edit_row');
+    Route::post('/MainSalarySanctions/do_edit_row', [Main_salary_employee_sanctionsController::class, 'do_edit_row'])->name('MainSalarySanctions.do_edit_row');
+    Route::post('/MainSalarySanctions/print_search', [Main_salary_employee_sanctionsController::class, 'print_search'])->name('MainSalarySanctions.print_search');
 
-                 //----------------بداية الخصومات الراتب---------------------
-                 Route::get('/MainSalaryDiscount', [Main_salary_employee_DiscountController::class, 'index'])->name('MainSalaryDiscount.index');
-                 Route::get('/MainSalaryDiscount/show/{id}', [Main_salary_employee_DiscountController::class, 'show'])->name('MainSalaryDiscount.show');
-                 Route::post('/MainSalaryDiscount/checkExsistsBefor', [Main_salary_employee_DiscountController::class, 'checkExsistsBefor'])->name('MainSalaryDiscount.checkExsistsBefor');
-                 Route::post('/MainSalaryDiscount/store', [Main_salary_employee_DiscountController::class, 'store'])->name('MainSalaryDiscount.store');
-                 Route::post('/MainSalaryDiscount/ajaxSearch', [Main_salary_employee_DiscountController::class, 'ajax_search'])->name('MainSalaryDiscount.ajaxSearch');
-                 Route::post('/MainSalaryDiscount/delete_row', [Main_salary_employee_DiscountController::class, 'delete_row'])->name('MainSalaryDiscount.delete_row');
-                 Route::post('/MainSalaryDiscount/load_edit_row', [Main_salary_employee_DiscountController::class, 'load_edit_row'])->name('MainSalaryDiscount.load_edit_row');
-                 Route::post('/MainSalaryDiscount/do_edit_row', [Main_salary_employee_DiscountController::class, 'do_edit_row'])->name('MainSalaryDiscount.do_edit_row');
-                 Route::post('/MainSalaryDiscount/print_search', [Main_salary_employee_DiscountController::class, 'print_search'])->name('MainSalaryDiscount.print_search');
-     
-                 //----------------نهاية الخصومات الراتب---------------------
+    //----------------نهاية جزءات الراتب---------------------
+
+    //----------------بداية الغيابات ---------------------
+    Route::get('/MainSalaryAbsence', [Main_salary_employee_AbsenceController::class, 'index'])->name('MainSalaryAbsence.index');
+    Route::get('/MainSalaryAbsence/show/{id}', [Main_salary_employee_AbsenceController::class, 'show'])->name('MainSalaryAbsence.show');
+    Route::post('/MainSalaryAbsence/checkExsistsBefor', [Main_salary_employee_AbsenceController::class, 'checkExsistsBefor'])->name('MainSalaryAbsence.checkExsistsBefor');
+    Route::post('/MainSalaryAbsence/store', [Main_salary_employee_AbsenceController::class, 'store'])->name('MainSalaryAbsence.store');
+    Route::post('/MainSalaryAbsence/ajaxSearch', [Main_salary_employee_AbsenceController::class, 'ajax_search'])->name('MainSalaryAbsence.ajaxSearch');
+    Route::post('/MainSalaryAbsence/delete_row', [Main_salary_employee_AbsenceController::class, 'delete_row'])->name('MainSalaryAbsence.delete_row');
+    Route::post('/MainSalaryAbsence/load_edit_row', [Main_salary_employee_AbsenceController::class, 'load_edit_row'])->name('MainSalaryAbsence.load_edit_row');
+    Route::post('/MainSalaryAbsence/do_edit_row', [Main_salary_employee_AbsenceController::class, 'do_edit_row'])->name('MainSalaryAbsence.do_edit_row');
+    Route::post('/MainSalaryAbsence/print_search', [Main_salary_employee_AbsenceController::class, 'print_search'])->name('MainSalaryAbsence.print_search');
+
+    //----------------نهاية الغيابات---------------------
+
+    //----------------بداية اضافي الراتب---------------------
+    Route::get('/MainSalaryAddition', [Main_salary_employee_AdditionController::class, 'index'])->name('MainSalaryAddition.index');
+    Route::get('/MainSalaryAddition/show/{id}', [Main_salary_employee_AdditionController::class, 'show'])->name('MainSalaryAddition.show');
+    Route::post('/MainSalaryAddition/checkExsistsBefor', [Main_salary_employee_AdditionController::class, 'checkExsistsBefor'])->name('MainSalaryAddition.checkExsistsBefor');
+    Route::post('/MainSalaryAddition/store', [Main_salary_employee_AdditionController::class, 'store'])->name('MainSalaryAddition.store');
+    Route::post('/MainSalaryAddition/ajaxSearch', [Main_salary_employee_AdditionController::class, 'ajax_search'])->name('MainSalaryAddition.ajaxSearch');
+    Route::post('/MainSalaryAddition/delete_row', [Main_salary_employee_AdditionController::class, 'delete_row'])->name('MainSalaryAddition.delete_row');
+    Route::post('/MainSalaryAddition/load_edit_row', [Main_salary_employee_AdditionController::class, 'load_edit_row'])->name('MainSalaryAddition.load_edit_row');
+    Route::post('/MainSalaryAddition/do_edit_row', [Main_salary_employee_AdditionController::class, 'do_edit_row'])->name('MainSalaryAddition.do_edit_row');
+    Route::post('/MainSalaryAddition/print_search', [Main_salary_employee_AdditionController::class, 'print_search'])->name('MainSalaryAddition.print_search');
+
+    //----------------نهاية اضافي الراتب---------------------
+
+    //----------------بداية الخصومات الراتب---------------------
+    Route::get('/MainSalaryDiscount', [Main_salary_employee_DiscountController::class, 'index'])->name('MainSalaryDiscount.index');
+    Route::get('/MainSalaryDiscount/show/{id}', [Main_salary_employee_DiscountController::class, 'show'])->name('MainSalaryDiscount.show');
+    Route::post('/MainSalaryDiscount/checkExsistsBefor', [Main_salary_employee_DiscountController::class, 'checkExsistsBefor'])->name('MainSalaryDiscount.checkExsistsBefor');
+    Route::post('/MainSalaryDiscount/store', [Main_salary_employee_DiscountController::class, 'store'])->name('MainSalaryDiscount.store');
+    Route::post('/MainSalaryDiscount/ajaxSearch', [Main_salary_employee_DiscountController::class, 'ajax_search'])->name('MainSalaryDiscount.ajaxSearch');
+    Route::post('/MainSalaryDiscount/delete_row', [Main_salary_employee_DiscountController::class, 'delete_row'])->name('MainSalaryDiscount.delete_row');
+    Route::post('/MainSalaryDiscount/load_edit_row', [Main_salary_employee_DiscountController::class, 'load_edit_row'])->name('MainSalaryDiscount.load_edit_row');
+    Route::post('/MainSalaryDiscount/do_edit_row', [Main_salary_employee_DiscountController::class, 'do_edit_row'])->name('MainSalaryDiscount.do_edit_row');
+    Route::post('/MainSalaryDiscount/print_search', [Main_salary_employee_DiscountController::class, 'print_search'])->name('MainSalaryDiscount.print_search');
+
+    //----------------نهاية الخصومات الراتب---------------------
 
 
-      //----------------بداية مكافئات الراتب---------------------
-      Route::get('/MainSalaryRewards', [Main_salary_employee_RewardsController::class, 'index'])->name('MainSalaryRewards.index');
-      Route::get('/MainSalaryRewards/show/{id}', [Main_salary_employee_RewardsController::class, 'show'])->name('MainSalaryRewards.show');
-      Route::post('/MainSalaryRewards/checkExsistsBefor', [Main_salary_employee_RewardsController::class, 'checkExsistsBefor'])->name('MainSalaryRewards.checkExsistsBefor');
-      Route::post('/MainSalaryRewards/store', [Main_salary_employee_RewardsController::class, 'store'])->name('MainSalaryRewards.store');
-      Route::post('/MainSalaryRewards/ajaxSearch', [Main_salary_employee_RewardsController::class, 'ajax_search'])->name('MainSalaryRewards.ajaxSearch');
-      Route::post('/MainSalaryRewards/delete_row', [Main_salary_employee_RewardsController::class, 'delete_row'])->name('MainSalaryRewards.delete_row');
-      Route::post('/MainSalaryRewards/load_edit_row', [Main_salary_employee_RewardsController::class, 'load_edit_row'])->name('MainSalaryRewards.load_edit_row');
-      Route::post('/MainSalaryRewards/do_edit_row', [Main_salary_employee_RewardsController::class, 'do_edit_row'])->name('MainSalaryRewards.do_edit_row');
-      Route::post('/MainSalaryRewards/print_search', [Main_salary_employee_RewardsController::class, 'print_search'])->name('MainSalaryRewards.print_search');
+    //----------------بداية مكافئات الراتب---------------------
+    Route::get('/MainSalaryRewards', [Main_salary_employee_RewardsController::class, 'index'])->name('MainSalaryRewards.index');
+    Route::get('/MainSalaryRewards/show/{id}', [Main_salary_employee_RewardsController::class, 'show'])->name('MainSalaryRewards.show');
+    Route::post('/MainSalaryRewards/checkExsistsBefor', [Main_salary_employee_RewardsController::class, 'checkExsistsBefor'])->name('MainSalaryRewards.checkExsistsBefor');
+    Route::post('/MainSalaryRewards/store', [Main_salary_employee_RewardsController::class, 'store'])->name('MainSalaryRewards.store');
+    Route::post('/MainSalaryRewards/ajaxSearch', [Main_salary_employee_RewardsController::class, 'ajax_search'])->name('MainSalaryRewards.ajaxSearch');
+    Route::post('/MainSalaryRewards/delete_row', [Main_salary_employee_RewardsController::class, 'delete_row'])->name('MainSalaryRewards.delete_row');
+    Route::post('/MainSalaryRewards/load_edit_row', [Main_salary_employee_RewardsController::class, 'load_edit_row'])->name('MainSalaryRewards.load_edit_row');
+    Route::post('/MainSalaryRewards/do_edit_row', [Main_salary_employee_RewardsController::class, 'do_edit_row'])->name('MainSalaryRewards.do_edit_row');
+    Route::post('/MainSalaryRewards/print_search', [Main_salary_employee_RewardsController::class, 'print_search'])->name('MainSalaryRewards.print_search');
 
-      //----------------نهاية مكافئات الراتب---------------------
+    //----------------نهاية مكافئات الراتب---------------------
 
-            //----------------بداية بدلات الراتب---------------------
-            Route::get('/MainSalaryAllowances', [Main_salary_employee_AllowancesController::class, 'index'])->name('MainSalaryAllowances.index');
-            Route::get('/MainSalaryAllowances/show/{id}', [Main_salary_employee_AllowancesController::class, 'show'])->name('MainSalaryAllowances.show');
-            Route::post('/MainSalaryAllowances/checkExsistsBefor', [Main_salary_employee_AllowancesController::class, 'checkExsistsBefor'])->name('MainSalaryAllowances.checkExsistsBefor');
-            Route::post('/MainSalaryAllowances/store', [Main_salary_employee_AllowancesController::class, 'store'])->name('MainSalaryAllowances.store');
-            Route::post('/MainSalaryAllowances/ajaxSearch', [Main_salary_employee_AllowancesController::class, 'ajax_search'])->name('MainSalaryAllowances.ajaxSearch');
-            Route::post('/MainSalaryAllowances/delete_row', [Main_salary_employee_AllowancesController::class, 'delete_row'])->name('MainSalaryAllowances.delete_row');
-            Route::post('/MainSalaryAllowances/load_edit_row', [Main_salary_employee_AllowancesController::class, 'load_edit_row'])->name('MainSalaryAllowances.load_edit_row');
-            Route::post('/MainSalaryAllowances/do_edit_row', [Main_salary_employee_AllowancesController::class, 'do_edit_row'])->name('MainSalaryAllowances.do_edit_row');
-            Route::post('/MainSalaryAllowances/print_search', [Main_salary_employee_AllowancesController::class, 'print_search'])->name('MainSalaryAllowances.print_search');
-      
-            //----------------نهاية بدلات الراتب---------------------
-      
+    //----------------بداية بدلات الراتب---------------------
+    Route::get('/MainSalaryAllowances', [Main_salary_employee_AllowancesController::class, 'index'])->name('MainSalaryAllowances.index');
+    Route::get('/MainSalaryAllowances/show/{id}', [Main_salary_employee_AllowancesController::class, 'show'])->name('MainSalaryAllowances.show');
+    Route::post('/MainSalaryAllowances/checkExsistsBefor', [Main_salary_employee_AllowancesController::class, 'checkExsistsBefor'])->name('MainSalaryAllowances.checkExsistsBefor');
+    Route::post('/MainSalaryAllowances/store', [Main_salary_employee_AllowancesController::class, 'store'])->name('MainSalaryAllowances.store');
+    Route::post('/MainSalaryAllowances/ajaxSearch', [Main_salary_employee_AllowancesController::class, 'ajax_search'])->name('MainSalaryAllowances.ajaxSearch');
+    Route::post('/MainSalaryAllowances/delete_row', [Main_salary_employee_AllowancesController::class, 'delete_row'])->name('MainSalaryAllowances.delete_row');
+    Route::post('/MainSalaryAllowances/load_edit_row', [Main_salary_employee_AllowancesController::class, 'load_edit_row'])->name('MainSalaryAllowances.load_edit_row');
+    Route::post('/MainSalaryAllowances/do_edit_row', [Main_salary_employee_AllowancesController::class, 'do_edit_row'])->name('MainSalaryAllowances.do_edit_row');
+    Route::post('/MainSalaryAllowances/print_search', [Main_salary_employee_AllowancesController::class, 'print_search'])->name('MainSalaryAllowances.print_search');
 
-                     //----------------بداية السلف الشهرية ---------------------
-                     Route::get('/MainSalaryLoans', [Main_salary_employee_LoansController::class, 'index'])->name('MainSalaryLoans.index');
-                     Route::get('/MainSalaryLoans/show/{id}', [Main_salary_employee_LoansController::class, 'show'])->name('MainSalaryLoans.show');
-                     Route::post('/MainSalaryLoans/checkExsistsBefor', [Main_salary_employee_LoansController::class, 'checkExsistsBefor'])->name('MainSalaryLoans.checkExsistsBefor');
-                     Route::post('/MainSalaryLoans/store', [Main_salary_employee_LoansController::class, 'store'])->name('MainSalaryLoans.store');
-                     Route::post('/MainSalaryLoans/ajaxSearch', [Main_salary_employee_LoansController::class, 'ajax_search'])->name('MainSalaryLoans.ajaxSearch');
-                     Route::post('/MainSalaryLoans/delete_row', [Main_salary_employee_LoansController::class, 'delete_row'])->name('MainSalaryLoans.delete_row');
-                     Route::post('/MainSalaryLoans/load_edit_row', [Main_salary_employee_LoansController::class, 'load_edit_row'])->name('MainSalaryLoans.load_edit_row');
-                     Route::post('/MainSalaryLoans/do_edit_row', [Main_salary_employee_LoansController::class, 'do_edit_row'])->name('MainSalaryLoans.do_edit_row');
-                     Route::post('/MainSalaryLoans/print_search', [Main_salary_employee_LoansController::class, 'print_search'])->name('MainSalaryLoans.print_search');
-               
-                     //----------------نهاية السلف الشهرية ---------------------
-               
+    //----------------نهاية بدلات الراتب---------------------
+
+
+    //----------------بداية السلف الشهرية ---------------------
+    Route::get('/MainSalaryLoans', [Main_salary_employee_LoansController::class, 'index'])->name('MainSalaryLoans.index');
+    Route::get('/MainSalaryLoans/show/{id}', [Main_salary_employee_LoansController::class, 'show'])->name('MainSalaryLoans.show');
+    Route::post('/MainSalaryLoans/checkExsistsBefor', [Main_salary_employee_LoansController::class, 'checkExsistsBefor'])->name('MainSalaryLoans.checkExsistsBefor');
+    Route::post('/MainSalaryLoans/store', [Main_salary_employee_LoansController::class, 'store'])->name('MainSalaryLoans.store');
+    Route::post('/MainSalaryLoans/ajaxSearch', [Main_salary_employee_LoansController::class, 'ajax_search'])->name('MainSalaryLoans.ajaxSearch');
+    Route::post('/MainSalaryLoans/delete_row', [Main_salary_employee_LoansController::class, 'delete_row'])->name('MainSalaryLoans.delete_row');
+    Route::post('/MainSalaryLoans/load_edit_row', [Main_salary_employee_LoansController::class, 'load_edit_row'])->name('MainSalaryLoans.load_edit_row');
+    Route::post('/MainSalaryLoans/do_edit_row', [Main_salary_employee_LoansController::class, 'do_edit_row'])->name('MainSalaryLoans.do_edit_row');
+    Route::post('/MainSalaryLoans/print_search', [Main_salary_employee_LoansController::class, 'print_search'])->name('MainSalaryLoans.print_search');
+
+    //----------------نهاية السلف الشهرية ---------------------
+
+
+    //----------------بداية السلف المستديمة ---------------------
+    Route::get('/MainSalary_p_Loans', [Main_salary_employee_p_LoansController::class, 'index'])->name('MainSalary_p_Loans.index');
+    Route::get('/MainSalary_p_Loans/show/{id}', [Main_salary_employee_p_LoansController::class, 'show'])->name('MainSalary_p_Loans.show');
+    Route::post('/MainSalary_p_Loans/checkExsistsBefor', [Main_salary_employee_p_LoansController::class, 'checkExsistsBefor'])->name('MainSalary_p_Loans.checkExsistsBefor');
+    Route::post('/MainSalary_p_Loans/store', [Main_salary_employee_p_LoansController::class, 'store'])->name('MainSalary_p_Loans.store');
+    Route::post('/MainSalary_p_Loans/ajaxSearch', [Main_salary_employee_p_LoansController::class, 'ajax_search'])->name('MainSalary_p_Loans.ajaxSearch');
+    Route::get('/MainSalary_p_Loans/delete_parent_loan/{id}', [Main_salary_employee_p_LoansController::class, 'delete_parent_loan'])->name('MainSalary_p_Loans.delete_parent_loan');
+    Route::post('/MainSalary_p_Loans/load_akast_details', [Main_salary_employee_p_LoansController::class, 'load_akast_details'])->name('MainSalary_p_Loans.load_akast_details');
+    Route::post('/MainSalary_p_Loans/load_edit_row', [Main_salary_employee_p_LoansController::class, 'load_edit_row'])->name('MainSalary_p_Loans.load_edit_row');
+    Route::post('/MainSalary_p_Loans/do_edit_row', [Main_salary_employee_p_LoansController::class, 'do_edit_row'])->name('MainSalary_p_Loans.do_edit_row');
+    Route::post('/MainSalary_p_Loans/print_search', [Main_salary_employee_p_LoansController::class, 'print_search'])->name('MainSalary_p_Loans.print_search');
+    Route::get('/MainSalary_p_Loans/do_is_dismissail_done_now/{id}', [Main_salary_employee_p_LoansController::class, 'do_is_dismissail_done_now'])->name('MainSalary_p_Loans.do_is_dismissail_done_now');
+
+    //----------------نهاية السلف المستديمة ---------------------
 
 
 
