@@ -7,10 +7,13 @@ use App\Models\Employee;
 use App\Models\Finance_calender;
 use App\Models\Finance_cin_periods;
 use App\Models\Main_salary_employee;
+use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MainSalaryRecordController extends Controller
 {
+    use GeneralTrait;
     public function index()
     {
         $com_code = auth()->user()->com_code;
@@ -31,6 +34,7 @@ class MainSalaryRecordController extends Controller
 
     public function do_open_month(Request $request, $id) {
 
+        try{
         $com_code = auth()->user()->com_code;
         $data=get_cols_where_row(new Finance_cin_periods(),array("*"),array('com_code'=>$com_code,'id'=>$id));
 
@@ -71,6 +75,7 @@ class MainSalaryRecordController extends Controller
 
         }
 
+        DB::beginTransaction();
         $dataToUpdate=[
             'start_date_for_pasma'=>$request->start_date_for_pasma,
             'end_date_for_pasma'=>$request->end_date_for_pasma,
@@ -103,8 +108,13 @@ class MainSalaryRecordController extends Controller
                                 $DataSalaryToInsert['function_status']=$info->function_status;
                                 $DataSalaryToInsert['emp_department_id']=$info->emp_department_id;
                                 $DataSalaryToInsert['emp_jobs_id']=$info->emp_jobs_id;
-                                //يعاد شرح رصيد الشهر السابق
-                                $DataSalaryToInsert['last_salary_remain_balance']=0;
+                                $lastSalaryData=get_cols_where_row_orderby(new Main_salary_employee(),array('final_the_net_after_close_for_trahil'),array('com_code'=>$com_code,'employees_code'=>$info->employees_code,'is_archived'=>1),'id','DESC');
+                                if(!empty($lastSalaryData)){
+                                    $DataSalaryToInsert['last_salary_remain_balance']= $lastSalaryData['final_the_net_after_close_for_trahil'];
+                                }else{
+                                    $DataSalaryToInsert['last_salary_remain_balance']=0;
+                                }
+                                
                                 $DataSalaryToInsert['emp_sal']=$info->emp_sal;
                                 $DataSalaryToInsert['year_and_month']=$data->year_and_month;
                                 $DataSalaryToInsert['finance_yr']=$data->finance_yr;
@@ -113,16 +123,21 @@ class MainSalaryRecordController extends Controller
                         
                         
 
-                        insert(new Main_salary_employee(),$DataSalaryToInsert);
-
+                        $flagInsert=insert(new Main_salary_employee(),$DataSalaryToInsert,true);
+                            if(!empty($flagInsert)){
+                                $this->Recalculate_main_salary_employee($flagInsert['id']);
+                            }    
                         }
                 }
             }
         }
         
-        
+        DB::commit();
         return redirect()->route('MainSalaryRecord.index')->with('success','تم فتح الشهر المالي');
-
+    } catch (\Exception $ex) {
+        DB::rollBack();
+        return redirect()->route('MainSalaryRecord.index')->with('error', 'عفواً حدث خطأ');
+    }
     }
 
     public function load_open_month(Request $request){

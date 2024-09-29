@@ -9,13 +9,16 @@ use App\Models\Finance_calender;
 use App\Models\Finance_cin_periods;
 use App\Models\Main_salary_employee;
 use App\Models\Main_salary_employee_loans;
+use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class Main_salary_employee_LoansController extends Controller
 {
+    use GeneralTrait;
     public function index()
     {
+        
         $com_code = auth()->user()->com_code;
         $Finance_cin_periods = get_cols_where_paginate_order2(new Finance_cin_periods(), array('*'), array('com_code' => $com_code), 'finance_yr', 'DESC','month_id','ASC', 12);
         
@@ -97,7 +100,10 @@ class Main_salary_employee_LoansController extends Controller
                 ];
 
                 
-            insert(new Main_salary_employee_loans(),$dataToInsert);
+            $flag=insert(new Main_salary_employee_loans(),$dataToInsert);
+            if(!empty($flag)){
+                $this->Recalculate_main_salary_employee($main_salary_employee_data['id']);
+            } 
             DB::commit();
 
             return json_encode("done");
@@ -159,8 +165,10 @@ class Main_salary_employee_LoansController extends Controller
             $data_row=get_cols_where_row(new Main_salary_employee_loans(),array("id"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
             if(!empty($finance_cin_periods_data) and !empty($data_row) and !empty($main_salary_employee_data)){
 
-                destroy(new Main_salary_employee_loans(),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
-            
+                $flag=destroy(new Main_salary_employee_loans(),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+                if(!empty($flag)){
+                    $this->Recalculate_main_salary_employee($request->main_salary_employee_id);
+                } 
                return json_encode("done");
             }
         
@@ -195,7 +203,7 @@ class Main_salary_employee_LoansController extends Controller
 
         if($request->ajax()){
             $finance_cin_periods_data=get_cols_where_row(new Finance_cin_periods(),array("*"),array('com_code'=>$com_code,'id'=>$request->the_finance_cin_periods_id,'is_open'=>1));
-            $main_salary_employee_data=get_cols_where_row(new Main_salary_employee(),array("id"),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'employees_code'=>$request->employees_code,'is_archived'=>0));
+            $main_salary_employee_data=get_cols_where_row(new Main_salary_employee(),array("id"),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'id'=>$request->main_salary_employee_id,'employees_code'=>$request->employees_code,'is_archived'=>0));
             $data_row=get_cols_where_row(new Main_salary_employee_loans(),array("*"),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
 
             if(!empty($finance_cin_periods_data) && !empty($main_salary_employee_data) && !empty($data_row)){
@@ -213,7 +221,10 @@ class Main_salary_employee_LoansController extends Controller
                 ];
 
                 
-            update(new Main_salary_employee_loans(),$dataToUdate,array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+            $flag=update(new Main_salary_employee_loans(),$dataToUdate,array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->the_finance_cin_periods_id,'main_salary_employee_id'=>$request->main_salary_employee_id));
+            if(!empty($flag)){
+                $this->Recalculate_main_salary_employee($request->main_salary_employee_id);
+            } 
             DB::commit();
 
             return json_encode("done");

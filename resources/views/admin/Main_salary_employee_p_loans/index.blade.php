@@ -469,11 +469,11 @@
                     return false;
                 }
 
-                if (year_and_month_start_date_add < the_today_date) {
-                    alert("من فضلك اختار تاريخ سداد يكون مساوي او اكبر من تاريخ اليوم");
-                    $("#year_and_month_start_date_add").focus();
-                    return false;
-                }
+                // if (year_and_month_start_date_add < the_today_date) {
+                //     alert("من فضلك اختار تاريخ سداد يكون مساوي او اكبر من تاريخ اليوم");
+                //     $("#year_and_month_start_date_add").focus();
+                //     return false;
+                // }
 
                 var notes_add = $("#notes_add").val();
                 var day_price_add = $("#day_price_add").val();

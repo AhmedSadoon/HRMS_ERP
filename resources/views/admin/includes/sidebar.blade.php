@@ -206,6 +206,30 @@
                     </li>
 
                     <li class="nav-item">
+                        <a href="{{ route('MainSalaryDiscount.index') }}"
+                            class="nav-link {{ request()->is('admin/MainSalaryDiscount*') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>الخصومات المالية</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('MainSalaryLoans.index') }}"
+                            class="nav-link {{ request()->is('admin/MainSalaryLoans*') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>السلف الشهرية</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('MainSalary_p_Loans.index') }}"
+                            class="nav-link {{ request()->is('admin/MainSalary_p_Loans*') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>السلف المستديمة</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a href="{{ route('MainSalaryAddition.index') }}"
                             class="nav-link {{ request()->is('admin/MainSalaryAddition*') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
@@ -213,13 +237,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a href="{{ route('MainSalaryDiscount.index') }}"
-                            class="nav-link {{ request()->is('admin/MainSalaryDiscount*') ? 'active' : '' }}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>الخصومات المالية</p>
-                        </a>
-                    </li>
+                    
 
                     <li class="nav-item">
                         <a href="{{ route('MainSalaryRewards.index') }}"
@@ -239,21 +257,7 @@
 
                 
 
-                    <li class="nav-item">
-                        <a href="{{ route('MainSalaryLoans.index') }}"
-                            class="nav-link {{ request()->is('admin/MainSalaryLoans*') ? 'active' : '' }}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>السلف الشهرية</p>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="{{ route('MainSalary_p_Loans.index') }}"
-                            class="nav-link {{ request()->is('admin/MainSalary_p_Loans*') ? 'active' : '' }}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>السلف المستديمة</p>
-                        </a>
-                    </li>
+      
 
                     <li class="nav-item">
                         <a href="{{ route('MainSalaryRecord.index') }}"

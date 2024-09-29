@@ -45,6 +45,10 @@
                     @else
                         لا
                     @endif
+
+                    @if ($info->is_dismissail_done == 0 && $info->is_archived == 0)
+                        <a href="{{route('MainSalary_p_Loans.do_is_dismissail_done_now',$info->id)}}" class="btn btn-sm btn-primary are_you_shur">صرف الان</a>
+                    @endif
                 </td>
 
                 <td>
@@ -63,9 +67,9 @@
                         <a href="{{ route('MainSalary_p_Loans.delete_parent_loan', $info->id) }}"
                             class="btn btn-sm btn-danger are_you_shur">حذف</a>
 
-                        <button data-id="{{ $info->id }}"
-                            class="btn btn-sm btn-dark load_akast_details">الاقساط</button>
+                        
                     @endif
+                    <button data-id="{{ $info->id }}" class="btn btn-sm btn-dark load_akast_details">الاقساط</button>
                 </td>
 
             </tr>

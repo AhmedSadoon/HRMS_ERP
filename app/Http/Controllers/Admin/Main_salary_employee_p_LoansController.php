@@ -6,15 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\admin_panel_setting;
 use App\Models\Employee;
-use App\Models\Finance_calender;
-use App\Models\Finance_cin_periods;
-use App\Models\Main_salary_employee;
 use App\Models\Main_salary_employee_p_loans;
 use App\Models\Main_salary_employee_p_loans_aksat;
 use Illuminate\Support\Facades\DB;
 
 class Main_salary_employee_p_LoansController extends Controller
 {
+    
     public function index()
     {
         $com_code = auth()->user()->com_code;
@@ -356,7 +354,10 @@ class Main_salary_employee_p_LoansController extends Controller
               
             ];
             $flagParent = update(new Main_salary_employee_p_loans(), $dataToUpdate, array('com_code' => $com_code, 'id' => $id, 'is_archived' => 0, 'is_dismissail_done' => 0));
-
+            if($flagParent){
+                $dataToUpdateAksat['is_parent_dismissail_done']=1;
+                update(new Main_salary_employee_p_loans_aksat(),$dataToUpdateAksat,array('com_code'=>$com_code,'main_salary_p_loans_id'=>$id));
+            }
             DB::commit();
             return redirect()->route('MainSalary_p_Loans.index')->with('success', 'تم صرف السلفة بنجاح');
         } catch (\Exception $ex) {
