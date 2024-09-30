@@ -1013,6 +1013,24 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
+                                                <label>هل له بدلات ثابته</label>
+                                                <select name="does_have_fixed_allowances" id="does_have_fixed_allowances"
+                                                    class="form-control">
+                                                    <option value="">اختر الحالة</option>
+                                                    <option @if (old('does_have_fixed_allowances') == 1) selected @endif
+                                                        value="1">نعم</option>
+                                                    <option @if (old('does_have_fixed_allowances') == 0 and old('does_have_fixed_allowances') != '') selected @endif
+                                                        value="0">لا</option>
+
+                                                </select>
+                                                @error('does_have_fixed_allowances')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
                                                 <label>هل له رصيد اجازات سنوي</label>
                                                 <select name="is_active_for_vaccation" id="is_active_for_vaccation"
                                                     class="form-control">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeRequest;
 use App\Http\Requests\EmployeeUpdateRequest;
+use App\Models\Allowance;
 use App\Models\Blood_Group;
 use App\Models\Branche;
 use App\Models\Centers;
@@ -13,6 +14,7 @@ use App\Models\Department;
 use App\Models\driving_license_type;
 use App\Models\Employee;
 use App\Models\Employee_file;
+use App\Models\employee_fixed_suits;
 use App\Models\Governorate;
 use App\Models\jobs_category;
 use App\Models\Language;
@@ -256,6 +258,11 @@ class EmployeesController extends Controller
         $other['languages'] = get_cols_where(new Language(), array("id", "name"), array('com_code' => $com_code, 'id' => $data['emp_lang_id']), 'id', 'ASC');
         $other['employees_files'] = get_cols_where(new Employee_file(), array("*"), array('com_code' => $com_code, 'employee_id' => $id));
 
+        if($data['does_have_fixed_allowances']==1){
+            $other['employee_fixed_suits'] = get_cols_where(new employee_fixed_suits(), array("*"), array('com_code' => $com_code, 'employee_id' => $id));
+            $other['allowances'] = get_cols_where(new Allowance(), array("id","name"), array('com_code' => $com_code, "active"=>1),'id','ASC');
+
+        }
 
 
         return view('admin.Employees.show', ['data' => $data, 'other' => $other]);
@@ -419,7 +426,13 @@ class EmployeesController extends Controller
                 }
             }
 
-            update(new Employee(), $dataToUpdate, array('com_code' => $com_code, 'id' => $id));
+            $flag=update(new Employee(), $dataToUpdate, array('com_code' => $com_code, 'id' => $id));
+            if($flag){
+                if($dataToUpdate['does_have_fixed_allowances']==0){
+                    //يتم حذف البدلات الثابتة وتحديث الراتب الحالي المفتوح 
+                    
+                }
+            }
             DB::commit();
             return redirect()->route('Employees.index')->with('success', 'تم تحديث البيانات بنجاح');
         } catch (\Exception $ex) {
@@ -592,7 +605,7 @@ class EmployeesController extends Controller
                 ->orderBy('id', 'DESC')
                 ->paginate(PAGINATION_COUNTER);
 
-            return view('admin.Employees.ajax_search', compact('data'));
+            return view( 'admin.Employees.ajax_search', compact('data'));
         }
     }
 
@@ -680,5 +693,105 @@ class EmployeesController extends Controller
 
         $file_path = "assets/admin/uploads/" . $data['file_path'];
         return response()->download($file_path);
+    }
+    
+    public function add_allowances(Request $request, $id)
+    {
+        try {
+            $com_code = auth()->user()->com_code;
+            $data = get_cols_where_row(new Employee(), array("id"), array('com_code' => $com_code, 'id' => $id));
+            if (empty($data)) {
+                return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة')->withInput();
+            }
+
+            $checkExsits =employee_fixed_suits::select('id')->where('com_code', $com_code)->where('allowance_id', $request->allowance_id)->where('employee_id', $id)->first();
+            if (!empty($checkExsits)) {
+                return redirect()->back()->with(['error' => 'عفواً هذا البدل مسجل مسبقاً']);
+            }
+
+
+            DB::beginTransaction();
+
+            $dataToInsert = [
+                'employee_id' => $request->id,
+                'allowance_id' => $request->allowance_id,
+                'value' => $request->allowances_value,
+                'added_by' => auth()->user()->id,
+                'com_code' => $com_code
+
+            ];
+
+
+            insert(new employee_fixed_suits(), $dataToInsert);
+            DB::commit();
+            return redirect()->back()->with(['success' => 'تم اضافة البيانات بنجاح']);
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return redirect()->back()->with(['error' => 'عفواً حدث خطأ' . $ex->getMessage()]);
+        }
+    }
+
+    public function destroy_allowances($id)
+    {
+        try {
+            $com_code = auth()->user()->com_code;
+            $data = get_cols_where_row(new employee_fixed_suits(), array("id"), array('com_code' => $com_code, 'id' => $id));
+            if (empty($data)) {
+                return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة')->withInput();
+            }
+
+            DB::beginTransaction();
+
+            $flag=destroy(new employee_fixed_suits(), array('com_code' => $com_code, 'id' => $id));
+            if($flag){
+                //يتم اعادة احتساب صافي الراتب
+
+            }
+            DB::commit();
+            return redirect()->back()->with('success' , 'تم حذف البيانات بنجاح');
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return redirect()->back()->with(['error' => 'عفواً حدث خطأ' . $ex->getMessage()])->withInput();
+        }
+    }
+
+    public function load_edit_allowances(Request $request){
+        $com_code = auth()->user()->com_code;
+
+        if($request->ajax()){
+            $data = get_cols_where_row(new employee_fixed_suits(), array("*"), array('com_code' => $com_code, 'id' => $request->id));
+            
+            return view( 'admin.Employees.load_edit_allowances', compact('data'));
+
+        }
+
+    }
+
+    public function do_edit_allowances($id,Request $request)
+    {
+        try {
+            $com_code = auth()->user()->com_code;
+            $data = get_cols_where_row(new employee_fixed_suits(), array("id"), array('com_code' => $com_code, 'id' => $id));
+            if (empty($data)) {
+                return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة')->withInput();
+            }
+
+            $dataToUpdate=[
+                'value'=>$request->allowances_value_edit,
+                'updated_by'=>auth()->user()->id,
+            ];
+            DB::beginTransaction();
+
+            $flag=update(new employee_fixed_suits(), $dataToUpdate,array('com_code' => $com_code, 'id' => $id));
+            if($flag){
+                //يتم اعادة احتساب صافي الراتب
+
+            }
+            DB::commit();
+            return redirect()->back()->with('success' , 'تم تعديل البيانات بنجاح');
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return redirect()->back()->with(['error' => 'عفواً حدث خطأ' . $ex->getMessage()])->withInput();
+        }
     }
 }

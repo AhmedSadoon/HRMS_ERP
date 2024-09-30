@@ -169,6 +169,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
     Route::post('/Employees/add_files/{id}', [EmployeesController::class, 'add_files'])->name('Employees.add_files');
     Route::get('/Employees/download_files/{id}', [EmployeesController::class, 'download_files'])->name('Employees.download_files');
     Route::get('/Employees/destroy_file/{id}', [EmployeesController::class, 'destroy_file'])->name('Employees.destroy_file');
+    Route::post('/Employees/add_allowances/{id}', [EmployeesController::class, 'add_allowances'])->name('Employees.add_allowances');
+    Route::get('/Employees/destroy_allowances/{id}', [EmployeesController::class, 'destroy_allowances'])->name('Employees.destroy_allowances');
+    Route::post('/Employees/load_edit_allowances', [EmployeesController::class, 'load_edit_allowances'])->name('Employees.load_edit_allowances');
+    Route::post('/Employees/do_edit_allowances/{id}', [EmployeesController::class, 'do_edit_allowances'])->name('Employees.do_edit_allowances');
 
 
     //----------------نهاية شؤون الموظفين---------------------

@@ -74,7 +74,7 @@ class EmployeeUpdateRequest extends FormRequest
             'is_medical_nsurance'=>'required',
             'medical_nsurance_cutMonthely'=>'required_if:is_medical_nsurance,1',
             'medical_nsurance_number'=>'required_if:is_medical_nsurance,1',
-     
+            'does_have_fixed_allowances'=>'required',
             
         ];
     }
@@ -133,7 +133,8 @@ class EmployeeUpdateRequest extends FormRequest
             'is_medical_nsurance.required'=>'هذا الحقل مطلوب',
             'medical_nsurance_cutMonthely.required_if'=>'هذا الحقل مطلوب',
             'medical_nsurance_number.required_if'=>'هذا الحقل مطلوب',
-          
+            'does_have_fixed_allowances.required'=>'هذا الحقل مطلوب',
+            
          
             
         ];

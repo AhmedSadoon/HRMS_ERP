@@ -889,6 +889,8 @@
                                         </div>
                                     </div>
 
+
+
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>نوع صرف راتب الموظف </label>
@@ -934,8 +936,85 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>هل له بدلات ثابتة </label>
+                                            <select disabled name="does_have_fixed_allowances"
+                                                id="does_have_fixed_allowances" class="form-control">
+                                                <option value="">اختر الحالة</option>
+                                                <option @if ($data['does_have_fixed_allowances'] == 1) selected @endif value="1">
+                                                    نعم</option>
+                                                <option @if ($data['does_have_fixed_allowances'] == 0 and $data['does_have_fixed_allowances'] != '') selected @endif value="0">
+                                                    لا</option>
+
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    @if ($data['does_have_fixed_allowances'] == 1)
+                                        <div class="col-md-12">
+                                            <hr>
+                                            <h3
+                                                style="width: 100%; font-size:17px; font-weight: bold; text-align:center; !important;">
+                                                البدلات الثابتة المضافة للموظف
+
+                                            </h3>
+
+                                            <button style="margin: 4px" id="load_add_allowances_modal"
+                                                data-toggle="modal" data-target="#add_allowances_modal"
+                                                class="btn btn-sm btn-success">اضافة بدل للموظف<i
+                                                    class="fa fa-arrow-up"></i></button>
+
+                                            {{-- جدول عرض المرفقات --}}
+                                            @if (
+                                                @isset($other['employee_fixed_suits']) and
+                                                    !@empty($other['employee_fixed_suits']) and
+                                                    count($other['employee_fixed_suits']) > 0)
+                                                <table id="example2" class="table table-bordered table-hover">
+
+                                                    <thead class="custom_thead">
+                                                        <th>اسم البدل</th>
+                                                        <th>قيمة البدل</th>
+                                                        <th>تاريخ الاضافة</th>
+                                                        <th>تاريخ التحديث</th>
+                                                        <th>العمليات</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($other['employee_fixed_suits'] as $info)
+                                                            <tr>
+                                                                <td>{{$info->allowances->name}} </td>
+                                                                <td> {{$info->value*1}}</td>
+                                                                
+                                                                <td>{{$info->added->name}}</td>
+
+                                                                <td>
+                                                                    @if ($info->updatedBy > '0')
+                                                                    {{$info->updatedBy->name}}
+                                                                    @else
+                                                                    لايوجد
+                                                                    @endif
+                                                                </td>
 
 
+                                                                <td>
+                                                                    <a class="btn btn-sm btn-danger are_you_shur"
+                                                                        href="{{ route('Employees.destroy_allowances', $info->id) }}">حذف</a>
+                                                                    <button data-id="{{$info->id}}" class="btn btn-sm btn-success load_edit_allowances">تعديل </button>
+
+
+                                                                </td>
+
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            @else
+                                                <p class="bg-danger text-center">عفواً لا توجد بيانات لعرضها</p>
+                                            @endif
+                                            {{-- نهاية الجدول --}}
+
+                                        </div>
+                                    @endif
 
                                 </div>
                                 {{-- نهاية الصف --}}
@@ -1124,7 +1203,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content bg-info">
                 <div class="modal-header">
-                    <h4 class="modal-title">اضافة مرفقات للموظف</h4>
+                    <h4 class="modal-title">اضافة بدلات الثابتة للموظف</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span></button>
                 </div>
@@ -1173,4 +1252,152 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
+    @if ($data['does_have_fixed_allowances'] == 1)
+        <div class="modal fade" id="add_allowances_modal">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content bg-info">
+                    <div class="modal-header">
+                        <h4 class="modal-title">اضافة بدلات ثابتة للموظف</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body custom_body_modal">
+                        <form action="{{ route('Employees.add_allowances', $data['id']) }}" method="POST">
+                            @csrf
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>بيانات البدلات <span style="color: red">*</span></label>
+                                            <select name="allowance_id" id="allowance_id" class="form-control select2">
+
+                                                <option value="">اختر البدل</option>
+                                                @if (@isset($other['allowances']) && !@empty($other['allowances']))
+                                                    @foreach ($other['allowances'] as $info)
+                                                        <option value="{{ $info->id }}">{{ $info->name }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>قيمة البدل</label>
+                                        <input autofocus type="text" name="allowances_value" id="allowances_value"
+                                            oninput="this.value=this.value.replace(/[^0-9.]/g,'');" class="form-control"
+                                            value="" required
+                                            oninvalid="setCustomValidity('من فضلك ادخل هذا الحقل')"
+                                            onchange="try{setCustomValidity('')}catch(e){}">
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group text-center">
+                                        <button id="do_add_allowances" style="margin-top: 33px" class="btn btn-sm btn-success" type="submit"
+                                            name="submit">اضف البدل الثابت</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">الغاء</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+          {{-- مودل التعديل --}}
+
+    <div class="modal fade" id="FixedSuitModalUpdate">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content bg-info">
+                <div class="modal-header">
+                    <h4 class="modal-title">تعديل بدلات ثابتة للموظف</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="FixedSuitModalUpdateBady" style="background-color: white; color: black;">
+
+
+                </div>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    @endif
+@endsection
+
+@section('script')
+    <script src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/admin/js/employees.js') }}"></script> --}}
+    <script>
+        $(".select2").select2({
+            theme: 'bootstrap4'
+        });
+
+
+        $(document).on('click', '#do_add_allowances', function(e) {
+           var allowance_id=$('#allowance_id').val();
+           if(allowance_id==""){
+            alert("من فضلك اختر البدل الثابت");
+            $("#allowance_id").focus();
+            return false;
+           }
+
+           var allowances_value=$('#allowances_value').val();
+           if(allowances_value==""|| allowances_value==0){
+            alert("من فضلك ادخل قيمة البدل الثابت");
+            $("#allowances_value").focus();
+            return false;
+           }
+
+        });
+
+        $(document).on('click', '.load_edit_allowances', function(e) {
+            var id = $(this).data('id');
+            jQuery.ajax({
+                url: '{{ route('Employees.load_edit_allowances') }}',
+                type: 'post',
+                dataType: 'html',
+                cache: false,
+                data: {
+                    "_token": '{{ csrf_token() }}',
+                    id: id
+                   
+                },
+
+                success: function(data) {
+                    $("#FixedSuitModalUpdateBady").html(data);
+                    $("#FixedSuitModalUpdate").modal("show");
+                    $('.select2').select2();
+                },
+                error: function() {
+                    alert("عفواً حدث خطأ")
+                }
+
+            });
+        });
+        $(document).on('click', '#do_allowances_value_edit', function(e) {
+            
+          var  allowances_value_edit=$("#allowances_value_edit").val();
+          if(allowances_value_edit==""||allowances_value_edit==0){
+            alert("من فضلك ادخل قيمة البدل الثابت");
+            e.preventDefault();
+            $("#allowances_value_edit").focus();
+            return false;
+          }
+        });
+    </script>
+    
 @endsection
