@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Employee;
+use App\Models\employee_fixed_suits;
 use App\Models\Finance_cin_periods;
 use App\Models\Main_salary_employee;
 use App\Models\Main_salary_employee_Absence;
@@ -23,7 +24,7 @@ trait GeneralTrait
         $main_salary_employee_data = get_cols_where_row(new Main_salary_employee(), array("*"), array('com_code' => $com_code, "id" => $main_salary_employee_id, 'is_archived' => 0));
 
         if (!empty($main_salary_employee_data)) {
-            $employee_data = get_cols_where_row(new Employee(), array('motivation', 'social_nsurance_cutMonthely', 'medical_nsurance_cutMonthely', 'emp_salary', 'day_price'), array("com_code" => $com_code, 'employees_code' => $main_salary_employee_data['employees_code']));
+            $employee_data = get_cols_where_row(new Employee(), array('motivation', 'social_nsurance_cutMonthely', 'medical_nsurance_cutMonthely', 'emp_salary', 'day_price','id'), array("com_code" => $com_code, 'employees_code' => $main_salary_employee_data['employees_code']));
             $finance_cin_periods_data = get_cols_where_row(new Finance_cin_periods(), array('year_and_month'), array("com_code" => $com_code,'is_open'=>1, 'id' => $main_salary_employee_data['finance_cin_periods_id']));
 
             if (!empty($employee_data) && !empty($finance_cin_periods_data)) {
@@ -33,7 +34,7 @@ trait GeneralTrait
                     $dataToUpdate['day_price'] = $employee_data['day_price'];
                     $dataToUpdate['emp_sal'] = $employee_data['emp_salary'];
                     $dataToUpdate['motivation'] = $employee_data['motivation'];
-                    $dataToUpdate['fixed_suits'] = 0;
+                    $dataToUpdate['fixed_suits'] = get_sum_where(new employee_fixed_suits(), "value", array('com_code' => $com_code, "employee_id" => $employee_data['id']));;
                      //البدلات المتغيرة
                      $dataToUpdate['changable_suits'] = get_sum_where(new Main_salary_employee_allowances(), "total", array('com_code' => $com_code, "main_salary_employee_id" => $main_salary_employee_id));
                       //المكافئات المالية

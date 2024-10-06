@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\Main_salary_employee_LoansController;
 use App\Http\Controllers\Admin\Main_salary_employee_p_LoansController;
 use App\Http\Controllers\Admin\Main_salary_employee_RewardsController;
 use App\Http\Controllers\Admin\Main_salary_employee_sanctionsController;
+use App\Http\Controllers\Admin\Main_salary_employeeController;
 use App\Http\Controllers\Admin\MainSalaryRecordController;
 use App\Http\Controllers\Admin\NationalitiesController;
 use App\Http\Controllers\Admin\OccasionController;
@@ -325,6 +326,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
 
     //----------------نهاية السلف المستديمة ---------------------
 
+   //---------------- بداية الرواتب النهائية مفصلة---------------------
+   Route::get('/MainSalaryEmployee', [Main_salary_employeeController::class, 'index'])->name('MainSalaryEmployee.index');
+   Route::get('/MainSalaryEmployee/show/{id}', [Main_salary_employeeController::class, 'show'])->name('MainSalaryEmployee.show');
+   Route::post('/MainSalaryEmployee/ajaxSearch', [Main_salary_employeeController::class, 'ajax_search'])->name('MainSalaryEmployee.ajaxSearch');
+   Route::post('/MainSalaryEmployee/print_search', [Main_salary_employeeController::class, 'print_search'])->name('MainSalaryEmployee.print_search');
+   Route::get('/MainSalaryEmployee/showSalaryDetails/{id}', [Main_salary_employeeController::class, 'showSalaryDetails'])->name('MainSalaryEmployee.showSalaryDetails');
+   Route::post('/MainSalaryEmployee/AddManuallySalary/{id}', [Main_salary_employeeController::class, 'AddManuallySalary'])->name('MainSalaryEmployee.AddManuallySalary');
+   Route::post('/MainSalaryEmployee/delete_salary', [Main_salary_employeeController::class, 'delete_salary'])->name('MainSalaryEmployee.delete_salary');
+
+   //----------------نهاية الرواتب النهائية مفصلة---------------------
 
 
 

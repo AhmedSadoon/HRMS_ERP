@@ -18,16 +18,19 @@ use App\Models\employee_fixed_suits;
 use App\Models\Governorate;
 use App\Models\jobs_category;
 use App\Models\Language;
+use App\Models\Main_salary_employee;
 use App\Models\Military_status;
 use App\Models\Nationalitie;
 use App\Models\Qualification;
 use App\Models\Religion;
 use App\Models\Shifts_type;
+use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class EmployeesController extends Controller
 {
+    use GeneralTrait;
     /**
      * Display a listing of the resource.
      */
@@ -86,7 +89,7 @@ class EmployeesController extends Controller
     {
 
 
-        try {
+        // try {
             $com_code = auth()->user()->com_code;
 
 
@@ -101,13 +104,13 @@ class EmployeesController extends Controller
                 return redirect()->back()->with(['error' => 'عفواً كود بسمة الموظف مسجل مسبقاً'])->withInput();
             }
 
-            $last_employee = get_cols_where_row(new Employee(), array('employees_code'), array('com_code' => $com_code));
+            $last_employee = Employee::select('employees_code')->where('com_code','=', $com_code)->orderBy('id', 'desc')->first();
             if (!empty($last_employee)) {
                 $employees_code = $last_employee['employees_code'] + 1;
             } else {
                 $employees_code = 1;
             }
-
+            
 
 
             $dataToInsert = [
@@ -223,10 +226,10 @@ class EmployeesController extends Controller
             insert(new Employee(), $dataToInsert);
             DB::commit();
             return redirect()->route('Employees.index')->with('success', 'تم اضافة الموظف بنجاح');
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            return redirect()->back()->with(['error' => 'عفواً حدث خطأ' . $ex->getMessage()])->withInput();
-        }
+        // } catch (\Exception $ex) {
+        //     DB::rollBack();
+        //     return redirect()->back()->with(['error' => 'عفواً حدث خطأ' . $ex->getMessage()])->withInput();
+        // }
     }
 
     /**
@@ -430,8 +433,16 @@ class EmployeesController extends Controller
             if($flag){
                 if($dataToUpdate['does_have_fixed_allowances']==0){
                     //يتم حذف البدلات الثابتة وتحديث الراتب الحالي المفتوح 
-                    
+                    destroy(new employee_fixed_suits(),array("com_code"=>$com_code,"employee_id"=>$id));
+
                 }
+
+                //لو يوجد راتب للموظف مفتوح نعيد احتسابه
+                $currentSalaryData=get_cols_where_row(new Main_salary_employee(),array('id'),array("com_code"=>$com_code,"employees_code"=>$data['employees_code'],"is_archived"=>0));
+                if(!empty($currentSalaryData)){
+                    $this->Recalculate_main_salary_employee($currentSalaryData['id']);
+                }
+
             }
             DB::commit();
             return redirect()->route('Employees.index')->with('success', 'تم تحديث البيانات بنجاح');
@@ -699,7 +710,7 @@ class EmployeesController extends Controller
     {
         try {
             $com_code = auth()->user()->com_code;
-            $data = get_cols_where_row(new Employee(), array("id"), array('com_code' => $com_code, 'id' => $id));
+            $data = get_cols_where_row(new Employee(),  array("id",'employees_code'), array('com_code' => $com_code, 'id' => $id));
             if (empty($data)) {
                 return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة')->withInput();
             }
@@ -722,7 +733,14 @@ class EmployeesController extends Controller
             ];
 
 
-            insert(new employee_fixed_suits(), $dataToInsert);
+            $flag=insert(new employee_fixed_suits(), $dataToInsert);
+            if($flag){
+                  //لو يوجد راتب للموظف مفتوح نعيد احتسابه
+                  $currentSalaryData=get_cols_where_row(new Main_salary_employee(),array('id'),array("com_code"=>$com_code,"employees_code"=>$data['employees_code'],"is_archived"=>0));
+                  if(!empty($currentSalaryData)){
+                      $this->Recalculate_main_salary_employee($currentSalaryData['id']);
+                  }
+            }
             DB::commit();
             return redirect()->back()->with(['success' => 'تم اضافة البيانات بنجاح']);
         } catch (\Exception $ex) {
@@ -735,16 +753,26 @@ class EmployeesController extends Controller
     {
         try {
             $com_code = auth()->user()->com_code;
-            $data = get_cols_where_row(new employee_fixed_suits(), array("id"), array('com_code' => $com_code, 'id' => $id));
+            $data = get_cols_where_row(new employee_fixed_suits(), array("id",'employee_id'), array('com_code' => $com_code, 'id' => $id));
             if (empty($data)) {
                 return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة')->withInput();
             }
 
             DB::beginTransaction();
 
+            $dataEmployee = get_cols_where_row(new Employee(),  array('employees_code'), array('com_code' => $com_code, 'id' => $data['employee_id']));
+            if (empty($dataEmployee)) {
+                return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة')->withInput();
+            }
+
             $flag=destroy(new employee_fixed_suits(), array('com_code' => $com_code, 'id' => $id));
             if($flag){
                 //يتم اعادة احتساب صافي الراتب
+                 //لو يوجد راتب للموظف مفتوح نعيد احتسابه
+                 $currentSalaryData=get_cols_where_row(new Main_salary_employee(),array('id'),array("com_code"=>$com_code,"employees_code"=>$dataEmployee['employees_code'],"is_archived"=>0));
+                 if(!empty($currentSalaryData)){
+                     $this->Recalculate_main_salary_employee($currentSalaryData['id']);
+                 }
 
             }
             DB::commit();
@@ -771,8 +799,13 @@ class EmployeesController extends Controller
     {
         try {
             $com_code = auth()->user()->com_code;
-            $data = get_cols_where_row(new employee_fixed_suits(), array("id"), array('com_code' => $com_code, 'id' => $id));
+            $data = get_cols_where_row(new employee_fixed_suits(), array("id",'employee_id'), array('com_code' => $com_code, 'id' => $id));
             if (empty($data)) {
+                return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة')->withInput();
+            }
+
+            $dataEmployee = get_cols_where_row(new Employee(),  array('employees_code'), array('com_code' => $com_code, 'id' => $data['employee_id']));
+            if (empty($dataEmployee)) {
                 return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة')->withInput();
             }
 
@@ -785,6 +818,13 @@ class EmployeesController extends Controller
             $flag=update(new employee_fixed_suits(), $dataToUpdate,array('com_code' => $com_code, 'id' => $id));
             if($flag){
                 //يتم اعادة احتساب صافي الراتب
+             
+                    //لو يوجد راتب للموظف مفتوح نعيد احتسابه
+                    $currentSalaryData=get_cols_where_row(new Main_salary_employee(),array('id'),array("com_code"=>$com_code,"employees_code"=>$dataEmployee['employees_code'],"is_archived"=>0));
+                    if(!empty($currentSalaryData)){
+                        $this->Recalculate_main_salary_employee($currentSalaryData['id']);
+                    }
+              
 
             }
             DB::commit();
