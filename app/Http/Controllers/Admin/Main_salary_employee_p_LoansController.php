@@ -76,6 +76,7 @@ class Main_salary_employee_p_LoansController extends Controller
                         $dataToInsertkast = [
                             'main_salary_p_loans_id' => $flagParent['id'],
                             'month_kast_value' => $dataToInsert['month_kast_value'],
+                            'employees_code' => $request->employees_code,
                             'year_and_month' => $effectiveDate,
                             'state' => 0,
                             'added_by' => auth()->user()->id,
@@ -247,6 +248,7 @@ class Main_salary_employee_p_LoansController extends Controller
                                         'main_salary_p_loans_id' => $request->id,
                                         'month_kast_value' => $dataToUpdate['month_kast_value'],
                                         'year_and_month' => $effectiveDate,
+                                        'employees_code' => $request->employees_code,
                                         'state' => 0,
                                         'added_by' => auth()->user()->id,
                                         'com_code' => $com_code,

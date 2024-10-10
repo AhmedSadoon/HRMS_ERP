@@ -64,21 +64,30 @@ trait GeneralTrait
                     ->where("year_and_month","=",$finance_cin_periods_data['year_and_month'])
                     ->where('is_archived','=',0)
                     ->where('state','!=',2)
-                    ->sum("month_kast_value");
+                    ->where('employees_code','=',$main_salary_employee_data['employees_code'])
+                    ->where('is_parent_dismissail_done','=',1)
+                    ->sum('month_kast_value');
 
-                    
-                   
-                    $dataToUpdate['total_deductions']= $dataToUpdate['social_nsurance_cutMonthely']+$dataToUpdate['medical_nsurance_cutMonthely']+$dataToUpdate['sanctions_days_total']+$dataToUpdate['absence_days']+$dataToUpdate['discount']+$dataToUpdate['monthly_loan']+$dataToUpdate['monthly_loan'];
+                    $dataToUpdateAksat['state']=1;
+                    $dataToUpdateAksat['main_salary_employee_id']=$main_salary_employee_id;
+                    Main_salary_employee_p_loans_aksat::where('com_code' ,'=', $com_code)
+                        ->where("year_and_month",$finance_cin_periods_data['year_and_month'])
+                        ->where('is_archived','=',0)
+                        ->where('state','!=',2)
+                        ->where('employees_code','=',$main_salary_employee_data['employees_code'])
+                        ->update($dataToUpdateAksat);
+
+
+                    $dataToUpdate['total_deductions']= $dataToUpdate['social_nsurance_cutMonthely']+$dataToUpdate['medical_nsurance_cutMonthely']+$dataToUpdate['sanctions_days_total']+$dataToUpdate['absence_days']+$dataToUpdate['discount']+$dataToUpdate['monthly_loan']+$dataToUpdate['permanent_loan'];
                 
                     $dataToUpdate['final_the_net']=$main_salary_employee_data['last_salary_remain_balance']+($dataToUpdate['total_benefits']-$dataToUpdate['total_deductions']);
-                
+                    
                 
 
                 update(new  Main_salary_employee(),$dataToUpdate,array('com_code' => $com_code, "id" => $main_salary_employee_id, 'is_archived' => 0));
                 
-                $dataToUpdateAksat['state']=1;
-                $dataToUpdateAksat['main_salary_employee_id']=$main_salary_employee_id;
-                Main_salary_employee_p_loans_aksat::where('com_code' ,'=', $com_code)->where("year_and_month",$main_salary_employee_data['year_and_month'])->where('is_archived','=',0)->where('state','!=',2)->update($dataToUpdateAksat);
+                
+               
                 
                 //صافي الراتب
 

@@ -18,4 +18,8 @@ class Main_salary_employee extends Model
     public function updatedBy(){
         return $this->belongsTo(Admin::class,'updated_by');
     }
+
+    public function archivedBy (){
+        return $this->belongsTo(Admin::class,'archived_by');
+    }
 }

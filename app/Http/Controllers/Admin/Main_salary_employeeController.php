@@ -70,7 +70,10 @@ class Main_salary_employeeController extends Controller
             }
         }
 
-
+        $other['counterSalaries']=get_count_where(new Main_salary_employee(),array('com_code' => $com_code, 'finance_cin_periods_id' => $finance_cin_periods_id));
+        $other['counterSalariesWatingArchive']=get_count_where(new Main_salary_employee(),array('com_code' => $com_code, 'finance_cin_periods_id' => $finance_cin_periods_id,'is_archived'=>0));
+        $other['counterSalariesDoneArchive']=get_count_where(new Main_salary_employee(),array('com_code' => $com_code, 'finance_cin_periods_id' => $finance_cin_periods_id,'is_archived'=>1));
+        $other['counterSalariesStopped']=get_count_where(new Main_salary_employee(),array('com_code' => $com_code, 'finance_cin_periods_id' => $finance_cin_periods_id,'is_stoped'=>1));
         return view('admin.Main_salary_employee.show', ['data' => $data, 'finance_cin_periods_data' => $finance_cin_periods_data, 'other' => $other]);
     }
 
@@ -186,6 +189,8 @@ class Main_salary_employeeController extends Controller
                 ->orderBy('id', 'DESC')
                 ->paginate(PAGINATION_COUNTER);
 
+           
+
             if (!empty($data)) {
                 foreach ($data as $info) {
                     $info->emp_name = get_field_value(new Employee(), 'emp_name', array('com_code' => $com_code, 'employees_code' => $info->employees_code));
@@ -197,8 +202,64 @@ class Main_salary_employeeController extends Controller
                 }
             }
 
+            $other['counterSalaries'] = Main_salary_employee::select("*")
+            ->where($field1, $operator1, $value1)
+            ->where($field2, $operator2, $value2)
+            ->where($field3, $operator3, $value3)
+            ->where($field4, $operator4, $value4)
+            ->where($field5, $operator5, $value5)
+            ->where($field6, $operator6, $value6)
+            ->where($field7, $operator7, $value7)
+            ->where($field8, $operator8, $value8)
+            ->where('finance_cin_periods_id', '=', $the_finance_cin_periods_id)
+            ->where('com_code', '=', $com_code)
+            ->count();
 
-            return view('admin.Main_salary_employee.ajax_search', ['data' => $data]);
+            $other['counterSalariesWatingArchive'] = Main_salary_employee::select("*")
+            ->where($field1, $operator1, $value1)
+            ->where($field2, $operator2, $value2)
+            ->where($field3, $operator3, $value3)
+            ->where($field4, $operator4, $value4)
+            ->where($field5, $operator5, $value5)
+            ->where($field6, $operator6, $value6)
+            ->where($field7, $operator7, $value7)
+            ->where($field8, $operator8, $value8)
+            ->where('finance_cin_periods_id', '=', $the_finance_cin_periods_id)
+            ->where('com_code', '=', $com_code)
+            ->where('is_archived','=',0)
+            ->count();
+
+            $other['counterSalariesDoneArchive'] = Main_salary_employee::select("*")
+            ->where($field1, $operator1, $value1)
+            ->where($field2, $operator2, $value2)
+            ->where($field3, $operator3, $value3)
+            ->where($field4, $operator4, $value4)
+            ->where($field5, $operator5, $value5)
+            ->where($field6, $operator6, $value6)
+            ->where($field7, $operator7, $value7)
+            ->where($field8, $operator8, $value8)
+            ->where('finance_cin_periods_id', '=', $the_finance_cin_periods_id)
+            ->where('com_code', '=', $com_code)
+            ->where('is_archived','=',1)
+            ->count();
+
+            
+            $other['counterSalariesStopped'] = Main_salary_employee::select("*")
+            ->where($field1, $operator1, $value1)
+            ->where($field2, $operator2, $value2)
+            ->where($field3, $operator3, $value3)
+            ->where($field4, $operator4, $value4)
+            ->where($field5, $operator5, $value5)
+            ->where($field6, $operator6, $value6)
+            ->where($field7, $operator7, $value7)
+            ->where($field8, $operator8, $value8)
+            ->where('finance_cin_periods_id', '=', $the_finance_cin_periods_id)
+            ->where('com_code', '=', $com_code)
+            ->where('is_stoped','=',1)
+            ->count();
+
+
+            return view('admin.Main_salary_employee.ajax_search', ['data' => $data,'other'=>$other]);
         }
     }
 
@@ -297,6 +358,11 @@ class Main_salary_employeeController extends Controller
             return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة');
         }
 
+        if($MainSalaryEmployeeData['is_archived']==0){
+            $this->Recalculate_main_salary_employee($Main_salary_employeeID);
+            $MainSalaryEmployeeData = get_cols_where_row(new Main_salary_employee(), array("*"), array('com_code' => $com_code, 'id' => $Main_salary_employeeID));
+
+        }
                 $MainSalaryEmployeeData['emp_name'] = get_field_value(new Employee(), 'emp_name', array('com_code' => $com_code, 'employees_code' => $MainSalaryEmployeeData['employees_code']));
                 $MainSalaryEmployeeData['emp_gender'] = get_field_value(new Employee(), 'emp_gender', array('com_code' => $com_code, 'employees_code' => $MainSalaryEmployeeData['employees_code']));
                 $MainSalaryEmployeeData['branch_name'] = get_field_value(new Branche(), 'name', array('com_code' => $com_code, 'id' => $MainSalaryEmployeeData['branch_id']));
@@ -304,6 +370,167 @@ class Main_salary_employeeController extends Controller
                 $MainSalaryEmployeeData['jobs_name'] = get_field_value(new jobs_category(), 'name', array('com_code' => $com_code, 'id' => $MainSalaryEmployeeData['emp_jobs_id']));
     
                 return view('admin.Main_salary_employee.showSalaryDetails', ['MainSalaryEmployeeData' => $MainSalaryEmployeeData, 'finance_cin_periods_data' => $finance_cin_periods_data]);
+
+    }
+
+    public function doStopSalary($Main_salary_employeeID)
+    {
+
+
+        $com_code = auth()->user()->com_code;
+        $MainSalaryEmployeeData = get_cols_where_row(new Main_salary_employee(), array("*"), array('com_code' => $com_code, 'id' => $Main_salary_employeeID));
+
+        if (empty($MainSalaryEmployeeData)) {
+            return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة');
+        }
+         $finance_cin_periods_data = get_cols_where_row(new Finance_cin_periods(), array("*"), array('com_code' => $com_code, 'id' => $MainSalaryEmployeeData['finance_cin_periods_id']));
+        if (empty($finance_cin_periods_data)) {
+            return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة');
+        }
+
+        if ($MainSalaryEmployeeData['is_archived']==1 || $finance_cin_periods_data['is_open']!=1 ) {
+            return redirect()->back()->with('error', 'عفواً لا يمكن عمل هذا الاجراء حالياً');
+        }
+
+        if ($MainSalaryEmployeeData['is_stoped'] ==1 ) {
+            return redirect()->back()->with('error', 'عفواً الراتب بالفعل موقوف مسبقاً');
+        }
+
+                $dataToUpdate['is_stoped'] =1;
+                $dataToUpdate['updated_by']=auth()->user()->id;
+
+                update(new Main_salary_employee(),$dataToUpdate,array('com_code' => $com_code, 'id' => $Main_salary_employeeID,'is_archived'=>0));
+                
+                    return redirect()->back()->with('success', 'تم ايقاف الراتب');
+               
+
+
+    }
+
+    public function doCancelStopSalary($Main_salary_employeeID)
+    {
+
+
+        $com_code = auth()->user()->com_code;
+        $MainSalaryEmployeeData = get_cols_where_row(new Main_salary_employee(), array("*"), array('com_code' => $com_code, 'id' => $Main_salary_employeeID));
+
+        if (empty($MainSalaryEmployeeData)) {
+            return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة');
+        }
+         $finance_cin_periods_data = get_cols_where_row(new Finance_cin_periods(), array("*"), array('com_code' => $com_code, 'id' => $MainSalaryEmployeeData['finance_cin_periods_id']));
+        if (empty($finance_cin_periods_data)) {
+            return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة');
+        }
+
+        if ($MainSalaryEmployeeData['is_archived']==1 || $finance_cin_periods_data['is_open']!=1 ) {
+            return redirect()->back()->with('error', 'عفواً لا يمكن عمل هذا الاجراء حالياً');
+        }
+
+        if ($MainSalaryEmployeeData['is_stoped'] ==0 ) {
+            return redirect()->back()->with('error', 'عفواً الراتب بالفعل غير موقوف مسبقاً');
+        }
+
+                $dataToUpdate['is_stoped'] =0;
+                $dataToUpdate['updated_by']=auth()->user()->id;
+
+                update(new Main_salary_employee(),$dataToUpdate,array('com_code' => $com_code, 'id' => $Main_salary_employeeID,'is_archived'=>0));
+                
+                    return redirect()->back()->with('success', 'تم الغاء ايقاف الراتب');
+               
+
+
+    }
+
+    public function doDeleteSalaryIternal($Main_salary_employeeID)
+    {
+
+
+        $com_code = auth()->user()->com_code;
+        $MainSalaryEmployeeData = get_cols_where_row(new Main_salary_employee(), array("*"), array('com_code' => $com_code, 'id' => $Main_salary_employeeID));
+
+        if (empty($MainSalaryEmployeeData)) {
+            return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة');
+        }
+         $finance_cin_periods_data = get_cols_where_row(new Finance_cin_periods(), array("*"), array('com_code' => $com_code, 'id' => $MainSalaryEmployeeData['finance_cin_periods_id']));
+        if (empty($finance_cin_periods_data)) {
+            return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة');
+        }
+
+        if ($MainSalaryEmployeeData['is_archived']==1 || $finance_cin_periods_data['is_open']!=1 || $MainSalaryEmployeeData['is_stoped'] ==1 ) {
+            return redirect()->back()->with('error', 'عفواً لا يمكن عمل هذا الاجراء حالياً');
+        }
+
+      
+
+             
+                destroy(new Main_salary_employee(),array('com_code' => $com_code, 'id' => $Main_salary_employeeID,'is_archived'=>0));
+                
+                    return redirect()->route('MainSalaryEmployee.show',$MainSalaryEmployeeData['finance_cin_periods_id'])->with('success', 'تم حذف الراتب');
+               
+
+
+    }
+
+    public function load_archive_salary(Request $request)
+    {
+
+        if($request->ajax()){
+            $com_code = auth()->user()->com_code;
+            $Main_salary_employeeID=$request->id;
+            $main_salary_employee_data = get_cols_where_row(new Main_salary_employee(), array("*"), array('com_code' => $com_code, 'id' => $Main_salary_employeeID,'is_archived'=>0,'is_stoped'=>0));
+            $finance_cin_periods_data = get_cols_where_row(new Finance_cin_periods(), array("*"), array('com_code' => $com_code, 'id' => $main_salary_employee_data['finance_cin_periods_id'],'is_open'=>1));
+
+            return view('admin.Main_salary_employee.load_archive_salary', ['main_salary_employee_data' => $main_salary_employee_data,'finance_cin_periods_data'=>$finance_cin_periods_data]);
+
+        }
+
+    }
+
+    
+    public function do_archive_salary($Main_salary_employeeID)
+    {
+
+
+        $com_code = auth()->user()->com_code;
+        $MainSalaryEmployeeData = get_cols_where_row(new Main_salary_employee(), array("*"), array('com_code' => $com_code, 'id' => $Main_salary_employeeID));
+
+        if (empty($MainSalaryEmployeeData)) {
+            return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة');
+        }
+         $finance_cin_periods_data = get_cols_where_row(new Finance_cin_periods(), array("*"), array('com_code' => $com_code, 'id' => $MainSalaryEmployeeData['finance_cin_periods_id']));
+        if (empty($finance_cin_periods_data)) {
+            return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة');
+        }
+
+        if ($MainSalaryEmployeeData['is_archived']==1 || $finance_cin_periods_data['is_open']!=1 ||$MainSalaryEmployeeData['is_stoped']==1) {
+            return redirect()->back()->with('error', 'عفواً لا يمكن عمل هذا الاجراء حالياً');
+        }
+
+     
+
+                $dataToUpdate['is_archived'] =1;
+                $dataToUpdate['archived_date'] =date("Y-m-d H:i:s");
+                $dataToUpdate['archived_by']=auth()->user()->id;
+
+                //هنا لو راتب الموظف بالموجب يبقى مستحق للموظف وبعد الارشفة بيتم حفظ راتب الموظف داخل ضرف الراتب للشهر
+                // اذا كان بالسالب بيتم ترحيل الرصيد السالب لشهر القادم
+                // بنسبة 1% يتم تحصيل المستحق او بعضه وترحيل المديونية للشهر القادم 
+
+                if($MainSalaryEmployeeData['final_the_net']<0){
+
+                    //الراتب سالب يرحل الرصيد للشهر القادم
+                    $dataToUpdate['final_the_net_after_close_for_trahil']=$MainSalaryEmployeeData['final_the_net'];
+
+                }else{
+                    $dataToUpdate['final_the_net_after_close_for_trahil']=0;
+                }
+
+
+                update(new Main_salary_employee(),$dataToUpdate,array('com_code' => $com_code, 'id' => $Main_salary_employeeID,'is_archived'=>0,'is_stoped'=>0));
+                
+                    return redirect()->back()->with('success', 'تم ارشفة الراتب');
+               
+
 
     }
 }

@@ -334,6 +334,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
    Route::get('/MainSalaryEmployee/showSalaryDetails/{id}', [Main_salary_employeeController::class, 'showSalaryDetails'])->name('MainSalaryEmployee.showSalaryDetails');
    Route::post('/MainSalaryEmployee/AddManuallySalary/{id}', [Main_salary_employeeController::class, 'AddManuallySalary'])->name('MainSalaryEmployee.AddManuallySalary');
    Route::post('/MainSalaryEmployee/delete_salary', [Main_salary_employeeController::class, 'delete_salary'])->name('MainSalaryEmployee.delete_salary');
+   Route::get('/MainSalaryEmployee/doStopSalary/{id}', [Main_salary_employeeController::class, 'doStopSalary'])->name('MainSalaryEmployee.doStopSalary');
+   Route::get('/MainSalaryEmployee/doCancelStopSalary/{id}', [Main_salary_employeeController::class, 'doCancelStopSalary'])->name('MainSalaryEmployee.doCancelStopSalary');
+   Route::get('/MainSalaryEmployee/doDeleteSalaryIternal/{id}', [Main_salary_employeeController::class, 'doDeleteSalaryIternal'])->name('MainSalaryEmployee.doDeleteSalaryIternal');
+   Route::post('/MainSalaryEmployee/load_archive_salary', [Main_salary_employeeController::class, 'load_archive_salary'])->name('MainSalaryEmployee.load_archive_salary');
+   Route::post('/MainSalaryEmployee/do_archive_salary/{id}', [Main_salary_employeeController::class, 'do_archive_salary'])->name('MainSalaryEmployee.do_archive_salary');
 
    //----------------نهاية الرواتب النهائية مفصلة---------------------
 

@@ -1,4 +1,24 @@
 @if (@isset($data) and !@empty($data) and count($data) > 0)
+
+<h3 style="text-align: center; font-size: 14px; font-weight: bold;color: brown;">مرأة البحث</h3>
+<table id="example2" class="table table-bordered table-hover" style="width: 80%; margin: 0 auto;">
+
+    
+        <tr style="background-color: lightblue">
+        <th>عدد الرواتب</th>
+        <th>بأنتضار الارشفة</th>
+        <th>عدد المؤرشف</th>
+        <th>عدد الموقوف</th>
+    </tr>
+    <tr>
+        <td>{{$other['counterSalaries']*1}}</td>
+        <td>{{$other['counterSalariesWatingArchive']*1}}</td>
+        <td>{{$other['counterSalariesDoneArchive']*1}}</td>
+        <td>{{$other['counterSalariesStopped']*1}}</td>
+    </tr>
+</table>
+
+
 <table id="example2" class="table table-bordered table-hover">
 
     <thead class="custom_thead">
