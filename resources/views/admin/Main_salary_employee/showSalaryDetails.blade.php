@@ -37,6 +37,7 @@
                     ({{ $finance_cin_periods_data['month']->name }} لسنة {{ $finance_cin_periods_data['finance_yr'] }})
                 </h3>
                 <a href="{{route('MainSalaryEmployee.show',$finance_cin_periods_data['id'])}}" class="btn btn-sm btn-info" style="color: white">عودة لاجور الشهر</a>
+                <a target="_blank" href="{{route('MainSalaryEmployee.printSalary',$MainSalaryEmployeeData['id'])}}" class="btn btn-sm btn-success" style="color: white">طباعة شريط الراتب</a>
 
             </div>
 
@@ -78,13 +79,7 @@
 
                     
                         <div class="container">
-                            <p style="text-align: center;  padding: 3px;">
-                                مفردات المرتب
-                                <a href="#" id="printButton" class=" btn btn-success btn-xs  hidden-print"
-                                    onclick="window.print();">
-                                    طباعة
-                                </a>
-                            </p>
+                          
                             @if($finance_cin_periods_data['is_open']==1 && $MainSalaryEmployeeData['is_archived']==0)
                             @if($MainSalaryEmployeeData['is_stoped']==0)
                                 <p>

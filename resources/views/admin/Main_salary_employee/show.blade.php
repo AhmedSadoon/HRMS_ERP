@@ -53,7 +53,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>بحث بالموظفين</label>
-                            <select name="employees_code_search" id="employees_code_search" class="form-control select2">
+                            <select name="employees_code" id="employees_code_search" class="form-control select2">
                                 <option value="all">بحث بالكل</option>
                                 @if (@isset($other['employees']) && !@empty($other['employees']))
                                     @foreach ($other['employees'] as $info)
@@ -70,7 +70,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>بحث بالفروع</label>
-                            <select name="branch_id_search" id="branch_id_search" class="form-control select2">
+                            <select name="branch_id" id="branch_id_search" class="form-control select2">
     
                                 <option value="all">بحث بالكل</option>
                                 @if (@isset($other['branches']) && !@empty($other['branches']))
@@ -87,7 +87,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>بحث بالادارة</label>
-                            <select name="emp_department_id_search" id="emp_department_id_search" class="form-control select2">
+                            <select name="emp_department_id" id="emp_department_id_search" class="form-control select2">
     
                                 <option value="all">بحث بالكل</option>
                                 @if (@isset($other['departments']) && !@empty($other['departments']))
@@ -103,7 +103,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>بحث بالوظائف</label>
-                            <select name="emp_jobs_id_search" id="emp_jobs_id_search" class="form-control select2 ">
+                            <select name="emp_jobs_id" id="emp_jobs_id_search" class="form-control select2 ">
                                 <option value="all">بحث بالكل</option>
                                 @if (@isset($other['jobs']) && !@empty($other['jobs']))
                                     @foreach ($other['jobs'] as $info)
@@ -118,7 +118,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>بحث بالحالة الوظيفية</label>
-                            <select name="function_status_search" id="function_status_search" class="form-control">
+                            <select name="function_status" id="function_status_search" class="form-control">
                                 <option value="all">بحث بالكل</option>
                                 <option value="1">يعمل</option>
                                 <option value="0">خارج العمل</option>
@@ -131,7 +131,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>بحث بنوع صرف الراتب</label>
-                            <select name="sal_cach_or_visa_search" id="sal_cach_or_visa_search" class="form-control">
+                            <select name="sal_cach_or_visa" id="sal_cach_or_visa_search" class="form-control">
                                 <option value="all">بحث بالكل</option>
                                 <option value="1">كاش</option>
                                 <option value="2">فيزا</option>
@@ -143,7 +143,7 @@
                     <div class="col-md-3 ">
                         <div class="form-group">
                             <label> بحث بحالة الارشفة</label>
-                            <select name="is_archived_search" id="is_archived_search" class="form-control select2">
+                            <select name="is_archived" id="is_archived_search" class="form-control select2">
                                 <option value="all">بحث بالكل</option>
                                 <option value="1">مؤرشف</option>
                                 <option value="0">مفتوح</option>
@@ -154,7 +154,7 @@
                     <div class="col-md-3 ">
                         <div class="form-group">
                             <label> بحث بحالة الايقاف</label>
-                            <select name="is_stoped_search" id="is_stoped_search" class="form-control select2">
+                            <select name="is_stoped" id="is_stoped_search" class="form-control select2">
                                 <option value="all">بحث بالكل</option>
                                 <option value="0">مفعل</option>
                                 <option value="1">موقوف</option>
@@ -164,7 +164,8 @@
 
                     <div class="col-md-12 text-center">
                         <div class="form-group">
-                            <button type="post" class="btn btn-sm btn-primary">طباعة البحث</button>
+                            <button type="post" name="submit_button" class="btn btn-sm btn-primary" value="indetails">طباعة البحث تفصيلي</button>
+                            <button type="post" name="submit_button" class="btn btn-sm btn-info" value="intotal">طباعة البحث اجمالي</button>
                             <hr>
                         </div>
                     </div>
@@ -195,7 +196,7 @@
                     <td>{{$other['counterSalariesStopped']*1}}</td>
                 </tr>
             </table>
-            
+
 
                 @if (@isset($data) and !@empty($data) and count($data) > 0)
                     <table id="example2" class="table table-bordered table-hover">
@@ -263,6 +264,7 @@
                                         @endif
 
                                         <a href="{{route('MainSalaryEmployee.showSalaryDetails',$info->id)}}" class="btn btn-sm btn-success">التفاصيل</a>
+                                        <a target="_blank" href="{{route('MainSalaryEmployee.printSalary',$info->id)}}" class="btn btn-sm btn-primary" style="color: white">طباعة </a>
 
                                     </td>
 

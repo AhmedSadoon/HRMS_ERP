@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title> بحث بجزاءات الرواتب</title>
+    <title>طباعة شريط الراتب</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css') }}">
     <style>
@@ -44,7 +44,7 @@
                text-align: center;
                color: red;
                border: 1px solid black; border-radius: 10px !important">
-                    بحث بجزاءات الرواتب للشهر المالي ({{ $finance_cin_periods_data['month']->name }} لسنة
+                    بحث الرواتب  للشهر المالي ({{ $finance_cin_periods_data['month']->name }} لسنة
                     {{ $finance_cin_periods_data['finance_yr'] }})
                 </span>
             </td>
@@ -93,14 +93,16 @@
             style="width: 99%;margin: 0 auto;">
             <thead style="background-color: yellow">
 
-                <th style="width: 5%">تسلسل</th>
                 <th style="width: 5%">كود</th>
-                <th style="width: 25%">اسم الموظف</th>
-                <th style="width: 10%">نوع الجزاء</th>
-                <th style="width: 10%">عدد الايام</th>
-                <th style="width: 15%">اجمالي</th>        
-                <th style="width: 20%">بواسطة</th>        
-                <th style="width: 10%">الحالة</th>
+                <th style="width: 15%">اسم</th>
+                <th style="width: 10%">الفرع</th>
+                <th style="width: 10%">الادارة</th>
+                <th style="width: 10%">الوظيفة</th>        
+                <th style="width: 10%">الراتب</th>        
+                <th style="width: 10%">اجمالي المستحق</th>        
+                <th style="width: 10%">اجمالي المستقطع</th>
+                <th style="width: 10%">صافي الراتب</th>
+                <th style="width: 10%">الارشفة</th>
               
 
             </thead>
@@ -108,74 +110,53 @@
 
             </thead>
             <tbody>
-               @php
-                  $i=1;
-               @endphp
+              
                 @foreach ($data as $info)
                     <tr>
 
-                        <td>
-                            {{ $i }}
-                        </td>
+                        <td>{{ $info->employees_code }} </td>
+                        <td>{{ $info->emp_name }}</td>
+ 
+                    <td>{{ $info->branch_name }}</td>
+                    <td>{{ $info->department_name }}</td>
+                    <td>{{ $info->jobs_name }}</td>
+                    <td>{{ $info->emp_sal*1 }}</td>
+                    <td>{{ $info->total_benefits*1 }}</td>
+                    <td>{{ $info->total_deductions*1 }}</td>
+                    <td>{{ $info->final_the_net*1 }}</td>
 
-                        <td>
-                           {{ $info->employees_code }}
-                       </td>
-
-                       <td>
-                        {{ $info->emp_name }}
+                    <td>
+                        @if ($info->is_archived == 1)
+                            مؤرشف
+                        @else
+                            مفتوح
+                        @endif  
                     </td>
-
-                        <td>
-                            @if ($info->sactions_type == 1)
-                                جزاء ايام
-                            @elseif ($info->sactions_type == 2)
-                                جزاء بصمة
-                            @elseif ($info->sactions_type == 3)
-                                جزاء تحقيق
-                            @else
-                                لم يحدد
-                            @endif
-                        </td>
-
-                        <td>
-                            {{ $info->value * 1 }}
-                        </td>
-
-                        <td>
-                            {{ $info->total * 1 }}
-                        </td>
-
-                        <td>
-                           {{ $info->added->name }}
-                       </td>
-
-                        <td>
-                            @if ($info->is_archived == 1)
-                                مؤرشف
-                            @else
-                                مفتوح
-                            @endif
-                        </td>
 
 
 
 
                     </tr>
-                    @php
-                    $i++;
-                 @endphp
+                 
                 @endforeach
                 <tr>
-                    <td style="background-color:lightsalmon;" colspan="4"> الاجمالي
+                    <td style="background-color:lightsalmon;" colspan="5"> الاجمالي
 
                     </td>
                     <td style="background-color: lightgreen;text-align: right; ">
-                        {{ $other['value_sum'] * 1 }} يوم
+                        {{ $other['emp_sal'] * 1 }} دينار
                     </td>
 
-                    <td style="background-color: lightgreen;text-align: right; " colspan="4">
-                        {{ $other['total_sum'] * 1 }} دينار
+                    <td style="background-color: lightgreen;text-align: right; ">
+                        {{ $other['total_benefits'] * 1 }} دينار
+                    </td>
+
+                    <td style="background-color: lightgreen;text-align: right; ">
+                        {{ $other['total_deductions'] * 1 }} دينار
+                    </td>
+
+                    <td style="background-color: lightgreen;text-align: right; " colspan="2">
+                        {{ $other['final_the_net'] * 1 }} دينار
                     </td>
                    
                 </tr>

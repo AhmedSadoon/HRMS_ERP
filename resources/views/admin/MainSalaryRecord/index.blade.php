@@ -103,6 +103,10 @@
                                                 @if ($info->is_open == 0 and $info->counterOpenMonth == 0 and $info->counterPreviousMonthWatingOpen == 0)
                                                     <button data-id="{{$info->id}}" class="btn btn-sm btn-danger the_load_modal">فتح الان</button>
                                                 @endif
+
+                                                @if ($info->is_open == 1)
+                                                    <a id="do_close_month" href="{{route('MainSalaryRecord.do_close_month',$info->id)}}" class="btn btn-sm btn-danger">اغلاق وارشفة</a>
+                                                @endif
                                             @endif
                                         @endif
 
@@ -248,6 +252,13 @@
                     }
 
                 });
+            });
+
+            $(document).on('change', '#do_close_month', function(e) {
+                var res=confirm("هل انت متأكد من اغلاق واشرفة كل رواتب الشهر المالي ولن تتمكن من التعديل مرة اخرة على رواتب هذا الشهر ويكون متاح في التسويات لاحقا");
+                if(!res){
+                    return false;
+                }
             });
 
         });
