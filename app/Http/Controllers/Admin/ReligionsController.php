@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReligionsRequest;
+use App\Models\Employee;
 use App\Models\Religion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,11 @@ class ReligionsController extends Controller
     {
         $com_code = auth()->user()->com_code;
         $Religions = get_cols_where_paginate(new Religion(), array("*"), array('com_code' => $com_code), 'id', 'DESC', PAGINATION_COUNTER);
+        if (!empty($Religions)) {
+            foreach ($Religions as $info) {
+                $info->CounterUse = get_count_where(new Employee(), array("com_code" => $com_code, "religion_id" => $info->id));
+            }
+        }
         return view('admin.Religions.index', compact('Religions'));
     }
 
@@ -125,12 +131,19 @@ class ReligionsController extends Controller
                 return redirect()->route('Religions.index')->with('error', 'عفواً غير قادر على الوصول الى البيانات');
             }
 
+
+            $CounterUse = get_count_where(new Employee(), array("com_code" => $com_code, "religion_id" => $id));
+            if ($CounterUse > 0) {
+                return redirect()->route('Religions.index')->with(['error' => 'عفواً لا يمكن حذف البيانات لانه تم استخدامها سابقاً']);
+            }
+            DB::beginTransaction();
             destroy(new Religion(), array('com_code' => $com_code, 'id' => $id));
 
             DB::commit();
 
             return redirect()->route('Religions.index')->with('success', 'تم حذف الديانة بنجاح');
         } catch (\Exception $ex) {
+            DB::rollBack();
             return redirect()->back()->with(['error' => 'عفواً حدث خطأ' . $ex->getMessage()])->withInput();
         }
     }

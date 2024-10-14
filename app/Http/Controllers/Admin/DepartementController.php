@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartementsRequest;
 use App\Models\Department;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,6 +18,11 @@ class DepartementController extends Controller
     {
         $com_code=auth()->user()->com_code;
         $departements=get_cols_where_paginate(new Department(),array('*'),array('com_code'=>$com_code),'id','DESC',PAGINATION_COUNTER);
+        if(!empty($departements)){
+            foreach($departements as $info){
+                $info->CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"emp_department_id"=>$info->id));
+            } 
+        }
 
         return view('admin.Departements.index',compact('departements'));
     }
@@ -135,6 +141,11 @@ class DepartementController extends Controller
                 return redirect()->route('departements.index')->with('error','عفواً غير قادر على الوصول الى البيانات المطلوبة');
             }    
     
+            $CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"emp_department_id"=>$id));
+            if($CounterUse>0){
+                return redirect()->route('departements.index')->with(['error'=>'عفواً لا يمكن حذف البيانات لانه تم استخدامها سابقاً']); 
+            }
+            
             DB::beginTransaction();
             
             destroy(new Department(),array("com_code"=>$com_code,'id'=>$id));

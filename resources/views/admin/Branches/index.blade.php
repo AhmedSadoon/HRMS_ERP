@@ -82,7 +82,10 @@
                                     <td>
                                       
                                         <a class="btn btn-sm btn-success" href="{{route('branches.edit',$info->id)}}">تعديل</a>
+                                        @if ($info->CounterUse==0)
                                         <a class="btn btn-sm btn-danger are_you_shur" href="{{route('branches.destroy',$info->id)}}">حذف</a>
+
+                                        @endif
                                       
                                     </td>
 

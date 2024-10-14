@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NationalitiesRequest;
+use App\Models\Employee;
 use App\Models\Nationalitie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,11 @@ class NationalitiesController extends Controller
     {
         $com_code = auth()->user()->com_code;
         $Nationalities = get_cols_where_paginate(new Nationalitie(), array('*'), array('com_code' => $com_code), 'id', 'DESC', PAGINATION_COUNTER);
+        if(!empty($Nationalities)){
+            foreach($Nationalities as $info){
+                $info->CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"emp_nationalitie_id"=>$info->id));
+            } 
+        }
         return view('admin.Nationalities.index', compact('Nationalities'));
     }
 
@@ -125,7 +131,10 @@ class NationalitiesController extends Controller
             if (empty($data)) {
                 return redirect()->route('Nationalities.index')->with('error', 'عفواً غير قادر الوصول الى البيانات');
             }
-
+            $CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"emp_nationalitie_id"=>$id));
+            if($CounterUse>0){
+                return redirect()->route('Nationalities.index')->with(['error'=>'عفواً لا يمكن حذف البيانات لانه تم استخدامها سابقاً']); 
+            }
             DB::beginTransaction();
 
             destroy(new Nationalitie(), array('com_code' => $com_code, 'id' => $id));

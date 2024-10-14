@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JobCategoriesRequest;
+use App\Models\Employee;
 use App\Models\jobs_category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,11 @@ class JobsCategoriesController extends Controller
     {
         $com_code=auth()->user()->com_code;
         $JobsCategories=get_cols_where_paginate(new jobs_category(),array('*'),array('com_code'=>$com_code),'id','DESC',PAGINATION_COUNTER);
+        if(!empty($JobsCategories)){
+            foreach($JobsCategories as $info){
+                $info->CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"emp_jobs_id"=>$info->id));
+            } 
+        }
         return view('admin.JobsCategories.index',compact('JobsCategories'));
     }
 
@@ -62,13 +68,6 @@ class JobsCategoriesController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -131,7 +130,10 @@ class JobsCategoriesController extends Controller
             if (empty($data)) {
                 return redirect()->route('JobsCategories.index')->with('error','عفواً غير قادر على الوصول الى البيانات المطلوبة');
             }    
-    
+            $CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"emp_jobs_id"=>$id));
+            if($CounterUse>0){
+                return redirect()->route('JobsCategories.index')->with(['error'=>'عفواً لا يمكن حذف البيانات لانه تم استخدامها سابقاً']); 
+            }
             DB::beginTransaction();
             
             destroy(new jobs_category(),array("com_code"=>$com_code,'id'=>$id));

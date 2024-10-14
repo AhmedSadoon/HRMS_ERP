@@ -16,15 +16,15 @@
         @foreach ($data as $info)
             <tr>
                 <td>
-                    @if ($info->type==1) 
-                    صباحي
-
-                    @else
-                    مسائي 
-                        
+                    @if ($info->type == 1)
+                        صباحي
+                    @elseif ($info->type == 2)
+                        مسائي
+                        @else
+                        يوم كامل
                     @endif
                 </td>
-
+                
                 <td>
                     @php
                        
@@ -71,10 +71,14 @@
                 </td>
 
                 <td>
-                  
-                    <a class="btn btn-sm btn-success" href="{{route('shiftsTypes.edit',$info->id)}}">تعديل</a>
-                    <a class="btn btn-sm btn-danger are_you_shur" href="{{route('shiftsTypes.destroy',$info->id)}}">حذف</a>
-                  
+
+                    <a class="btn btn-sm btn-success"
+                        href="{{ route('shiftsTypes.edit', $info->id) }}">تعديل</a>
+                    @if ($info->CounterUse==0)
+                    <a class="btn btn-sm btn-danger are_you_shur"
+                    href="{{ route('shiftsTypes.destroy', $info->id) }}">حذف</a>
+                    @endif
+                       
                 </td>
 
             </tr>

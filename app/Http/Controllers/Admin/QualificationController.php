@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\QualificationsRequest;
+use App\Models\Employee;
 use App\Models\Qualification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,11 @@ class QualificationController extends Controller
     {
         $com_code = auth()->user()->com_code;
         $Qualifications = get_cols_where_paginate(new Qualification(), array("*"), array('com_code' => $com_code), 'id', 'DESC', PAGINATION_COUNTER);
+        if(!empty($Qualifications)){
+            foreach($Qualifications as $info){
+                $info->CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"qualifications_id"=>$info->id));
+            } 
+        }
         return view('admin.Qualification.index', compact('Qualifications'));
     }
 
@@ -125,7 +131,10 @@ class QualificationController extends Controller
                 return redirect()->back()->with('error', "عفوا غير قادر للوصول الى البيانات")->withInput();
             }
 
-           
+            $CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"qualifications_id"=>$id));
+            if($CounterUse>0){
+                return redirect()->route('Qualifications.index')->with(['error'=>'عفواً لا يمكن حذف البيانات لانه تم استخدامها سابقاً']); 
+            }
             DB::beginTransaction();
            
             destroy(new Qualification(), array('com_code' => $com_code, 'id' => $id));

@@ -77,9 +77,10 @@
 
                                         <a class="btn btn-sm btn-success"
                                             href="{{ route('departements.edit', $info->id) }}">تعديل</a>
-                                        <a class="btn btn-sm btn-danger are_you_shur"
+                                            @if ($info->CounterUse==0)
+                                            <a class="btn btn-sm btn-danger are_you_shur"
                                             href="{{ route('departements.destroy', $info->id) }}">حذف</a>
-
+                                            @endif
                                     </td>
 
                                 </tr>

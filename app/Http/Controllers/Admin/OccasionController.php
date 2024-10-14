@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OccasionsRequest;
+use App\Models\Employee;
 use App\Models\Occasion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,7 @@ class OccasionController extends Controller
     {
         $com_code = auth()->user()->com_code;
         $Occasions = get_cols_where_paginate(new Occasion(), array("*"), array('com_code' => $com_code), 'id', 'DESC', PAGINATION_COUNTER);
+      
         return view('admin.Occasions.index', compact('Occasions'));
     
     }

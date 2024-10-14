@@ -79,8 +79,10 @@
                                     <td>
                                         @if ($info->type == 1)
                                             صباحي
-                                        @else
+                                        @elseif ($info->type == 2)
                                             مسائي
+                                            @else
+                                            يوم كامل
                                         @endif
                                     </td>
 
@@ -137,9 +139,12 @@
 
                                         <a class="btn btn-sm btn-success"
                                             href="{{ route('shiftsTypes.edit', $info->id) }}">تعديل</a>
+                                        
+                                            @if ($info->CounterUse==0)
                                         <a class="btn btn-sm btn-danger are_you_shur"
-                                            href="{{ route('shiftsTypes.destroy', $info->id) }}">حذف</a>
-
+                                        href="{{ route('shiftsTypes.destroy', $info->id) }}">حذف</a>
+                                        @endif
+                                           
                                     </td>
 
                                 </tr>

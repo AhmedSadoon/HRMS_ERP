@@ -22,7 +22,7 @@ return $data;
 
 function get_count_where($model=null,$where=array()) {
     $counter=$model::where($where)->count();
-    return $counter+1;
+    return $counter;
 }
 
 

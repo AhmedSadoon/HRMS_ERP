@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BranchesRequest;
 use App\Models\Branche;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,6 +18,12 @@ class BranchesController extends Controller
     {
         $com_code=auth()->user()->com_code;
         $branches=get_cols_where_paginate(new Branche(),array('*'),array('com_code'=>$com_code),'id','DESC',PAGINATION_COUNTER);
+        
+        if(!empty($branches)){
+            foreach($branches as $info){
+                $info->CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"branch_id"=>$info->id));
+            } 
+        }
         return view('admin.Branches.index',compact('branches'));
     }
 
@@ -61,13 +68,7 @@ class BranchesController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+ 
 
     /**
      * Show the form for editing the specified resource.
@@ -133,7 +134,10 @@ class BranchesController extends Controller
             if(empty($data)){
                 return redirect()->route('branches.index')->with(['error'=>'عفواً غير قادر على الوصول الى البيانات المطلوبة'])->withInput(); 
             }
-
+            $CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"branch_id"=>$id));
+            if($CounterUse>0){
+                return redirect()->route('branches.index')->with(['error'=>'عفواً لا يمكن حذف البيانات لانه تم استخدامها سابقاً']); 
+            }
             DB::beginTransaction();
             destroy(new Branche(),array('id'=>$id,'com_code'=>$com_code));
             DB::commit();

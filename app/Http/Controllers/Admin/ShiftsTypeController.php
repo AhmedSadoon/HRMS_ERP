@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShiftTypeRequest;
+use App\Models\Employee;
 use App\Models\Shifts_type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,11 @@ class ShiftsTypeController extends Controller
     {
         $com_code = auth()->user()->com_code;
         $Shifts_type = get_cols_where_paginate(new Shifts_type(), array('*'), array('com_code' => $com_code), 'id', 'DESC', PAGINATION_COUNTER);
+        if(!empty($Shifts_type)){
+            foreach($Shifts_type as $info){
+                $info->CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"shift_type_id"=>$info->id));
+            } 
+        }
         return view('admin.ShiftsTypes.index', compact('Shifts_type'));
     }
 
@@ -132,11 +138,16 @@ class ShiftsTypeController extends Controller
     public function destroy($id)
     {
         try {
-
+            $com_code=auth()->user()->com_code;
             $data=get_cols_where_row(new Shifts_type(),array("id"),array('id'=>$id,'com_code'=>auth()->user()->com_code));
 
             if(empty($data)){
                 return redirect()->route('shiftsTypes.index')->with('error','عفواً غير قادر الى الوصول للبيانات المطلوبة'); 
+            }
+
+            $CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"shift_type_id"=>$id));
+            if($CounterUse>0){
+                return redirect()->route('shiftsTypes.index')->with(['error'=>'عفواً لا يمكن حذف البيانات لانه تم استخدامها سابقاً']); 
             }
 
             DB::beginTransaction();
@@ -144,6 +155,7 @@ class ShiftsTypeController extends Controller
            
 
             DB::commit();
+
             return redirect()->route('shiftsTypes.index')->with('success','تم حذف الشفت بنجاح');
 
         } catch (\Exception $ex) {
@@ -154,6 +166,7 @@ class ShiftsTypeController extends Controller
 
 
     public function ajax_search(Request $request) {
+        $com_code=auth()->user()->com_code;
         if($request->ajax()){
             $query = Shifts_type::query();
     
@@ -170,7 +183,11 @@ class ShiftsTypeController extends Controller
             }
     
             $data = $query->orderBy('id', 'DESC')->paginate(PAGINATION_COUNTER);
-    
+            if(!empty($data)){
+                foreach($data as $info){
+                    $info->CounterUse=get_count_where(new Employee(),array("com_code"=>$com_code,"shift_type_id"=>$info->id));
+                } 
+            }
             return view('admin.ShiftsTypes.ajax_search', compact('data'));
         }
     }

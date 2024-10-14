@@ -81,9 +81,10 @@
 
                                         <a class="btn btn-sm btn-success"
                                             href="{{ route('Occasions.edit', $info->id) }}">تعديل</a>
-                                        <a class="btn btn-sm btn-danger are_you_shur"
+                                            
+                                            <a class="btn btn-sm btn-danger are_you_shur"
                                             href="{{ route('Occasions.destroy', $info->id) }}">حذف</a>
-
+                                            
                                     </td>
 
                                 </tr>
