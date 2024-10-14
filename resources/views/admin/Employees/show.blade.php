@@ -773,7 +773,10 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>راتب الموظف الشهري </label>
+                                            <label>راتب الموظف الشهري 
+                                                <button type="button" id="showSalaryArchive" class="btn btn-sm btn-success" data-id="{{$data['id']}}">عرض الارشيف</button>
+
+                                            </label>
                                             <input disabled autofocus type="text" name="emp_salary" id="emp_salary"
                                                 oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
                                                 class="form-control"
@@ -1335,7 +1338,30 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+
+    
+
     @endif
+    <div class="modal fade" id="showSalaryArchiveModal">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content bg-info">
+            <div class="modal-header">
+              <h4 class="modal-title">عرض سجلات ارشيف الرواتب للموظف</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="showSalaryArchiveModalBady" style="background-color: white; color:black;">
+
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
 @endsection
 
 @section('script')
@@ -1398,6 +1424,33 @@
             return false;
           }
         });
+
+        $(document).on('click', '#showSalaryArchive', function(e) {
+            var id = $(this).data('id');
+            jQuery.ajax({
+                url: '{{ route('Employees.showSalaryArchive') }}',
+                type: 'post',
+                dataType: 'html',
+                cache: false,
+                data: {
+                    "_token": '{{ csrf_token() }}',
+                    id: id
+                   
+                },
+
+                success: function(data) {
+                    $("#showSalaryArchiveModalBady").html(data);
+                    $("#showSalaryArchiveModal").modal("show");
+                    $('.select2').select2();
+                },
+                error: function() {
+                    alert("عفواً حدث خطأ")
+                }
+
+            });
+        });
+
+        
     </script>
     
 @endsection

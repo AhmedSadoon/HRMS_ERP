@@ -15,6 +15,7 @@ use App\Models\driving_license_type;
 use App\Models\Employee;
 use App\Models\Employee_file;
 use App\Models\employee_fixed_suits;
+use App\Models\Employee_salary_achive;
 use App\Models\Governorate;
 use App\Models\jobs_category;
 use App\Models\Language;
@@ -54,6 +55,11 @@ class EmployeesController extends Controller
         $other['shift_types'] = get_cols_where(new Shifts_type(), array("id", "type", "form_time", "to_time", "total_huor"), array('com_code' => $com_code, 'active' => 1), 'id', 'ASC');
         $other['languages'] = get_cols_where(new Language(), array("id", "name"), array('com_code' => $com_code, 'active' => 1), 'id', 'ASC');
 
+        if(!empty($Employees)){
+            foreach($Employees as $info){
+                $info->CounterUserBefor=get_count_where(new Main_salary_employee(),array('com_code'=>$com_code,'employees_code'=>$info->employees_code));
+            }
+        }
 
         return view('admin.Employees.index', ['Employees' => $Employees, 'other' => $other]);
     }
@@ -89,7 +95,7 @@ class EmployeesController extends Controller
     {
 
 
-        // try {
+        try {
             $com_code = auth()->user()->com_code;
 
 
@@ -223,13 +229,25 @@ class EmployeesController extends Controller
 
             DB::beginTransaction();
 
-            insert(new Employee(), $dataToInsert);
+           $flag= insert(new Employee(), $dataToInsert,true);
+           if($flag){
+            if( $dataToInsert['emp_salary']>0){
+                $dataToInsertSalaryArchive['employee_id']=$flag['id'];
+                $dataToInsertSalaryArchive['value']=$dataToInsert['emp_salary'];
+                $dataToInsertSalaryArchive['added_by'] = auth()->user()->id;
+                $dataToInsertSalaryArchive['com_code'] = $com_code;
+            
+                insert(new Employee_salary_achive(), $dataToInsertSalaryArchive);
+
+            }
+           }
+
             DB::commit();
             return redirect()->route('Employees.index')->with('success', 'تم اضافة الموظف بنجاح');
-        // } catch (\Exception $ex) {
-        //     DB::rollBack();
-        //     return redirect()->back()->with(['error' => 'عفواً حدث خطأ' . $ex->getMessage()])->withInput();
-        // }
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return redirect()->back()->with(['error' => 'عفواً حدث خطأ' . $ex->getMessage()])->withInput();
+        }
     }
 
     /**
@@ -431,6 +449,18 @@ class EmployeesController extends Controller
 
             $flag=update(new Employee(), $dataToUpdate, array('com_code' => $com_code, 'id' => $id));
             if($flag){
+                //نشوف لو في اختلاف في قيمة الراتب المحدث ينزل له في ارشيف الرواتب
+                if( $dataToUpdate['emp_salary']!=$data['emp_salary']){
+                    $dataToInsertSalaryArchive['employee_id']=$id;
+                    $dataToInsertSalaryArchive['value']=$dataToUpdate['emp_salary'];
+                    $dataToInsertSalaryArchive['added_by'] = auth()->user()->id;
+                    $dataToInsertSalaryArchive['com_code'] = $com_code;
+                
+                    insert(new Employee_salary_achive(), $dataToInsertSalaryArchive);
+    
+                }
+
+
                 if($dataToUpdate['does_have_fixed_allowances']==0){
                     //يتم حذف البدلات الثابتة وتحديث الراتب الحالي المفتوح 
                     destroy(new employee_fixed_suits(),array("com_code"=>$com_code,"employee_id"=>$id));
@@ -464,7 +494,11 @@ class EmployeesController extends Controller
                 return redirect()->back()->with('error', 'عفواً غير قادر للوصول الى البيانات المطلوبة')->withInput();
             }
 
+            $CounterUserBefor=get_count_where(new Main_salary_employee(),array('com_code'=>$com_code,'employees_code'=>$data['employees_code']));
+            if($CounterUserBefor!=0){
+                return redirect()->back()->with('error', 'عفواً هذا الموظف له سجلات رواتب من قبل ومتاح فقط تعطيله خارج الخدمة')->withInput();
 
+            }
             destroy(new Employee(), array('com_code' => $com_code, 'id' => $id));
 
             return redirect()->route('Employees.index')->with('success', 'تم حذف البيانات بنجاح');
@@ -602,7 +636,7 @@ class EmployeesController extends Controller
                 $operator8 = "=";
                 $value8 = $emp_gender_search;
             }
-
+            $com_code = auth()->user()->com_code;
             // البحث باستخدام الشروط المحددة
             $data = Employee::select('*')
                 ->where($field1, $operator1, $value1)
@@ -613,8 +647,15 @@ class EmployeesController extends Controller
                 ->where($field6, $operator6, $value6)
                 ->where($field7, $operator7, $value7)
                 ->where($field8, $operator8, $value8)
+                ->where('com_code','=',$com_code)
                 ->orderBy('id', 'DESC')
                 ->paginate(PAGINATION_COUNTER);
+
+                if(!empty($data)){
+                    foreach($data as $info){
+                        $info->CounterUserBefor=get_count_where(new Main_salary_employee(),array('com_code'=>$com_code,'employees_code'=>$info->employees_code));
+                    }
+                }
 
             return view( 'admin.Employees.ajax_search', compact('data'));
         }
@@ -832,6 +873,16 @@ class EmployeesController extends Controller
         } catch (\Exception $ex) {
             DB::rollBack();
             return redirect()->back()->with(['error' => 'عفواً حدث خطأ' . $ex->getMessage()])->withInput();
+        }
+    }
+
+    public function showSalaryArchive(Request $request){
+        $com_code = auth()->user()->com_code;
+
+        if($request->ajax()){
+            $data=get_cols_where(new Employee_salary_achive(),array("*"),array('com_code'=>$com_code,'employee_id'=>$request->id),'id','DESC');
+            return view('admin.Employees.showSalaryArchive',['data'=>$data]);
+
         }
     }
 }

@@ -214,9 +214,12 @@
                                             href="{{ route('Employees.edit', $info->id) }}">تعديل</a>
                                         <a class="btn btn-sm btn-info"
                                             href="{{ route('Employees.show', $info->id) }}">المزيد</a>
-                                        <a class="btn btn-sm btn-danger are_you_shur"
+                                            @if ($info->CounterUserBefor==0)
+                                            <a class="btn btn-sm btn-danger are_you_shur"
                                             href="{{ route('Employees.destroy', $info->id) }}">حذف</a>
-
+                                            @endif
+                                        
+                                            
                                     </td>
 
                                 </tr>

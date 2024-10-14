@@ -174,6 +174,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
     Route::get('/Employees/destroy_allowances/{id}', [EmployeesController::class, 'destroy_allowances'])->name('Employees.destroy_allowances');
     Route::post('/Employees/load_edit_allowances', [EmployeesController::class, 'load_edit_allowances'])->name('Employees.load_edit_allowances');
     Route::post('/Employees/do_edit_allowances/{id}', [EmployeesController::class, 'do_edit_allowances'])->name('Employees.do_edit_allowances');
+    Route::post('/Employees/showSalaryArchive', [EmployeesController::class, 'showSalaryArchive'])->name('Employees.showSalaryArchive');
 
 
     //----------------نهاية شؤون الموظفين---------------------
