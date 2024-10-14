@@ -166,6 +166,7 @@ class EmployeesController extends Controller
                 'shift_type_id' => $request->shift_type_id,
                 'daily_work_hour' => $request->daily_work_hour,
                 'emp_salary' => $request->emp_salary,
+                'day_price'=>($request->emp_salary/30),
                 'motivation_type' => $request->motivation_type,
                 'motivation' => $request->motivation,
                 'is_social_nsurance' => $request->is_social_nsurance,
@@ -191,8 +192,6 @@ class EmployeesController extends Controller
                 'emp_pasport_exp' => $request->emp_pasport_exp,
                 'does_have_fixed_allowances' => $request->does_have_fixed_allowances,
                 'is_done_vaccation_formula' => $request->is_done_vaccation_formula,
-
-
                 'emp_Basic_stay_com' => $request->emp_Basic_stay_com,
                 'date' => $request->date,
                 'is_sensitive_manager_data' => $request->is_sensitive_manager_data,
@@ -202,9 +201,7 @@ class EmployeesController extends Controller
 
             ];
 
-            if (!empty($request->emp_salary)) {
-                $dataToInsert['day_price'] = $request->day_price;
-            }
+           
 
             if ($request->has('emp_photo')) {
                 $request->validate([
@@ -389,6 +386,7 @@ class EmployeesController extends Controller
                 'shift_type_id' => $request->shift_type_id,
                 'daily_work_hour' => $request->daily_work_hour,
                 'emp_salary' => $request->emp_salary,
+                'day_price'=>($request->emp_salary/30),
                 'motivation_type' => $request->motivation_type,
                 'motivation' => $request->motivation,
                 'is_social_nsurance' => $request->is_social_nsurance,

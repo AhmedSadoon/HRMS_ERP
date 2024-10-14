@@ -7,6 +7,15 @@ use App\Models\Employee;
 use App\Models\Finance_calender;
 use App\Models\Finance_cin_periods;
 use App\Models\Main_salary_employee;
+use App\Models\Main_salary_employee_Absence;
+use App\Models\Main_salary_employee_addition;
+use App\Models\Main_salary_employee_allowances;
+use App\Models\Main_salary_employee_discount;
+use App\Models\Main_salary_employee_loans;
+use App\Models\Main_salary_employee_p_loans;
+use App\Models\Main_salary_employee_p_loans_aksat;
+use App\Models\Main_salary_employee_rewards;
+use App\Models\Main_salary_employee_sanctions;
 use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -210,7 +219,32 @@ class MainSalaryRecordController extends Controller
                         $dataToUpdate['final_the_net_after_close_for_trahil'] = 0;
                     }
 
-                    update(new Main_salary_employee(), $dataToUpdate, array('com_code' => $com_code, 'id' => $info->id, 'is_archived' => 0, 'is_stoped' => 0));
+                    $flagUpdate=update(new Main_salary_employee(), $dataToUpdate, array('com_code' => $com_code, 'id' => $info->id, 'is_archived' => 0, 'is_stoped' => 0));
+                    
+                    if($flagUpdate){
+                        $dataToUpdate_variables['is_archived'] = 1;
+                        $dataToUpdate_variables['archived_at'] = date("Y-m-d H:i:s");
+                        $dataToUpdate_variables['archived_by'] = auth()->user()->id;
+                        update(new Main_salary_employee_sanctions(), $dataToUpdate_variables, array('com_code' => $com_code, 'main_salary_employee_id' => $info->id, 'finance_cin_periods_id'=>$id));
+                        update(new Main_salary_employee_Absence(), $dataToUpdate_variables, array('com_code' => $com_code, 'main_salary_employee_id' => $info->id, 'finance_cin_periods_id'=>$id));
+                        update(new Main_salary_employee_discount(), $dataToUpdate_variables, array('com_code' => $com_code, 'main_salary_employee_id' => $info->id, 'finance_cin_periods_id'=>$id));
+                        update(new Main_salary_employee_loans(), $dataToUpdate_variables, array('com_code' => $com_code, 'main_salary_employee_id' => $info->id, 'finance_cin_periods_id'=>$id));
+
+                        Main_salary_employee_p_loans_aksat::where('com_code' ,'=', $com_code)
+                        ->where("year_and_month",$data['year_and_month'])
+                        ->where('is_archived','=',0)
+                        ->where('state','!=',2)
+                        ->where('employees_code','=',$info->employees_code)
+                        ->where('main_salary_employee_id','=',$info->id)
+                        ->update($dataToUpdate_variables);
+                        
+                        update(new Main_salary_employee_addition(), $dataToUpdate_variables, array('com_code' => $com_code, 'main_salary_employee_id' => $info->id, 'finance_cin_periods_id'=>$id));
+                        update(new Main_salary_employee_rewards(), $dataToUpdate_variables, array('com_code' => $com_code, 'main_salary_employee_id' => $info->id, 'finance_cin_periods_id'=>$id));
+                        update(new Main_salary_employee_allowances(), $dataToUpdate_variables, array('com_code' => $com_code, 'main_salary_employee_id' => $info->id, 'finance_cin_periods_id'=>$id));
+
+
+                    }
+
                 }
             }
         }
