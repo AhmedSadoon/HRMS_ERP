@@ -149,7 +149,8 @@
                                         @endif
 
                                         @if ($info->is_dismissail_done == 0 && $info->is_archived == 0)
-                                            <a href="{{route('MainSalary_p_Loans.do_is_dismissail_done_now',$info->id)}}" class="btn btn-sm btn-primary are_you_shur">صرف الان</a>
+                                            <a href="{{ route('MainSalary_p_Loans.do_is_dismissail_done_now', $info->id) }}"
+                                                class="btn btn-sm btn-primary are_you_shur">صرف الان</a>
                                         @endif
                                     </td>
 
@@ -168,10 +169,9 @@
 
                                             <a href="{{ route('MainSalary_p_Loans.delete_parent_loan', $info->id) }}"
                                                 class="btn btn-sm btn-danger are_you_shur">حذف</a>
-
-                                            
                                         @endif
-                                        <button data-id="{{ $info->id }}" class="btn btn-sm btn-dark load_akast_details">الاقساط</button>
+                                        <button data-id="{{ $info->id }}"
+                                            class="btn btn-sm btn-dark load_akast_details">الاقساط</button>
                                     </td>
 
                                 </tr>
@@ -567,6 +567,56 @@
                 $("#total_add").val(value_add * day_price_add * 1);
             });
 
+            $(document).on('click', '.doSingleCachPayNow', function(e) {
+                var res=confirm("هل انت متأكد");
+                if(!res){
+                    return false;
+                }
+                var id = $(this).data('id');
+                var idparent = $(this).data('idparent');
+                jQuery.ajax({
+                    url: '{{ route('MainSalary_p_Loans.doSingleCachPayNow') }}',
+                    type: 'post',
+                    dataType: 'json',
+                    cache: false,
+                    data: {
+                        "_token": '{{ csrf_token() }}',
+                        id: id,
+                        idparent: idparent,
+
+                    },
+
+                    success: function(data) {
+                        jQuery.ajax({
+                            url: '{{ route('MainSalary_p_Loans.load_akast_details') }}',
+                            type: 'post',
+                            dataType: 'html',
+                            cache: false,
+                            data: {
+                                "_token": '{{ csrf_token() }}',
+                                id: idparent,
+
+                            },
+
+                            success: function(data) {
+                                $("#AksatDetailsModalBady").html(data);
+                                $("#AksatDetailsModal").modal("show");
+                                $('.select2').select2();
+                            },
+                            error: function() {
+                                alert("عفواً حدث خطأ")
+                            }
+
+                        });
+                    },
+                    error: function() {
+                        alert("عفواً حدث خطأ")
+                    }
+
+                });
+            });
+
+
         });
 
         $(document).on('click', '.load_edit_this_row', function(e) {
@@ -756,7 +806,7 @@
 
             });
         });
-        
+
 
         $(document).on('click', '#do_edit_now', function(e) {
             var employees_code_edit = $("#employees_code_edit").val();
@@ -848,8 +898,5 @@
             });
 
         });
-
-     
-
     </script>
 @endsection

@@ -76,6 +76,15 @@
                             @else
                                 بأنتظار الدفع
                             @endif
+
+                            @if (
+                                $info->state == 0 and
+                                    $info->counterBeforNotPaid == 0 and
+                                    $info->is_archived == 0 and
+                                    $dataParentLoan['is_dismissail_done'] == 1)
+                                <button class="btn btn-sm btn-danger doSingleCachPayNow" data-id="{{ $info->id }}"
+                                    data-idparent="{{ $dataParentLoan['id'] }}">دفع كاش مفرد</button>
+                            @endif
                         </td>
 
                         <td>
@@ -102,3 +111,4 @@
 @else
     <p class="bg-danger text-center">عفواً لا توجد بيانات لعرضها</p>
 @endif
+

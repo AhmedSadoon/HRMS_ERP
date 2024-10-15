@@ -105,6 +105,19 @@ class Main_salary_employee_p_LoansController extends Controller
             if (!empty($dataParentLoan)) {
                 $dataParentLoan['aksatDetails'] = get_cols_where(new Main_salary_employee_p_loans_aksat(), array("*"), array("com_code" => $com_code, "main_salary_p_loans_id" => $request->id), 'id', 'ASC');
 
+                if(!empty($dataParentLoan['aksatDetails'])){
+                    foreach($dataParentLoan['aksatDetails'] as $info){
+                        //التأكد من القسط الذي عليه دور الدفع وانه غير مؤرشف
+                        // وغير مدفوع عللى راتب الشهر
+                        // عند تحقق كل الشروط يكون مقبول الدفع كاش
+
+                        $info->counterBeforNotPaid=Main_salary_employee_p_loans_aksat::where('com_code','=',$com_code)
+                                                    ->where('main_salary_p_loans_id','=',$request->id)
+                                                    ->where('state','=',0)
+                                                    ->where('id','<',$info->id)
+                                                    ->count();
+                    }
+                }
             }
 
             return view('admin.Main_salary_employee_p_loans.load_akast_details', ['dataParentLoan' => $dataParentLoan]);
@@ -365,6 +378,41 @@ class Main_salary_employee_p_LoansController extends Controller
         } catch (\Exception $ex) {
             DB::rollBack();
             return redirect()->route('MainSalary_p_Loans.index')->with(['error' => 'عفواً حدث خطأ' . $ex->getMessage()])->withInput();
+        }
+    }
+
+    public function doSingleCachPayNow(Request $request)
+    {
+        $com_code = auth()->user()->com_code;
+        if ($request->ajax()) {
+            $dataParentLoan = get_cols_where_row(new Main_salary_employee_p_loans(), array("*"), array('com_code' => $com_code, 'id' => $request->idparent,'is_archived'=>0,'is_dismissail_done'=>1));
+            if (!empty($dataParentLoan)) {
+                $datakast = get_cols_where_row(new Main_salary_employee_p_loans_aksat(), array("*"), array('com_code' => $com_code, 'id' => $request->id,'is_archived'=>0,'state'=>0));
+
+                if(!empty( $datakast)){
+                    $counterBeforNotPaid=Main_salary_employee_p_loans_aksat::where('com_code','=',$com_code)
+                    ->where('main_salary_p_loans_id','=',$request->idparent)
+                    ->where('state','=',0)
+                    ->where('id','<',$request->id)
+                    ->count();
+
+                    if($counterBeforNotPaid==0){
+                        $dataToUpdateAksatcach['state']=2;
+                        $dataToUpdateAksatcach['archived_by'] = auth()->user()->id;
+                        $dataToUpdateAksatcach['is_archived'] =1;
+                        $dataToUpdateAksatcach['archived_at'] =date("Y-m-d H:i:s");
+                        $dataToUpdateAksatcach['updated_by'] = auth()->user()->id;
+
+                        $flag=update(new Main_salary_employee_p_loans_aksat(),$dataToUpdateAksatcach,array('com_code' => $com_code, 'id' => $request->id,'is_archived'=>0,'state'=>0));
+                   
+                        if($flag){
+                            return json_encode("done");
+                        }
+                    }
+                }
+            }
+
+            return view('admin.Main_salary_employee_p_loans.load_akast_details', ['dataParentLoan' => $dataParentLoan]);
         }
     }
 }

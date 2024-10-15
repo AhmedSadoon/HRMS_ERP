@@ -164,8 +164,9 @@
 
                     <div class="col-md-12 text-center">
                         <div class="form-group">
-                            <button type="post" name="submit_button" class="btn btn-sm btn-primary" value="indetails">طباعة البحث تفصيلي</button>
-                            <button type="post" name="submit_button" class="btn btn-sm btn-info" value="intotal">طباعة البحث اجمالي</button>
+                            <button type="post" name="submit_button" class="btn btn-sm btn-primary" value="indetails">طباعة البحث مفصل لكل موظف</button>
+                            <button type="post" name="submit_button" class="btn btn-sm btn-info" value="intotal">طباعة البحث اجالي مصغر</button>
+                            <button type="post" name="submit_button" class="btn btn-sm btn-warning" value="intotalWithDetails">طباعة البحث اجالي مفصل</button>
                             <hr>
                         </div>
                     </div>

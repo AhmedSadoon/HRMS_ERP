@@ -166,7 +166,7 @@ class EmployeesController extends Controller
                 'shift_type_id' => $request->shift_type_id,
                 'daily_work_hour' => $request->daily_work_hour,
                 'emp_salary' => $request->emp_salary,
-                'day_price'=>($request->emp_salary/30),
+                
                 'motivation_type' => $request->motivation_type,
                 'motivation' => $request->motivation,
                 'is_social_nsurance' => $request->is_social_nsurance,
@@ -201,7 +201,9 @@ class EmployeesController extends Controller
 
             ];
 
-           
+           if(!empty($request->emp_salary)){
+                $dataToInsert['day_price']=($request->emp_salary/30);
+           }
 
             if ($request->has('emp_photo')) {
                 $request->validate([

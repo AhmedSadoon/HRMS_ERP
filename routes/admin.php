@@ -325,6 +325,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
     Route::post('/MainSalary_p_Loans/do_edit_row', [Main_salary_employee_p_LoansController::class, 'do_edit_row'])->name('MainSalary_p_Loans.do_edit_row');
     Route::post('/MainSalary_p_Loans/print_search', [Main_salary_employee_p_LoansController::class, 'print_search'])->name('MainSalary_p_Loans.print_search');
     Route::get('/MainSalary_p_Loans/do_is_dismissail_done_now/{id}', [Main_salary_employee_p_LoansController::class, 'do_is_dismissail_done_now'])->name('MainSalary_p_Loans.do_is_dismissail_done_now');
+    Route::post('/MainSalary_p_Loans/doSingleCachPayNow', [Main_salary_employee_p_LoansController::class, 'doSingleCachPayNow'])->name('MainSalary_p_Loans.doSingleCachPayNow');
 
     //----------------نهاية السلف المستديمة ---------------------
 

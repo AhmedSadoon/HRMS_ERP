@@ -703,24 +703,74 @@ class Main_salary_employeeController extends Controller
                 ->where('com_code', '=', $com_code)
                 ->orderBy('id', 'DESC')
                 ->paginate(PAGINATION_COUNTER);
+                if($request->submit_button!='indetails' && $request->submit_button!='intotal'){
+                    $total['emp_sal']=0;
+                    $total['day_price']=0;
+                    $total['additions']=0;
+                    $total['motivation']=0;
+                    $total['additional_days_counter']=0;
+                    $total['additional_days']=0;
+                    $total['fixed_suits']=0;
+                    $total['changable_suits']=0;
+                    $total['total_benefits']=0;
+                    $total['absence_days_counter']=0;
+                    $total['absence_days']=0;
+                    $total['sanctions_days_counter']=0;
+                    $total['sanctions_days_total']=0;
+                    $total['monthly_loan']=0;
+                    $total['permanent_loan']=0;
+                    $total['discount']=0;
+                    $total['medical_nsurance_cutMonthely']=0;
+                    $total['social_nsurance_cutMonthely']=0;
+                    $total['total_deductions']=0;
+                    $total['last_salary_remain_balance']=0;
+                    $total['final_the_net']=0;
+        
+                }
 
            
-
             if (!empty($data)) {
                 foreach ($data as $info) {
+
                     $info->emp_name = get_field_value(new Employee(), 'emp_name', array('com_code' => $com_code, 'employees_code' => $info->employees_code));
                     $info->emp_photo = get_field_value(new Employee(), 'emp_photo', array('com_code' => $com_code, 'employees_code' => $info->employees_code));
                     $info->emp_gender = get_field_value(new Employee(), 'emp_gender', array('com_code' => $com_code, 'employees_code' => $info->employees_code));
                     $info->branch_name = get_field_value(new Branche(), 'name', array('com_code' => $com_code, 'id' => $info->branch_id));
                     $info->department_name = get_field_value(new Department(), 'name', array('com_code' => $com_code, 'id' => $info->emp_department_id));
                     $info->jobs_name = get_field_value(new jobs_category(), 'name', array('com_code' => $com_code, 'id' => $info->emp_jobs_id));
+                
+                    if($request->submit_button!='indetails' && $request->submit_button!='intotal'){
+                        $total['emp_sal']+=$info->emp_sal;
+                        $total['day_price']+=$info->day_price;
+                        $total['additions']+=$info->additions;
+                        $total['motivation']+=$info->motivation;
+                        $total['additional_days_counter']+=$info->additional_days_counter;
+                        $total['additional_days']+=$info->additional_days;
+                        $total['fixed_suits']+=$info->fixed_suits;
+                        $total['changable_suits']+=$info->changable_suits;
+                        $total['total_benefits']+=$info->total_benefits;
+                        $total['absence_days_counter']+=$info->absence_days_counter;
+                        $total['absence_days']+=$info->absence_days;
+                        $total['sanctions_days_counter']+=$info->sanctions_days_counter;
+                        $total['sanctions_days_total']+=$info->sanctions_days_total;
+                        $total['monthly_loan']+=$info->monthly_loan;
+                        $total['permanent_loan']+=$info->permanent_loan;
+                        $total['discount']+=$info->discount;
+                        $total['medical_nsurance_cutMonthely']+=$info->medical_nsurance_cutMonthely;
+                        $total['social_nsurance_cutMonthely']+=$info->social_nsurance_cutMonthely;
+                        $total['total_deductions']+=$info->total_deductions;
+                        $total['last_salary_remain_balance']+=$info->last_salary_remain_balance;
+                        $total['final_the_net']+=$info->final_the_net;
+                    }
+                    
+                
                 }
             }
             $systemData=get_cols_where_row(new admin_panel_setting(),array('company_name','image','phone','address'),array('com_code'=>$com_code));
             if($request->submit_button=='indetails'){
                 return view('admin.Main_salary_employee.print_search_indetails', ['data' => $data,'systemData'=>$systemData,'finance_cin_periods_data'=>$finance_cin_periods_data]);
 
-            }else{
+            }elseif($request->submit_button=='intotal'){
 
                 $other['emp_sal'] = Main_salary_employee::where($field1, $operator1, $value1)
                 ->where($field2, $operator2, $value2)
@@ -771,6 +821,10 @@ class Main_salary_employeeController extends Controller
                 ->sum('final_the_net');
 
                 return view('admin.Main_salary_employee.print_search_intotal', ['data' => $data,'systemData'=>$systemData,'finance_cin_periods_data'=>$finance_cin_periods_data,'other'=>$other]);
+            }else{
+                
+                return view('admin.Main_salary_employee.print_search_intotalDetails', ['data' => $data,'systemData'=>$systemData,'finance_cin_periods_data'=>$finance_cin_periods_data,'total'=>$total]);
+
             }
         
     }
