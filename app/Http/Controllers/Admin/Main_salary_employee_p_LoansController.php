@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use App\Models\admin_panel_setting;
 use App\Models\Employee;
+use App\Models\Main_salary_employee;
 use App\Models\Main_salary_employee_p_loans;
 use App\Models\Main_salary_employee_p_loans_aksat;
 use Illuminate\Support\Facades\DB;
 
 class Main_salary_employee_p_LoansController extends Controller
 {
-    
+    use GeneralTrait;
     public function index()
     {
         $com_code = auth()->user()->com_code;
@@ -62,6 +64,7 @@ class Main_salary_employee_p_LoansController extends Controller
                     'year_and_month_start_date' => $request->year_and_month_start_date,
                     'year_and_month_start' => date('Y-m', strtotime($request->year_and_month_start_date)),
                     'notes' => $request->notes,
+                    'created_at' => date("Y-m-d H:i:s"),
                     'added_by' => auth()->user()->id,
                     'com_code' => $com_code
                 ];
@@ -372,6 +375,10 @@ class Main_salary_employee_p_LoansController extends Controller
             if($flagParent){
                 $dataToUpdateAksat['is_parent_dismissail_done']=1;
                 update(new Main_salary_employee_p_loans_aksat(),$dataToUpdateAksat,array('com_code'=>$com_code,'main_salary_p_loans_id'=>$id));
+                $mainSalaryEmplyoeeOpen=get_cols_where_row(new Main_salary_employee(),array('id'),array('com_code'=>$com_code,'employees_code'=>$dataParentLoan['employees_code'],'is_archived'=>0));
+                if(!empty($mainSalaryEmplyoeeOpen)){
+                    $this->Recalculate_main_salary_employee($mainSalaryEmplyoeeOpen['id']);
+                }
             }
             DB::commit();
             return redirect()->route('MainSalary_p_Loans.index')->with('success', 'تم صرف السلفة بنجاح');
