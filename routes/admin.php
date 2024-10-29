@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\additionalTypesController;
 use App\Http\Controllers\Admin\Admin_panel_settingsController;
 use App\Http\Controllers\Admin\AllowanceController;
+use App\Http\Controllers\Admin\Attendance_departureController;
 use App\Http\Controllers\Admin\BranchesController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DepartementController;
@@ -346,6 +347,17 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
 
    //----------------نهاية الرواتب النهائية مفصلة---------------------
 
+       //----------------بداية البصمة---------------------
+       Route::get('/AttendanceDeparture', [Attendance_departureController::class, 'index'])->name('AttendanceDeparture.index');
+       Route::get('/AttendanceDeparture/show/{id}', [Attendance_departureController::class, 'show'])->name('AttendanceDeparture.show');
+       Route::get('/AttendanceDeparture/showPasmaDetails/{employees_code}/{finance_cin_periods_id}', [Attendance_departureController::class, 'showPasmaDetails'])->name('AttendanceDeparture.showPasmaDetails');
+       Route::post('/AttendanceDeparture/ajaxSearch', [Attendance_departureController::class, 'ajax_search'])->name('AttendanceDeparture.ajaxSearch');
+       Route::post('/AttendanceDeparture/print_onePasmasearch', [Attendance_departureController::class, 'print_onePasmasearch'])->name('AttendanceDeparture.print_onePasmasearch');
+       Route::get('/AttendanceDeparture/uploadExcelFile/{id}', [Attendance_departureController::class, 'uploadExcelFile'])->name('AttendanceDeparture.uploadExcelFile');
+       Route::post('/AttendanceDeparture/do_UploadExcelFile/{id}', [Attendance_departureController::class, 'do_UploadExcelFile'])->name('AttendanceDeparture.do_UploadExcelFile');
+       Route::post('/AttendanceDeparture/load_PasmasaArchive', [Attendance_departureController::class, 'load_PasmasaArchive'])->name('AttendanceDeparture.load_PasmasaArchive');
+
+       //----------------نهاية البصمة ---------------------
 
 
 

@@ -276,6 +276,35 @@
                 </ul>
             </li>
             {{-- نهاية الرواتب  --}}
+
+               {{-- بداية البصمة --}}
+
+               <li class="nav-item has-treeview  {{ (request()->is('admin/AttendanceDeparture*')) ? 'menu-open' : ''}}">
+                <a href="#" class="nav-link {{ (request()->is('admin/AttendanceDeparture*')) ? 'active' : ''}}">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                        قائمة جهاز البصمة 
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('AttendanceDeparture.index') }}"
+                            class="nav-link {{ request()->is('admin/AttendanceDeparture*') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>سجلات بصمة الموظفين</p>
+                        </a>
+                    </li>
+
+                    
+
+                    
+
+                  
+
+                </ul>
+            </li>
+            {{-- نهاية البصمة  --}}
         </ul>
     </nav>
     <!-- /.sidebar-menu -->

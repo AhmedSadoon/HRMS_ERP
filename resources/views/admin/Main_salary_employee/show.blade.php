@@ -46,7 +46,7 @@
                 @csrf
                 <input type="hidden" name="the_finance_cin_periods_id" id="the_finance_cin_periods_id"
                     value="{{ $finance_cin_periods_data['id'] }}">
-
+                {{-- البحث --}}
                 <div class="row" style="padding: 5px">
 
 
