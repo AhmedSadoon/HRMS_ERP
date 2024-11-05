@@ -88,7 +88,7 @@
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>بعد كم دقيقه مجموع الانصراف المبكر او الحضور المتأخر نحصم ربع يوم </label>
+                                <label>بعد كم مرة حضور متأخر او تنصراف مبكر خصم ربع يوم	 </label>
                                 <input type="text" name="after_miniute_quarterday" id="after_miniute_quarterday"
                                     class="form-control"
                                     value="{{ old('after_miniute_quarterday', $data['after_miniute_quarterday']) }}"
@@ -122,6 +122,33 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>اقل من كم دقيقة فرق بين البصمة الاولى والثانية يتم اهمال البصمة التأكيدية للموظف</label>
+                                <input type="text" name="less_than_miniute_neglecting_passma" id="less_than_miniute_neglecting_passma"
+                                    class="form-control"
+                                    value="{{ old('less_than_miniute_neglecting_passma', $data['less_than_miniute_neglecting_passma']) }}"
+                                    oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
+                                @error('less_than_miniute_neglecting_passma')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>الحد الاقصى لاحتساب عدد ساعات العمل الاضافية عند انصراف الموظف واحتساب بصمة الانصراف والا ستحتسب على انها بصمة حضور شفت جديد</label>
+                                <input type="text" name="max_hours_take_Pssma_as_additional" id="max_hours_take_Pssma_as_additional"
+                                    class="form-control"
+                                    value="{{ old('max_hours_take_Pssma_as_additional', $data['max_hours_take_Pssma_as_additional']) }}"
+                                    oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
+                                @error('max_hours_take_Pssma_as_additional')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label> رصيد اجازات الموظف الشهري </label>

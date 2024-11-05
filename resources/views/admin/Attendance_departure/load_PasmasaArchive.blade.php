@@ -21,6 +21,7 @@
                         $newDateTime=date("A",strtotime($info->datetimeAction));
                         $newDateTimeType=(($newDateTime=='AM')?'صباحا':'مساءً')
                     @endphp
+                    {{$info->week_day_name_arabic}}
                     {{$date}}
                 </td>
 

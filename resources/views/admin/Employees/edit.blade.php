@@ -804,6 +804,7 @@
                                                                 @endif
                                                                 من
                                                                 @php
+                                                                
                                                                     $dt = new DateTime($info->from_time);
                                                                     $time = $dt->format('h:i');
                                                                     $newDateTime = date(

@@ -69,7 +69,7 @@
                     </tr>
 
                     <tr>
-                        <td class="width30">بعد كم دقيقة مجموع الانصراف المبكر والحضور المتأخر يخصم ربع يوم	</td>
+                        <td class="width30">بعد كم مرة حضور متأخر او تنصراف مبكر خصم ربع يوم	</td>
                         <td>{{$data['after_miniute_quarterday']}}</td>
                     </tr>
 
@@ -81,6 +81,16 @@
                     <tr>
                         <td class="width30">نخصم بعد كم مرة تأخير او انصراف مبكر يوم كامل</td>
                         <td>{{$data['after_time_allday_daycut']}}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="width30"> اقل من كم دقيقة فرق بين البصمة الاولى والثانية يتم اهمال البصمة التأكيدية للموظف </td>
+                        <td>{{$data['less_than_miniute_neglecting_passma']}}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="width30"> الحد الاقصى لاحتساب عدد ساعات العمل الاضافية عند انصراف الموظف واحتساب بصمة الانصراف والا ستحتسب على انها بصمة حضور شفت جديد </td>
+                        <td>{{$data['max_hours_take_Pssma_as_additional']}}</td>
                     </tr>
 
                     <tr>

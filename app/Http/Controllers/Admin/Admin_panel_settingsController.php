@@ -50,6 +50,8 @@ class Admin_panel_settingsController extends Controller
         $dataToUpdate['sanctions_value_second_abcence'] = $request->sanctions_value_second_abcence;
         $dataToUpdate['sanctions_value_thaird_abcence'] = $request->sanctions_value_thaird_abcence;
         $dataToUpdate['sanctions_value_forth_abcence'] = $request->sanctions_value_forth_abcence;
+        $dataToUpdate['less_than_miniute_neglecting_passma'] = $request->less_than_miniute_neglecting_passma;
+        $dataToUpdate['max_hours_take_Pssma_as_additional'] = $request->max_hours_take_Pssma_as_additional;
         $dataToUpdate['updated_by'] = auth()->user()->id;
 
         if ($request->has('image')) {

@@ -10,6 +10,8 @@ use App\Models\Attendance_departure_actions_excel;
 use App\Models\Employee;
 use App\Models\Finance_calender;
 use App\Models\Finance_cin_periods;
+use App\Models\Weekday;
+use DateTime;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -76,7 +78,7 @@ class Attendance_departureController extends Controller
             return redirect()->route('Attendance_departure.index')->with('error','عفواً غير قادر للوصول الى البينات المطلوبة');
         }
 
-        Excel::import(new Attendance_departureImport($finance_cin_periods_id), $request->excel_file);
+        Excel::import(new Attendance_departureImport($finance_cin_periods_data), $request->excel_file);
         return redirect()->route('AttendanceDeparture.show',$finance_cin_periods_id)->with('success','تم سحب البصمة بنجاح');
 
 
@@ -112,8 +114,17 @@ class Attendance_departureController extends Controller
         $com_code = auth()->user()->com_code;
         $attendance_departure_actions_excel = get_cols_where(new Attendance_departure_actions_excel(), array('*'), array('com_code' => $com_code,'employees_code'=>$request->employees_code,'finance_cin_periods_id'=>$request->finance_cin_periods_id),'datetimeAction','ASC');
         
+        if(!empty($attendance_departure_actions_excel)){
+            foreach($attendance_departure_actions_excel as $info){
+                $dt=new DateTime($info->datetimeAction);
+                $date=$dt->format('Y-m-d');
+                $nameOfDay = date('l', strtotime($date));
+                $info->week_day_name_arabic=get_field_value(new Weekday(),'name',array('name_en'=>$nameOfDay));
+
+            }
+        }
               
-        return view('admin.Attendance_departure.load_PasmasaArchive',compact('attendance_departure_actions_excel'));
+        return view('admin.Attendance_departure.load_PasmasaArchive',['attendance_departure_actions_excel'=>$attendance_departure_actions_excel]);
     }
 }
 

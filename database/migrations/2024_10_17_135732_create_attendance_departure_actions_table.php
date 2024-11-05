@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('attendance_departure_id')->references('id')->on('attendance_departure')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('finance_cin_periods_id')->comment('كود الشهر المالي');
             $table->bigInteger('employees_code')->comment('كود الموظف الثابت');
-            $table->dateTime('datetimeAction')->comment('توقيت البصمة من جهاز البصمة');
+            $table->dateTime('datetimeAction')->comment('وقت البصمة');
             $table->tinyInteger('action_type')->comment('نوع حركة البصمة');
             $table->tinyInteger('it_is_active_with_parent')->comment('هل هي المستعملة بتفعيل الاب')->default(0);
             $table->tinyInteger('added_method')->comment('1- dynamic pasma 2-manual')->default(1);

@@ -122,7 +122,12 @@ class ShiftsTypeController extends Controller
             $dataToUpdate['active'] = $request->active;
             $dataToUpdate['updated_by'] = auth()->user()->id;
 
-            update(new Shifts_type(), $dataToUpdate,array('id'=>$id,'com_code'=>auth()->user()->com_code));
+            $flag=update(new Shifts_type(), $dataToUpdate,array('id'=>$id,'com_code'=>auth()->user()->com_code));
+            if($flag){
+                $dataToUpdateEmployees['daily_work_hour']=$dataToUpdate['total_huor'];
+                update(new Employee(), $dataToUpdateEmployees,array('is_has_fixced_shift'=>1,'com_code'=>auth()->user()->com_code,'shift_type_id'=>$id));
+
+            }
             DB::commit();
             return redirect()->route('shiftsTypes.index')->with('success','تم تعديل الشفت بنجاح');
 
