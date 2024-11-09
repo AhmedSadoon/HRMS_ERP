@@ -1,20 +1,23 @@
-@if (@isset($attendance_departure_actions_excel) and !@empty($attendance_departure_actions_excel))
+@if (@isset($Attendance_departure_actions) and !@empty($Attendance_departure_actions))
 <table id="example2" class="table table-bordered table-hover">
 
     <thead class="custom_thead">
         <th>التاريخ</th>
-        <th>التوقيت</th>
-        <th>نوع البصمة</th>
+        <th>نوع البصمة</th>        
+        <th>التوقيت بنظام 24 ساعة</th>
+        <th>التوقيت بنظام 12 ساعة</th>        
+        <th>هل البصمة مفعلة</th>        
+        <th>طريقة الاضافة</th>        
         <th>السحب بواسطة</th>
      
         
        
     </thead>
     <tbody>
-        @foreach ($attendance_departure_actions_excel as $info)
+        @foreach ($Attendance_departure_actions as $info)
             <tr>
+
                 <td>
-                    
                     @php
                         $dt=new DateTime($info->datetimeAction);
                         $date=$dt->format('Y-m-d');
@@ -27,15 +30,57 @@
                 </td>
 
                 <td>
+                    @if ($info->action_type==1)
+                        حضور
+                    @else
+                        انصراف
+                        
+                    @endif
+                </td>
+
+               
+
+                <td>
+                    @php                       
+                    echo date("H:i",strtotime($info->datetimeAction));
+                    @endphp
+                </td>
+
+             
+
+                <td>
                     {{$time}}
                     {{$newDateTimeType}}
                 </td>
 
                 <td>
-                    @if ($info->action_type==1)
-                        حضور
+                    @if ($info->it_is_active_with_parent==1)
+                        نعم
                     @else
-                        انصراف
+                        لا
+                        
+                    @endif
+
+                    @if ($info->it_is_active_with_parent==1)
+
+                        @if ($info->datetimeAction==$parent['datetime_in'])
+                            <br> اخذت كحضور
+                        @endif
+
+                        @if ($info->datetimeAction==$parent['datetime_out'])
+                        <br> اخذت كأنصراف
+                    @endif
+                    
+                    @endif
+
+                    
+                </td>
+
+                <td>
+                    @if ($info->added_method==1)
+                        الي
+                    @else
+                        يدوي
                         
                     @endif
                 </td>

@@ -78,3 +78,9 @@ div#show_year_monthesBody{
 .custom_button{
     margin-top: 33px;
 }
+
+.btn-yahoo{
+    color: #fff;
+    background-color: #720e9e;
+    border-color: rgba(0, 0, 0, 0.2);
+}

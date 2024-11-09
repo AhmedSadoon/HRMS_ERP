@@ -356,6 +356,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
        Route::get('/AttendanceDeparture/uploadExcelFile/{id}', [Attendance_departureController::class, 'uploadExcelFile'])->name('AttendanceDeparture.uploadExcelFile');
        Route::post('/AttendanceDeparture/do_UploadExcelFile/{id}', [Attendance_departureController::class, 'do_UploadExcelFile'])->name('AttendanceDeparture.do_UploadExcelFile');
        Route::post('/AttendanceDeparture/load_PasmasaArchive', [Attendance_departureController::class, 'load_PasmasaArchive'])->name('AttendanceDeparture.load_PasmasaArchive');
+       Route::post('/AttendanceDeparture/load_active_Attendance_departure', [Attendance_departureController::class, 'load_active_Attendance_departure'])->name('AttendanceDeparture.load_active_Attendance_departure');
+       Route::post('/AttendanceDeparture/load_my_action', [Attendance_departureController::class, 'load_my_action'])->name('AttendanceDeparture.load_my_action');
 
        //----------------نهاية البصمة ---------------------
 
