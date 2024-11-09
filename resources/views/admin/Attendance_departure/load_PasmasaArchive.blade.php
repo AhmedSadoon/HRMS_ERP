@@ -18,7 +18,7 @@
                     @php
                         $dt=new DateTime($info->datetimeAction);
                         $date=$dt->format('Y-m-d');
-                        $time=$dt->format('H:i');
+                        $time=$dt->format('h:i');
                         $newDateTime=date("A",strtotime($info->datetimeAction));
                         $newDateTimeType=(($newDateTime=='AM')?'صباحا':'مساءً')
                     @endphp
@@ -45,7 +45,7 @@
                     @php
                     $dt=new DateTime($info->created_at);
                     $date=$dt->format('Y-m-d');
-                    $time=$dt->format('H:i');
+                    $time=$dt->format('h:i');
                     $newDateTime=date("A",strtotime($info->created_at));
                     $newDateTimeType=(($newDateTime=='AM')?'صباحا':'مساءً')
                 @endphp

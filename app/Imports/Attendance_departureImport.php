@@ -159,7 +159,7 @@ class Attendance_departureImport implements ToCollection
                                     $dataToInsertAction['datetimeAction'] = date('Y-m-d H:i:s', strtotime($row[3]));
                                     $dataToInsertAction['action_type'] = $action_type;
                                    
-                                        $dataToInsertAction['it_is_active_with_parent'] = 1;
+                                        $dataToInsertAction['it_is_active_with_parent'] = 0;
                                         $dataToInsertAction['added_method'] = 1;
                                     
 
@@ -168,9 +168,9 @@ class Attendance_departureImport implements ToCollection
                                     $dataToInsertAction['added_by'] = auth()->user()->id;
                                     $dataToInsertAction['com_code'] = $com_code;
                                     $dataToInsertAction['AttendanceDepartureActionsExcelId'] = $Attendance_departure_actions_excel_data['id'];
-                                    $dataToUpdateAction['it_is_active_with_parent']=0;
-                                    update(new Attendance_departure_actions(),$dataToUpdateAction,  array('com_code' => $com_code, 'it_is_active_with_parent' => 1, 'action_type' => $action_type, 'attendance_departure_id' => $last['id']));
+                                    $dataToUpdateAction['it_is_active_with_parent']=1;
                                     insert(new Attendance_departure_actions(), $dataToInsertAction);
+                                    update(new Attendance_departure_actions(),$dataToUpdateAction,  array('com_code' => $com_code,  'action_type' => $action_type, 'attendance_departure_id' => $last['id'],'datetimeAction'=>$dataUpdate['datetime_out']));
                                    
 
                                 }
@@ -237,7 +237,7 @@ class Attendance_departureImport implements ToCollection
                                         $dataToInsertAction['employees_code'] = $EmployeeData['employees_code'];
                                         $dataToInsertAction['datetimeAction'] = date('Y-m-d H:i:s', strtotime($row[3]));
                                         $dataToInsertAction['action_type'] = $action_type;
-                                         $dataToInsertAction['it_is_active_with_parent'] = 1;
+                                         $dataToInsertAction['it_is_active_with_parent'] = 0;
                                          $dataToInsertAction['added_method'] = 1;
                                         
 
@@ -246,9 +246,10 @@ class Attendance_departureImport implements ToCollection
                                         $dataToInsertAction['added_by'] = auth()->user()->id;
                                         $dataToInsertAction['com_code'] = $com_code;
                                         $dataToInsertAction['AttendanceDepartureActionsExcelId'] = $Attendance_departure_actions_excel_data['id'];
-                                        $dataToUpdateAction['it_is_active_with_parent']=0;
-                                        update(new Attendance_departure_actions(),$dataToUpdateAction,  array('com_code' => $com_code, 'it_is_active_with_parent' => 1, 'action_type' => $action_type, 'attendance_departure_id' => $last['id']));
+                                        $dataToUpdateAction['it_is_active_with_parent']=1;
                                         insert(new Attendance_departure_actions(), $dataToInsertAction);
+
+                                        update(new Attendance_departure_actions(),$dataToUpdateAction,  array('com_code' => $com_code,  'action_type' => $action_type, 'attendance_departure_id' => $last['id'],'datetimeAction'=>$dataUpdate['datetime_out']));
                                             
 
                                     }
@@ -317,7 +318,7 @@ class Attendance_departureImport implements ToCollection
                                             $dataToInsertAction['datetimeAction'] = date('Y-m-d H:i:s', strtotime($row[3]));
                                             $dataToInsertAction['action_type'] = $action_type;
                                           
-                                                $dataToInsertAction['it_is_active_with_parent'] = 1;
+                                                $dataToInsertAction['it_is_active_with_parent'] = 0;
                                                 $dataToInsertAction['added_method'] = 1;
                                             
 
@@ -326,9 +327,10 @@ class Attendance_departureImport implements ToCollection
                                             $dataToInsertAction['added_by'] = auth()->user()->id;
                                             $dataToInsertAction['com_code'] = $com_code;
                                             $dataToInsertAction['AttendanceDepartureActionsExcelId'] = $Attendance_departure_actions_excel_data['id'];
-                                            $dataToUpdateAction['it_is_active_with_parent']=0;
-                                            update(new Attendance_departure_actions(),$dataToUpdateAction,  array('com_code' => $com_code, 'it_is_active_with_parent' => 1, 'action_type' => $action_type, 'attendance_departure_id' => $last['id']));
+                                            $dataToUpdateAction['it_is_active_with_parent']=1;
                                             insert(new Attendance_departure_actions(), $dataToInsertAction);
+
+                                            update(new Attendance_departure_actions(),$dataToUpdateAction,  array('com_code' => $com_code,  'action_type' => $action_type, 'attendance_departure_id' => $last['id'],'datetimeAction'=>$dataUpdate['datetime_out']));
                                            
 
                                         }
@@ -398,13 +400,16 @@ class Attendance_departureImport implements ToCollection
                                         $dataToInsertAction['employees_code'] = $EmployeeData['employees_code'];
                                         $dataToInsertAction['datetimeAction'] = date('Y-m-d H:i:s', strtotime($row[3]));
                                         $dataToInsertAction['action_type'] = $action_type;
-                                        $dataToInsertAction['it_is_active_with_parent'] = 1;
+                                        $dataToInsertAction['it_is_active_with_parent'] = 0;
                                         $dataToInsertAction['added_method'] = 1;
                                         $dataToInsertAction['is_made_action_on_emp'] = 0;
                                         $dataToInsertAction['added_by'] = auth()->user()->id;
                                         $dataToInsertAction['com_code'] = $com_code;
                                         $dataToInsertAction['AttendanceDepartureActionsExcelId'] = $Attendance_departure_actions_excel_data['id'];
                                         insert(new Attendance_departure_actions(), $dataToInsertAction);
+                                        $dataToUpdateAction['it_is_active_with_parent']=1;
+                                        update(new Attendance_departure_actions(),$dataToUpdateAction,  array('com_code' => $com_code,  'action_type' => $action_type, 'attendance_departure_id' => $flaginsertParent['id'],'datetimeAction'=>$datainsert['datetime_in']));
+
                                     }
                                 }
                             }
@@ -471,13 +476,16 @@ class Attendance_departureImport implements ToCollection
                             $dataToInsertAction['employees_code'] = $EmployeeData['employees_code'];
                             $dataToInsertAction['datetimeAction'] = date('Y-m-d H:i:s', strtotime($row[3]));
                             $dataToInsertAction['action_type'] = $action_type;
-                            $dataToInsertAction['it_is_active_with_parent'] = 1;
+                            $dataToInsertAction['it_is_active_with_parent'] = 0;
                             $dataToInsertAction['added_method'] = 1;
                             $dataToInsertAction['is_made_action_on_emp'] = 0;
                             $dataToInsertAction['added_by'] = auth()->user()->id;
                             $dataToInsertAction['com_code'] = $com_code;
                             $dataToInsertAction['AttendanceDepartureActionsExcelId'] = $Attendance_departure_actions_excel_data['id'];
                             insert(new Attendance_departure_actions(), $dataToInsertAction);
+                            $dataToUpdateAction['it_is_active_with_parent']=1;
+                            update(new Attendance_departure_actions(),$dataToUpdateAction,  array('com_code' => $com_code,  'action_type' => $action_type, 'attendance_departure_id' => $flaginsertParent['id'],'datetimeAction'=>$datainsert['datetime_in']));
+
                         }
                     }
                 }

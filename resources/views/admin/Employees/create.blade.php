@@ -805,23 +805,19 @@
                                                                 @php
                                                                     $dt = new DateTime($info->from_time);
                                                                     $time = $dt->format('h:i');
-                                                                    $newDateTime = date(
-                                                                        'A',
-                                                                        strtotime($info->from_time),
-                                                                    );
-                                                                    $newDateTimeType =
-                                                                        $newDateTime == 'AM' ? 'صباحا ' : 'مساء';
+                                                                    $newDateTime = date('A', strtotime($info->from_time));
+                                                                    $newDateTimeType =($newDateTime == 'AM') ? 'صباحا ' : 'مساء';                                                           
+                   
                                                                 @endphp
-
-                                                                {{ $time }}
+                                                                 
+                                                                 {{ $time }} 
                                                                 {{ $newDateTimeType }}
                                                                 الي
                                                                 @php
                                                                     $dt = new DateTime($info->to_time);
                                                                     $time = $dt->format('h:i');
                                                                     $newDateTime = date('A', strtotime($info->to_time));
-                                                                    $newDateTimeType =
-                                                                        $newDateTime == 'AM' ? 'صباحا ' : 'مساء';
+                                                                    $newDateTimeType = $newDateTime == 'AM' ? 'صباحا ' : 'مساء';
                                                                 @endphp
 
                                                                 {{ $time }}
