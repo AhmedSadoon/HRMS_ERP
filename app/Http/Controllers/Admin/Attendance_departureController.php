@@ -13,6 +13,7 @@ use App\Models\Employee;
 use App\Models\Finance_calender;
 use App\Models\Finance_cin_periods;
 use App\Models\Main_salary_employee;
+use App\Models\Vacation_type;
 use App\Models\Weekday;
 use DateTime;
 use Illuminate\Http\Request;
@@ -177,15 +178,69 @@ class Attendance_departureController extends Controller
                     }
                     ////////////////////////////////////////////////////////////
                     $other['data']=get_cols_where(new Attendance_departure(),array('*'),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->finance_cin_periods_id,'employees_code'=>$request->employees_code),'the_day_date','ASC');
-                    
+                    $other['total_cut']=0;
+                    $other['total_attedance_dely']=0;
+                    $other['total_early_departure']=0;
+                    $other['total_hours']=0;
+                    $other['total_absen_hours']=0;
+                    $other['total_additional_hours']=0;
+                    $other['total_vacations_type_id']=0;
                     if (!empty($other['data'])) {
                         foreach ($other['data'] as $info) {
                             
                             $nameOfDay = date('l', strtotime($info->the_day_date));
                             $info->week_day_name_arabic = get_field_value(new Weekday(), 'name', array('name_en' => $nameOfDay));
                             $info->attendance_departure_actions_Counter=get_count_where(new Attendance_departure_actions(),array('com_code'=>$com_code,'attendance_departure_id'=>$info->id,'finance_cin_periods_id'=>$request->finance_cin_periods_id,'employees_code'=>$request->employees_code));
+                            if($info->cut!=null){
+                                $other['total_cut']+=$info->cut;
+                            }
+
+                            if($info->attedance_dely!=null){
+                                $other['total_attedance_dely']+=$info->attedance_dely;
+                            }
+
+                            if($info->early_departure!=null){
+                                $other['total_early_departure']+=$info->early_departure;
+                            }
+
+                         
+
+                            if($info->total_hours!=null){
+                                $other['total_hours']+=$info->total_hours;
+                            }
+
+                            if($info->absen_hours!=null){
+                                $other['total_absen_hours']+=$info->absen_hours;
+                            }
+
+                            if($info->additional_hours!=null){
+                                $other['total_additional_hours']+=$info->additional_hours;
+                            }
+
+                            if($info->vacations_type_id!=null){
+                                $other['total_vacations_type_id']+=1;
+                            }
+
+
                         }
                     }
+
+                    $other['vacation_types']=Vacation_type::all();
+
+                    $other['vacations_type_distinct']=Attendance_departure::where('com_code','=',$com_code)
+                                            ->where('finance_cin_periods_id','=',$request->finance_cin_periods_id)
+                                            ->where('employees_code','=',$request->employees_code)
+                                            ->where('vacations_type_id','>',0)
+                                            ->orderBy('vacations_type_id','ASC')
+                                            ->distinct()->get('vacations_type_id');
+                            if(!empty($other['vacations_type_distinct'])){
+                                foreach($other['vacations_type_distinct'] as $info){
+                                    $info->name=get_field_value(new Vacation_type(),'name',array('id'=>$info->vacations_type_id));
+                                    $info->counter=get_count_where(new Attendance_departure(),array('com_code'=>$com_code,'finance_cin_periods_id'=>$request->finance_cin_periods_id,'employees_code'=>$request->employees_code,'vacations_type_id'=>$info->vacations_type_id));
+
+
+                                }
+                            }                
 
                     return view('admin.Attendance_departure.ajax_load_active_Attendance_departure', ['other' => $other,'max_attend_date'=>$max_attend_date]);
 
@@ -213,6 +268,36 @@ class Attendance_departureController extends Controller
             }
 
             return view('admin.Attendance_departure.load_my_action', ['Attendance_departure_actions' => $Attendance_departure_actions,'parent'=>$parent]);
+        }
+    }
+
+    public function save_active_Attendance_departure(Request $request)
+    {
+        $com_code = auth()->user()->com_code;
+        if ($request->ajax()) {
+           
+            $attendance_departure=get_cols_where_row(new Attendance_departure(),array('the_day_date'),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->finance_cin_periods_id,'employees_code'=>$request->employees_code));
+            if(!empty($attendance_departure)){
+                $dataToUpdate['variables']=$request->variables;
+                $dataToUpdate['cut']=$request->cut;
+                $dataToUpdate['vacations_type_id']=$request->vacation_types_id;
+                $dataToUpdate['attedance_dely']=$request->attedance_dely;
+                $dataToUpdate['early_departure']=$request->early_departure;
+                $dataToUpdate['azn_hours']=$request->azn_hours;
+                $dataToUpdate['total_hours']=$request->total_hours;
+                $dataToUpdate['absen_hours']=$request->absen_hours;
+                $dataToUpdate['additional_hours']=$request->additional_hours;
+
+                $flag=update(new Attendance_departure(),$dataToUpdate,array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->finance_cin_periods_id,'employees_code'=>$request->employees_code));
+
+                if($flag){
+                    return json_encode('done');
+                }
+
+            }   
+
+                
+            
         }
     }
 }

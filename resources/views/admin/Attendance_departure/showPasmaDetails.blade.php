@@ -35,8 +35,8 @@
                     ({{ $finance_cin_periods_data['month']->name }} لسنة {{ $finance_cin_periods_data['finance_yr'] }})
 
                 </h3>
-                <input type="hidden" id="the_finance_cin_periods_id" value="{{$finance_cin_periods_data['id']}}">
-                <input type="hidden" id="the_employees_code" value="{{$Employee_data['employees_code']}}">
+                <input type="hidden" id="the_finance_cin_periods_id" value="{{ $finance_cin_periods_data['id'] }}">
+                <input type="hidden" id="the_employees_code" value="{{ $Employee_data['employees_code'] }}">
                 <button class="btn btn-sm btn-yahoo" style="float: right;"
                     data-empcode="{{ $Employee_data['employees_code'] }}"
                     data-finclnid="{{ $finance_cin_periods_data['id'] }}" id="showArchivePassmaBtn">عرض سجل ارشيف
@@ -140,11 +140,10 @@
                 });
             });
 
-            $(document).on('click', '#load_active_Attendance_departure', function() {
-
-                var employees_code = $(this).data('empcode');
-                var finance_cin_periods_id = $(this).data('finclnid');
-
+            function load_active_Attendance_departure(){
+                var finance_cin_periods_id = $("#the_finance_cin_periods_id").val();
+                var employees_code = $("#the_employees_code").val();
+                $('#backup_freeze_modal').modal('show');
                 $.ajax({
                     url: '{{ route('AttendanceDeparture.load_active_Attendance_departure') }}',
                     type: 'POST',
@@ -152,18 +151,28 @@
                     cache: false,
                     data: {
                         "_token": '{{ csrf_token() }}',
-                        'employees_code': employees_code,
-                        'finance_cin_periods_id': finance_cin_periods_id,
+                        employees_code: employees_code,
+                        finance_cin_periods_id: finance_cin_periods_id,
                     },
                     success: function(data) {
                         $("#ajax_ersponce_searchdiv").html(data);
-
+                        setTimeout(() => {
+                            $('#backup_freeze_modal').modal('hide');
+                        }, 1000);
                     },
                     error: function() {
-
+                        setTimeout(() => {
+                            $('#backup_freeze_modal').modal(
+                                'hide');
+                        }, 1000);
                     }
 
                 });
+            }
+
+            $(document).on('click', '#load_active_Attendance_departure', function() {
+
+                load_active_Attendance_departure();
             });
 
 
@@ -182,7 +191,7 @@
                         "_token": '{{ csrf_token() }}',
                         employees_code: employees_code,
                         finance_cin_periods_id: finance_cin_periods_id,
-                        attendance_departure_id :attendance_departure_id ,
+                        attendance_departure_id: attendance_departure_id,
                     },
                     success: function(data) {
                         $("#load_my_action_ModalBady").html(data);
@@ -197,7 +206,69 @@
                 });
             });
 
+            $(document).on('click', '.make_save_changes_row', function() {
 
+                var id = $(this).data('id');
+                var variables = $("#variables"+id).val();
+                var cut = $("#cut"+id).val();
+                var vacation_types_id = $("#vacation_types_id"+id).val();
+                var attedance_dely = $("#attedance_dely"+id).val();
+                var early_departure = $("#early_departure"+id).val();
+                var azn_hours = $("#azn_hours"+id).val();
+                var total_hours = $("#total_hours"+id).val();
+                var absen_hours = $("#absen_hours"+id).val();
+                var additional_hours = $("#additional_hours"+id).val();
+                var finance_cin_periods_id = $("#the_finance_cin_periods_id").val();
+                var employees_code = $("#the_employees_code").val();
+                $('#backup_freeze_modal').modal('show');
+
+                $.ajax({
+                    url: '{{ route('AttendanceDeparture.save_active_Attendance_departure') }}',
+                    type: 'POST',
+                    datatype: 'html',
+                    cache: false,
+                    data: {
+                        "_token": '{{ csrf_token() }}',
+                        id:id,
+                        variables:variables,
+                        cut:cut,
+                        vacation_types_id:vacation_types_id,
+                        attedance_dely:attedance_dely,
+                        early_departure:early_departure,
+                        azn_hours:azn_hours,
+                        total_hours:total_hours,
+                        absen_hours:absen_hours,
+                        additional_hours:additional_hours,
+                        finance_cin_periods_id:finance_cin_periods_id,
+                        employees_code:employees_code,
+                    },
+                    success: function(data) {
+                        load_active_Attendance_departure();
+                        setTimeout(() => {
+                        $('#backup_freeze_modal').modal(
+                            'hide');
+                    }, 1000);
+
+
+                    },
+                    error: function() {
+                        load_active_Attendance_departure();
+                        setTimeout(() => {
+                        $('#backup_freeze_modal').modal(
+                            'hide');
+                    }, 1000);
+
+                    alert('عفواً حدث خطأ');
+                    }
+
+                });
+            });
+
+            $(document).on('click', '.move_to', function() {
+                event.preventDefault();
+                var dest=$(this).attr('data-address');
+               $("#"+dest).focus();
+            });
 
 
         });

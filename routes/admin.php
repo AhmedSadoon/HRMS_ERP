@@ -358,6 +358,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
        Route::post('/AttendanceDeparture/load_PasmasaArchive', [Attendance_departureController::class, 'load_PasmasaArchive'])->name('AttendanceDeparture.load_PasmasaArchive');
        Route::post('/AttendanceDeparture/load_active_Attendance_departure', [Attendance_departureController::class, 'load_active_Attendance_departure'])->name('AttendanceDeparture.load_active_Attendance_departure');
        Route::post('/AttendanceDeparture/load_my_action', [Attendance_departureController::class, 'load_my_action'])->name('AttendanceDeparture.load_my_action');
+       Route::post('/AttendanceDeparture/save_active_Attendance_departure', [Attendance_departureController::class, 'save_active_Attendance_departure'])->name('AttendanceDeparture.save_active_Attendance_departure');
 
        //----------------نهاية البصمة ---------------------
 

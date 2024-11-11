@@ -18,16 +18,15 @@
         <th>ساعات عمل</th>
         <th>غياب ساعات</th>
         <th>اضافي ساعات</th>
-        <th>ملاحظات</th>
-        <th>هل تم اخذ اجراء</th>
+        <th>اجراء</th>
         
 
     </thead>
     <tbody>
         @foreach ($other['data'] as $info)
-            <tr>
+            <tr @if ($info->datetime_in==null and $info->datetime_out==null) style="background-color:#f2dede;" @endif>
 
-                <td>
+                <td id="the_day_date{{$info->id}}">
                     {{$info->the_day_date}}
                     {{$info->week_day_name_arabic}}
                 </td>
@@ -49,23 +48,102 @@
                 </td>
 
                 <td>
-                    <div style="width: 10vw">
-                        <button data-id="{{$info->id}}" class="btn btn-sm btn-danger load_my_action">عرض الحركات ({{$info->attendance_departure_actions_Counter*1}})</button></td>
+                    <div style="width: 6vw">
+                        <button data-id="{{$info->id}}" class="btn btn-sm btn-danger load_my_action">عرض ({{$info->attendance_departure_actions_Counter*1}})</button></td>
                     </div>                    
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>
+                    <div style="width: 14vw">
+                        <input type="text" class="form-control variables" name="variables{{$info->id}}" id="variables{{$info->id}}" value="{{$info->variables}}">
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 7vw">
+                        <input type="text" class="form-control cut" name="cut{{$info->id}}" id="cut{{$info->id}}" value="{{$info->cut*1}}"
+                        oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
+                    </div>
+                </td>
+                <td>
+
+                    <div style="width: 10vw; text-align: center">
+                        <select name="vacation_types_id{{$info->id}}" id="vacation_types_id{{$info->id}}" class="form-control vacation_types_id">
+                            @if (@isset($other['vacation_types']) && !@empty($other['vacation_types']))
+                                @foreach ($other['vacation_types'] as $vac)
+                                    <option
+                                        @if ($info->vacations_type_id == $vac->id) selected="selected" @endif
+                                        value="{{ $vac->id }}"> {{ $vac->name }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <a class="move_to" data-address="variables{{$info->id}}" href="#"><i class="fas fa-hand-point-right"></i></a>
+                        <a class="move_to" data-address="additional_hours{{$info->id}}" href="#"><i class="fas fa-hand-point-left"></i></a>
+                    </div>
+
+                </td>
+                <td>
+                    <div style="width: 7vw">
+                        <input type="text" class="form-control attedance_dely" name="attedance_dely{{$info->id}}" id="attedance_dely{{$info->id}}" value="{{$info->attedance_dely*1}}" oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
+                    </div>
+                </td>
+                <td>
+
+                    <div style="width: 7vw">
+                        <input type="text" class="form-control early_departure" name="early_departure{{$info->id}}" id="early_departure{{$info->id}}" value="{{$info->early_departure*1}}" oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
+                    </div>
+
+                </td>
+                <td>
+                    <div style="width: 14vw">
+                        <input type="text" class="form-control azn_hours" name="azn_hours{{$info->id}}" id="azn_hours{{$info->id}}" value="{{$info->azn_hours}}">
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 7vw">
+                        <input disabled type="text" class="form-control total_hours" name="total_hours{{$info->id}}" id="total_hours{{$info->id}}" value="{{$info->total_hours*1}}" oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 7vw">
+                        <input  type="text" class="form-control absen_hours" name="absen_hours{{$info->id}}" id="absen_hours{{$info->id}}" value="{{$info->absen_hours*1}}" oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 8vw">
+                        <input  type="text" class="form-control additional_hours" name="additional_hours{{$info->id}}" id="additional_hours{{$info->id}}" value="{{$info->additional_hours*1}}" oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
+                    </div>
+                </td>
+                <td id="make_save_changes_row{{$info->id}}">
+                 <div style="width: 4vw" >
+                    <button class="btn btn-sm btn-danger make_save_changes_row" data-id="{{$info->id}}">حفظ</button>
+                </div>
+                </td>
+                
 
             </tr>
         @endforeach
+
+        <tr style="background-color: lightblue; text-align: center">
+            <td colspan="5">الاجماليات</td>
+            <td>{{$other['total_cut']*1}} يوم</td>
+            <td>{{$other['total_vacations_type_id']*1}} يوم <br>
+                @if (@isset($other['vacations_type_distinct']) and !@empty($other['vacations_type_distinct']))
+
+                @foreach ($other['vacations_type_distinct'] as $vac)
+                    {{$vac->counter*1}} {{$vac->name}} <br>
+                @endforeach
+                
+                    
+                @endif
+
+
+            </td>
+            <td>{{$other['total_attedance_dely']*1}} دقيقة</td>
+            <td>{{$other['total_early_departure']*1}} دقيقة</td>
+            <td></td>
+            <td>{{$other['total_hours']*1}} ساعة</td>
+            <td>{{$other['total_absen_hours']*1}} ساعة</td>
+            <td colspan="2">{{$other['total_additional_hours']*1}} ساعة</td>
+        </tr>
     </tbody>
 </table>
    

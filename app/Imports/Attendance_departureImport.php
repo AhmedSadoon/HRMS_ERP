@@ -169,7 +169,6 @@ class Attendance_departureImport implements ToCollection
                                     $dataToInsertAction['com_code'] = $com_code;
                                     $dataToInsertAction['AttendanceDepartureActionsExcelId'] = $Attendance_departure_actions_excel_data['id'];
                                     $dataToUpdateAction['it_is_active_with_parent']=1;
-                                    insert(new Attendance_departure_actions(), $dataToInsertAction);
                                     update(new Attendance_departure_actions(),$dataToUpdateAction,  array('com_code' => $com_code,  'action_type' => $action_type, 'attendance_departure_id' => $last['id'],'datetimeAction'=>$dataUpdate['datetime_out']));
                                    
 
