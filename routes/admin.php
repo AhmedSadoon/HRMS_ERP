@@ -360,6 +360,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
        Route::post('/AttendanceDeparture/load_my_action', [Attendance_departureController::class, 'load_my_action'])->name('AttendanceDeparture.load_my_action');
        Route::post('/AttendanceDeparture/save_active_Attendance_departure', [Attendance_departureController::class, 'save_active_Attendance_departure'])->name('AttendanceDeparture.save_active_Attendance_departure');
        Route::post('/AttendanceDeparture/redo_update_actions', [Attendance_departureController::class, 'redo_update_actions'])->name('AttendanceDeparture.redo_update_actions');
+       Route::get('/AttendanceDeparture/print_one_passma_details/{employees_code}/{finance_cin_periods_id}', [Attendance_departureController::class, 'print_one_passma_details'])->name('AttendanceDeparture.print_one_passma_details');
 
        //----------------نهاية البصمة ---------------------
 

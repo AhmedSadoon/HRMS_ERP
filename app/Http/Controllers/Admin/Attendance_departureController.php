@@ -9,9 +9,11 @@ use App\Models\Admin;
 use App\Models\Attendance_departure;
 use App\Models\Attendance_departure_actions;
 use App\Models\Attendance_departure_actions_excel;
+use App\Models\Branche;
 use App\Models\Employee;
 use App\Models\Finance_calender;
 use App\Models\Finance_cin_periods;
+use App\Models\jobs_category;
 use App\Models\Main_salary_employee;
 use App\Models\Vacation_type;
 use App\Models\Weekday;
@@ -370,6 +372,75 @@ class Attendance_departureController extends Controller
                 
             
         }
+    }
+
+    public function print_one_passma_details($employees_code,$finance_cin_periods_id)
+    {
+        $com_code = auth()->user()->com_code;
+        $other['Employee_data'] = get_cols_where_row(new Employee(), array('*'), array('com_code' => $com_code, 'employees_code' => $employees_code));
+        if (empty($other['Employee_data'])) {
+            return redirect()->route('Attendance_departure.index')->with('error', 'عفواً غير قادر للوصول الى البينات المطلوبة');
+        }
+
+        $other['Employee_data']['branch_name']=get_field_value(new Branche(),'name',array('com_code'=>$com_code,'id'=>$other['Employee_data']['branch_id']));
+        $other['Employee_data']['job_name']=get_field_value(new jobs_category(),'name',array('com_code'=>$com_code,'id'=>$other['Employee_data']['emp_jobs_id']));
+
+
+        $finance_cin_periods_data = get_cols_where_row(new Finance_cin_periods(), array("*"), array('com_code' => $com_code, 'id' => $finance_cin_periods_id));
+        if (empty($finance_cin_periods_data)) {
+            return redirect()->route('Attendance_departure.index')->with('error', 'عفواً غير قادر للوصول الى البينات المطلوبة');
+        }
+
+        $other['data']=get_cols_where(new Attendance_departure(),array('*'),array('com_code'=>$com_code,'finance_cin_periods_id'=>$finance_cin_periods_id,'employees_code'=>$employees_code),'the_day_date','ASC');
+        $other['total_cut']=0;
+        $other['total_attedance_dely']=0;
+        $other['total_early_departure']=0;
+        $other['total_hours']=0;
+        $other['total_absen_hours']=0;
+        $other['total_additional_hours']=0;
+        $other['total_vacations_type_id']=0;
+        if (!empty($other['data'])) {
+            foreach ($other['data'] as $info) {
+                
+                $nameOfDay = date('l', strtotime($info->the_day_date));
+                $info->week_day_name_arabic = get_field_value(new Weekday(), 'name', array('name_en' => $nameOfDay));
+                $info->attendance_departure_actions_Counter=get_count_where(new Attendance_departure_actions(),array('com_code'=>$com_code,'attendance_departure_id'=>$info->id,'finance_cin_periods_id'=>$finance_cin_periods_id,'employees_code'=>$employees_code));
+                if($info->cut!=null){
+                    $other['total_cut']+=$info->cut;
+                }
+
+                if($info->attedance_dely!=null){
+                    $other['total_attedance_dely']+=$info->attedance_dely;
+                }
+
+                if($info->early_departure!=null){
+                    $other['total_early_departure']+=$info->early_departure;
+                }
+
+             
+
+                if($info->total_hours!=null){
+                    $other['total_hours']+=$info->total_hours;
+                }
+
+                if($info->absen_hours!=null){
+                    $other['total_absen_hours']+=$info->absen_hours;
+                }
+
+                if($info->additional_hours!=null){
+                    $other['total_additional_hours']+=$info->additional_hours;
+                }
+
+                if($info->vacations_type_id!=null){
+                    $other['total_vacations_type_id']+=1;
+                }
+
+
+            }
+        }
+
+        return view('admin.Attendance_departure.print_one_passma_details', ['other' => $other, 'finance_cin_periods_data' => $finance_cin_periods_data]);
+
     }
 
 }
