@@ -72,7 +72,7 @@
                     @php
                         $dt=new DateTime($last_attendance_departure_actions_excel_data['datetimeAction']);
                         $date=$dt->format("Y-m-d");
-                        $time=$dt->format("H:i");
+                        $time=$dt->format("h:i");
                         //$newDateTime=strtolower(date("a",strtotime($last_attendance_departure_actions_excel_data['datetimeAction'])));
                         $newDateTime=strtolower($dt->format("a"));
                         $newDateTimeType=(($newDateTime=="am")?'صباحاً':'مساءً');

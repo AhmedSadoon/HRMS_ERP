@@ -270,7 +270,80 @@
                $("#"+dest).focus();
             });
 
+            $(document).on('click','#zeroresetdatetime_in',function(e){
+                e.preventDefault();
+                $('#datetime_in_update').val("");
+                $('#undoresetdatetime_in').show();
+
+            });
+
+            $(document).on('click','#zeroresetdatetime_out',function(e){
+                e.preventDefault();
+                $('#datetime_out_update').val("");
+                $('#undoresetdatetime_out').show();
+
+            });
+
+            $(document).on('click','#undoresetdatetime_in',function(e){
+                e.preventDefault();
+                $('#datetime_in_update').val($(this).data('old'));
+            });
+
+            $(document).on('click','#undoresetdatetime_out',function(e){
+                e.preventDefault();
+                $('#datetime_out_update').val($(this).data('old'));
+            });
+
+            $(document).on('click','#redo_update',function(e){
+                e.preventDefault();
+                var datetime_in=$('#datetime_in_update').val();
+                var datetime_out_update=$('#datetime_out_update').val();
+
+                if((datetime_out_update !="" && datetime_in !="") && datetime_out_update < datetime_in ){
+                    alert("عفواً لايمكن ان يكون توقيت الانصراف اقل من توقيت الحضور");
+                    return false;
+                }
+
+                var id=$(this).data("id");
+                var finance_cin_periods_id = $("#the_finance_cin_periods_id").val();
+                var employees_code = $("#the_employees_code").val();
+                $('#backup_freeze_modal').modal('show');
+                $.ajax({
+                    url: '{{ route('AttendanceDeparture.redo_update_actions') }}',
+                    type: 'POST',
+                    datatype: 'json',
+                    cache: false,
+                    data: {
+                        "_token": '{{ csrf_token() }}',
+                        employees_code: employees_code,
+                        finance_cin_periods_id: finance_cin_periods_id,
+                        id: id,
+                        datetime_in:datetime_in,
+                        datetime_out:datetime_out_update,
+                    },
+                    success: function(data) {
+                        load_active_Attendance_departure();
+                        setTimeout(() => {
+                            $('#backup_freeze_modal').modal(
+                                'hide');
+                        }, 1000);
+                        
+
+                    },
+                    error: function() {
+                        setTimeout(() => {
+                            $('#backup_freeze_modal').modal('hide');
+                        }, 1000);
+                    }
+
+                });
+
+
+            });
+
 
         });
+
+        
     </script>
 @endsection

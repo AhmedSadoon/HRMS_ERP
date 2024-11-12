@@ -255,7 +255,7 @@ class Attendance_departureController extends Controller
         if ($request->ajax()) {
 
             $com_code = auth()->user()->com_code;
-            $parent=get_cols_where_row(new Attendance_departure(),array('id','datetime_in','datetime_out'),array('com_code'=>$com_code, 'employees_code' => $request->employees_code, 'finance_cin_periods_id' => $request->finance_cin_periods_id,'id'=>$request->attendance_departure_id));
+            $parent=get_cols_where_row(new Attendance_departure(),array('id','datetime_in','datetime_out','is_archived','is_updated_active_action','is_updated_active_action_date','is_updated_active_action_by'),array('com_code'=>$com_code, 'employees_code' => $request->employees_code, 'finance_cin_periods_id' => $request->finance_cin_periods_id,'id'=>$request->attendance_departure_id));
             $Attendance_departure_actions = get_cols_where(new Attendance_departure_actions(), array('*'), array('com_code' => $com_code, 'employees_code' => $request->employees_code, 'finance_cin_periods_id' => $request->finance_cin_periods_id,'attendance_departure_id'=>$request->attendance_departure_id), 'datetimeAction', 'ASC');
 
             if (!empty($Attendance_departure_actions)) {
@@ -264,6 +264,7 @@ class Attendance_departureController extends Controller
                     $date = $dt->format('Y-m-d');
                     $nameOfDay = date('l', strtotime($date));
                     $info->week_day_name_arabic = get_field_value(new Weekday(), 'name', array('name_en' => $nameOfDay));
+                   
                 }
             }
 
@@ -300,4 +301,75 @@ class Attendance_departureController extends Controller
             
         }
     }
+
+    public function redo_update_actions(Request $request)
+    {
+        $com_code = auth()->user()->com_code;
+        if ($request->ajax()) {
+           
+            $attendance_departure=get_cols_where_row(new Attendance_departure(),array('*'),array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->finance_cin_periods_id,'employees_code'=>$request->employees_code));
+            if(!empty($attendance_departure)){
+              
+             
+                $datetime_in=$request->datetime_in;
+                $datetime_out=$request->datetime_out;
+                if($datetime_out!=""){
+                    
+                        $seconds = strtotime($datetime_out) - strtotime($datetime_in);
+                        $hourdiff = $seconds / 60 / 60;
+                        $hourdiff = number_format((float)$hourdiff, 2, '.' . '');
+                        $minutesiff = $seconds / 60;
+                        $minutesiff = number_format((float)$minutesiff, 2, '.' . '');
+                        if ($hourdiff < 0) $hourdiff - $hourdiff * (-1);
+                        if ($minutesiff < 0) $minutesiff - $minutesiff * (-1);
+                         //اشتغل على متغيرات اقفال البصمة الحالية
+                         $dataUpdate['datetime_in'] = date('Y-m-d H:i:s', strtotime($datetime_in));
+                         $dataUpdate['datetime_out'] = date('Y-m-d H:i:s', strtotime($datetime_out));
+                         $dataUpdate['dateOut'] = date('Y-m-d', strtotime($datetime_out));
+                         $dataUpdate['time_out'] = date('H:i:s', strtotime($datetime_out));
+                         $dataUpdate['datein'] = date('Y-m-d', strtotime($datetime_in));
+                         $dataUpdate['time_in'] = date('H:i:s', strtotime($datetime_in));
+                         $dataUpdate['total_hours'] = $hourdiff;
+
+                         if ($hourdiff < $attendance_departure['shift_hour_contract']) {
+                             $dataUpdate['additional_hours'] = 0;
+                             $dataUpdate['absen_hours'] = $attendance_departure['shift_hour_contract'] - $hourdiff;
+                         }
+
+                         if ($hourdiff > $attendance_departure['shift_hour_contract']) {
+                             $dataUpdate['additional_hours'] = $hourdiff - $attendance_departure['shift_hour_contract'];
+                             $dataUpdate['absen_hours'] = 0;
+                         }
+
+                         $dataUpdate['is_updated_active_action']=1;
+                         $dataUpdate['is_updated_active_action_date']=date('Y-m-d H:i:s');
+                         $dataUpdate['is_updated_active_action_by']=auth()->user()->id;
+                         $flagUpdateParent = update(new Attendance_departure(), $dataUpdate, array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->finance_cin_periods_id,'employees_code'=>$request->employees_code));
+
+                         if($flagUpdateParent){
+                            return json_encode('done');
+                         }
+
+
+                }else{
+                    $dataToUpdate['total_hours'] = 0;
+                    $dataToUpdate['additional_hours'] = 0;
+                    $dataToUpdate['absen_hours'] = 0;
+                    $dataToUpdate['is_updated_active_action']=1;
+                    $dataToUpdate['is_updated_active_action_date']=date('Y-m-d H:i:s');
+                    $dataToUpdate['is_updated_active_action_by']=auth()->user()->id;
+                    $flagUpdateParent = update(new Attendance_departure(), $dataToUpdate, array('com_code'=>$com_code,'id'=>$request->id,'is_archived'=>0,'finance_cin_periods_id'=>$request->finance_cin_periods_id,'employees_code'=>$request->employees_code));
+
+                         if($flagUpdateParent){
+                            return json_encode('done');
+                         }
+                }
+
+            }   
+
+                
+            
+        }
+    }
+
 }
