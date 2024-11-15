@@ -186,10 +186,28 @@
                                 @enderror
                             </div>
                         </div>
+
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label> الرصيد الاولي المرحل عند تفعيل الاجازات للموظف مثل نزول عشرة ايام ونص بعد سته شهور
-                                    للموظف </label>
+                                <label>هل يتم ترحيل ارصدة الاجازات من سنة مالية الى الاخرى</label>
+                                <select name="is_transfer_vacction" id="is_transfer_vacction" class="form-control">
+                                    <option value="">اختر الحالة</option>
+                                    <option @if (old('is_transfer_vacction',$data['is_transfer_vacction']) == 1) selected @endif
+                                        value="1">نعم</option>
+                                    <option @if (old('is_transfer_vacction',$data['is_transfer_vacction']) == 0 and old('is_transfer_vacction',$data['is_transfer_vacction']) != '') selected @endif
+                                        value="0">لا</option>
+
+                                </select>
+                                @error('is_transfer_vacction')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>قيمة خصم الايام بعد اول مرة غياب بدون اذن</label>
                                 <input type="text" name="sanctions_value_first_abcence"
                                     id="sanctions_value_first_abcence" class="form-control"
                                     value="{{ old('sanctions_value_first_abcence', $data['sanctions_value_first_abcence']) }}"

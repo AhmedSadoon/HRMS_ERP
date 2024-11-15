@@ -305,6 +305,35 @@
                 </ul>
             </li>
             {{-- نهاية البصمة  --}}
+
+             {{-- بداية الرصيد --}}
+
+             <li class="nav-item has-treeview  {{ (request()->is('admin/EmployeeVacationsBalance*')) ? 'menu-open' : ''}}">
+                <a href="#" class="nav-link {{ (request()->is('admin/EmployeeVacationsBalance*')) ? 'active' : ''}}">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                        قائمة رصيد السنوي 
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('EmployeeVacationsBalance.index') }}"
+                            class="nav-link {{ request()->is('admin/EmployeeVacationsBalance*') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>رصيد اجازات السنوي</p>
+                        </a>
+                    </li>
+
+                    
+
+                    
+
+                  
+
+                </ul>
+            </li>
+            {{-- نهاية الرصيد  --}}
         </ul>
     </nav>
     <!-- /.sidebar-menu -->

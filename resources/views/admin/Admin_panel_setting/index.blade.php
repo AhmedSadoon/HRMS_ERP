@@ -109,8 +109,13 @@
                     </tr>
 
                     <tr>
-                        <td class="width30">قيمة خصم الايام بعد اول مرة غياب بدون عذر</td>
-                        <td>{{$data['sanctions_value_first_abcence']}}</td>
+                        <td class="width30">الرصيد الاولي المرحلة عند تفعيل الاجازات للموظف</td>
+                        <td>{{$data['first_balance_begin_vacation']}}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="width30">هل الرصيد يرحل من السنة المالية الحالية الى الاخرى</td>
+                        <td>@if ($data['is_transfer_vacction']==1) نعم  @else لا @endif</td>
                     </tr>
 
                     <tr>

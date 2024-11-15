@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\Main_salary_employee_RewardsController;
 use App\Http\Controllers\Admin\Main_salary_employee_sanctionsController;
 use App\Http\Controllers\Admin\Main_salary_employeeController;
 use App\Http\Controllers\Admin\MainSalaryRecordController;
+use App\Http\Controllers\Admin\MainVacationsBalanceController;
 use App\Http\Controllers\Admin\NationalitiesController;
 use App\Http\Controllers\Admin\OccasionController;
 use App\Http\Controllers\Admin\QualificationController;
@@ -330,41 +331,48 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
 
     //----------------نهاية السلف المستديمة ---------------------
 
-   //---------------- بداية الرواتب النهائية مفصلة---------------------
-   Route::get('/MainSalaryEmployee', [Main_salary_employeeController::class, 'index'])->name('MainSalaryEmployee.index');
-   Route::get('/MainSalaryEmployee/show/{id}', [Main_salary_employeeController::class, 'show'])->name('MainSalaryEmployee.show');
-   Route::post('/MainSalaryEmployee/ajaxSearch', [Main_salary_employeeController::class, 'ajax_search'])->name('MainSalaryEmployee.ajaxSearch');
-   Route::post('/MainSalaryEmployee/print_search', [Main_salary_employeeController::class, 'print_search'])->name('MainSalaryEmployee.print_search');
-   Route::get('/MainSalaryEmployee/showSalaryDetails/{id}', [Main_salary_employeeController::class, 'showSalaryDetails'])->name('MainSalaryEmployee.showSalaryDetails');
-   Route::post('/MainSalaryEmployee/AddManuallySalary/{id}', [Main_salary_employeeController::class, 'AddManuallySalary'])->name('MainSalaryEmployee.AddManuallySalary');
-   Route::post('/MainSalaryEmployee/delete_salary', [Main_salary_employeeController::class, 'delete_salary'])->name('MainSalaryEmployee.delete_salary');
-   Route::get('/MainSalaryEmployee/doStopSalary/{id}', [Main_salary_employeeController::class, 'doStopSalary'])->name('MainSalaryEmployee.doStopSalary');
-   Route::get('/MainSalaryEmployee/doCancelStopSalary/{id}', [Main_salary_employeeController::class, 'doCancelStopSalary'])->name('MainSalaryEmployee.doCancelStopSalary');
-   Route::get('/MainSalaryEmployee/doDeleteSalaryIternal/{id}', [Main_salary_employeeController::class, 'doDeleteSalaryIternal'])->name('MainSalaryEmployee.doDeleteSalaryIternal');
-   Route::post('/MainSalaryEmployee/load_archive_salary', [Main_salary_employeeController::class, 'load_archive_salary'])->name('MainSalaryEmployee.load_archive_salary');
-   Route::post('/MainSalaryEmployee/do_archive_salary/{id}', [Main_salary_employeeController::class, 'do_archive_salary'])->name('MainSalaryEmployee.do_archive_salary');
-   Route::get('/MainSalaryEmployee/printSalary/{id}', [Main_salary_employeeController::class, 'printSalary'])->name('MainSalaryEmployee.printSalary');
+    //---------------- بداية الرواتب النهائية مفصلة---------------------
+    Route::get('/MainSalaryEmployee', [Main_salary_employeeController::class, 'index'])->name('MainSalaryEmployee.index');
+    Route::get('/MainSalaryEmployee/show/{id}', [Main_salary_employeeController::class, 'show'])->name('MainSalaryEmployee.show');
+    Route::post('/MainSalaryEmployee/ajaxSearch', [Main_salary_employeeController::class, 'ajax_search'])->name('MainSalaryEmployee.ajaxSearch');
+    Route::post('/MainSalaryEmployee/print_search', [Main_salary_employeeController::class, 'print_search'])->name('MainSalaryEmployee.print_search');
+    Route::get('/MainSalaryEmployee/showSalaryDetails/{id}', [Main_salary_employeeController::class, 'showSalaryDetails'])->name('MainSalaryEmployee.showSalaryDetails');
+    Route::post('/MainSalaryEmployee/AddManuallySalary/{id}', [Main_salary_employeeController::class, 'AddManuallySalary'])->name('MainSalaryEmployee.AddManuallySalary');
+    Route::post('/MainSalaryEmployee/delete_salary', [Main_salary_employeeController::class, 'delete_salary'])->name('MainSalaryEmployee.delete_salary');
+    Route::get('/MainSalaryEmployee/doStopSalary/{id}', [Main_salary_employeeController::class, 'doStopSalary'])->name('MainSalaryEmployee.doStopSalary');
+    Route::get('/MainSalaryEmployee/doCancelStopSalary/{id}', [Main_salary_employeeController::class, 'doCancelStopSalary'])->name('MainSalaryEmployee.doCancelStopSalary');
+    Route::get('/MainSalaryEmployee/doDeleteSalaryIternal/{id}', [Main_salary_employeeController::class, 'doDeleteSalaryIternal'])->name('MainSalaryEmployee.doDeleteSalaryIternal');
+    Route::post('/MainSalaryEmployee/load_archive_salary', [Main_salary_employeeController::class, 'load_archive_salary'])->name('MainSalaryEmployee.load_archive_salary');
+    Route::post('/MainSalaryEmployee/do_archive_salary/{id}', [Main_salary_employeeController::class, 'do_archive_salary'])->name('MainSalaryEmployee.do_archive_salary');
+    Route::get('/MainSalaryEmployee/printSalary/{id}', [Main_salary_employeeController::class, 'printSalary'])->name('MainSalaryEmployee.printSalary');
 
-   //----------------نهاية الرواتب النهائية مفصلة---------------------
+    //----------------نهاية الرواتب النهائية مفصلة---------------------
 
-       //----------------بداية البصمة---------------------
-       Route::get('/AttendanceDeparture', [Attendance_departureController::class, 'index'])->name('AttendanceDeparture.index');
-       Route::get('/AttendanceDeparture/show/{id}', [Attendance_departureController::class, 'show'])->name('AttendanceDeparture.show');
-       Route::get('/AttendanceDeparture/showPasmaDetails/{employees_code}/{finance_cin_periods_id}', [Attendance_departureController::class, 'showPasmaDetails'])->name('AttendanceDeparture.showPasmaDetails');
-       Route::post('/AttendanceDeparture/ajaxSearch', [Attendance_departureController::class, 'ajax_search'])->name('AttendanceDeparture.ajaxSearch');
-       Route::post('/AttendanceDeparture/print_onePasmasearch', [Attendance_departureController::class, 'print_onePasmasearch'])->name('AttendanceDeparture.print_onePasmasearch');
-       Route::get('/AttendanceDeparture/uploadExcelFile/{id}', [Attendance_departureController::class, 'uploadExcelFile'])->name('AttendanceDeparture.uploadExcelFile');
-       Route::post('/AttendanceDeparture/do_UploadExcelFile/{id}', [Attendance_departureController::class, 'do_UploadExcelFile'])->name('AttendanceDeparture.do_UploadExcelFile');
-       Route::post('/AttendanceDeparture/load_PasmasaArchive', [Attendance_departureController::class, 'load_PasmasaArchive'])->name('AttendanceDeparture.load_PasmasaArchive');
-       Route::post('/AttendanceDeparture/load_active_Attendance_departure', [Attendance_departureController::class, 'load_active_Attendance_departure'])->name('AttendanceDeparture.load_active_Attendance_departure');
-       Route::post('/AttendanceDeparture/load_my_action', [Attendance_departureController::class, 'load_my_action'])->name('AttendanceDeparture.load_my_action');
-       Route::post('/AttendanceDeparture/save_active_Attendance_departure', [Attendance_departureController::class, 'save_active_Attendance_departure'])->name('AttendanceDeparture.save_active_Attendance_departure');
-       Route::post('/AttendanceDeparture/redo_update_actions', [Attendance_departureController::class, 'redo_update_actions'])->name('AttendanceDeparture.redo_update_actions');
-       Route::get('/AttendanceDeparture/print_one_passma_details/{employees_code}/{finance_cin_periods_id}', [Attendance_departureController::class, 'print_one_passma_details'])->name('AttendanceDeparture.print_one_passma_details');
+    //----------------بداية البصمة---------------------
+    Route::get('/AttendanceDeparture', [Attendance_departureController::class, 'index'])->name('AttendanceDeparture.index');
+    Route::get('/AttendanceDeparture/show/{id}', [Attendance_departureController::class, 'show'])->name('AttendanceDeparture.show');
+    Route::get('/AttendanceDeparture/showPasmaDetails/{employees_code}/{finance_cin_periods_id}', [Attendance_departureController::class, 'showPasmaDetails'])->name('AttendanceDeparture.showPasmaDetails');
+    Route::post('/AttendanceDeparture/ajaxSearch', [Attendance_departureController::class, 'ajax_search'])->name('AttendanceDeparture.ajaxSearch');
+    Route::post('/AttendanceDeparture/print_onePasmasearch', [Attendance_departureController::class, 'print_onePasmasearch'])->name('AttendanceDeparture.print_onePasmasearch');
+    Route::get('/AttendanceDeparture/uploadExcelFile/{id}', [Attendance_departureController::class, 'uploadExcelFile'])->name('AttendanceDeparture.uploadExcelFile');
+    Route::post('/AttendanceDeparture/do_UploadExcelFile/{id}', [Attendance_departureController::class, 'do_UploadExcelFile'])->name('AttendanceDeparture.do_UploadExcelFile');
+    Route::post('/AttendanceDeparture/load_PasmasaArchive', [Attendance_departureController::class, 'load_PasmasaArchive'])->name('AttendanceDeparture.load_PasmasaArchive');
+    Route::post('/AttendanceDeparture/load_active_Attendance_departure', [Attendance_departureController::class, 'load_active_Attendance_departure'])->name('AttendanceDeparture.load_active_Attendance_departure');
+    Route::post('/AttendanceDeparture/load_my_action', [Attendance_departureController::class, 'load_my_action'])->name('AttendanceDeparture.load_my_action');
+    Route::post('/AttendanceDeparture/save_active_Attendance_departure', [Attendance_departureController::class, 'save_active_Attendance_departure'])->name('AttendanceDeparture.save_active_Attendance_departure');
+    Route::post('/AttendanceDeparture/redo_update_actions', [Attendance_departureController::class, 'redo_update_actions'])->name('AttendanceDeparture.redo_update_actions');
+    Route::get('/AttendanceDeparture/print_one_passma_details/{employees_code}/{finance_cin_periods_id}', [Attendance_departureController::class, 'print_one_passma_details'])->name('AttendanceDeparture.print_one_passma_details');
 
-       //----------------نهاية البصمة ---------------------
+    //----------------نهاية البصمة ---------------------
+
+    //----------------بداية الرصيد---------------------
+    Route::get('/EmployeeVacationsBalance', [MainVacationsBalanceController::class, 'index'])->name('EmployeeVacationsBalance.index');
+    Route::post('/EmployeeVacationsBalance/ajaxSearch', [MainVacationsBalanceController::class, 'ajax_search'])->name('EmployeeVacationsBalance.ajaxSearch');
+    Route::get('/EmployeeVacationsBalance/show/{id}', [MainVacationsBalanceController::class, 'show'])->name('EmployeeVacationsBalance.show');
+    Route::post('/EmployeeVacationsBalance/load_edit_balance', [MainVacationsBalanceController::class, 'load_edit_balance'])->name('EmployeeVacationsBalance.load_edit_balance');
 
 
+    //----------------نهاية الرصيد ---------------------
 
 
 });

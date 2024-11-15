@@ -68,7 +68,7 @@ return new class extends Migration
             $table->decimal('medical_nsurance_cutMonthely', 10, 2)->nullable()->comment('قيمة استقطاع التأمين صحي الشهر للموظف');
             $table->string('medical_nsurance_number',50)->nullable()->comment('رقم التأمين الصحي');
             $table->tinyInteger('sal_cach_or_visa')->nullable()->default(1)->comment('نوع صرف الراتب 1 كاش 2 فيزا');
-            $table->tinyInteger('is_active_for_vaccation')->nullable()->default(0)->comment('هل هذا الموظف ينزل له رصيد اجازات');
+            $table->tinyInteger('is_active_for_vaccation')->default(0)->comment('هل هذا الموظف ينزل له رصيد اجازات')->nullable();
             $table->string('urgent_person_details', 600)->nullable()->comment('تفاصيل شخص يمكن الرجوع اليه للوصول للموظف');
             $table->string('states_address', 300)->nullable()->comment('عنوان اقامة الموظف');
             $table->integer('childern_number')->nullable()->default(0);
