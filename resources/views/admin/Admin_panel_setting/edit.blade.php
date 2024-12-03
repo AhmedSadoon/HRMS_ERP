@@ -204,6 +204,23 @@
                             </div>
                         </div>
 
+                         <div class="col-md-12">
+                            <div class="form-group">
+                                <label>هل يتم سحب ايام اجازات السنوي تلقائي من تقفيل البصمة</label>
+                                <select name="is_pull_manull_days_from_passma" id="is_pull_manull_days_from_passma" class="form-control">
+                                    <option value="">اختر الحالة</option>
+                                    <option @if (old('is_pull_manull_days_from_passma',$data['is_pull_manull_days_from_passma']) == 1) selected @endif
+                                        value="1">نعم</option>
+                                    <option @if (old('is_pull_manull_days_from_passma',$data['is_pull_manull_days_from_passma']) == 0 and old('is_pull_manull_days_from_passma',$data['is_pull_manull_days_from_passma']) != '') selected @endif
+                                        value="0">لا</option>
+
+                                </select>
+                                @error('is_pull_manull_days_from_passma')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
 
                         <div class="col-md-12">
                             <div class="form-group">

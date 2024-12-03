@@ -59,7 +59,7 @@
 
                         <div class="tab-content" id="custom-content-below-tabContent">
 
-                          
+
                             <div class="tab-pane fade @if (!Session::has('tabfiles')) show active @endif"
                                 id="custom-content-personal_data" role="tabpanel" aria-labelledby="personal_data">
                                 <br>
@@ -171,29 +171,35 @@
                                     <div class="clearfix">
 
                                     </div>
-                                    
-    
+
+
                                     <div class="col-md-3">
-                                        
-                                            <label>بحث بالسنوات المالية</label>
-                                            <select name="finance_calender_search" id="finance_calender_search" class="form-control select2">
-                    
-                                                <option value="all">اختر السنة المالية</option>
-                                                @if (@isset($other['finance_calender']) && !@empty($other['finance_calender']))
-                                                    @foreach ($other['finance_calender'] as $info)
-                                                        <option value="{{ $info->finance_yr }}" @if(!empty($other['finance_calender_open_year']) and $info->finance_yr == $other['finance_calender_open_year']['finance_yr']) selected @endif>{{ $info->finance_yr }}</option>
-                                                    @endforeach
-                                                @endif
-                                            </select>
-                    
-                                        
+
+                                        <label>بحث بالسنوات المالية</label>
+                                        <select name="finance_calender_search" id="finance_calender_search"
+                                            class="form-control select2">
+
+                                            <option value="all">اختر السنة المالية</option>
+                                            @if (@isset($other['finance_calender']) && !@empty($other['finance_calender']))
+                                                @foreach ($other['finance_calender'] as $info)
+                                                    <option value="{{ $info->finance_yr }}"
+                                                        @if (
+                                                            !empty($other['finance_calender_open_year']) and
+                                                                $info->finance_yr == $other['finance_calender_open_year']['finance_yr']
+                                                        ) selected @endif>
+                                                        {{ $info->finance_yr }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+
+
                                     </div>
 
 
 
                                 </div>
 
-                               
+
 
 
                                 <div class="card-body col-md-12" id="ajax_responce_searchDiv">
@@ -214,19 +220,22 @@
                                                     <th>صافي الرصيد</th>
                                                     <th>بواسطة</th>
                                                     <th>التحديث</th>
-                                                    
+
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($other['main_employees_vacations_balance'] as $info)
                                                         <tr>
-                                                            <td> {{ $info->year_and_month }} 
-                                                                <button class="btn btn-sm btn-danger"><i class="fas fa-edit"></i></button>
+                                                            <td> {{ $info->year_and_month }}
+                                                                @if ($admin_panel_settingsData['is_pull_manull_days_from_passma'] == 0)
+                                                                    <button  data-id="{{ $info->id }}" class="btn btn-sm btn-danger load_edit_this_row"><i class="fas fa-edit"></i></button>
+                                                                @endif
                                                             </td>
-                                                            <td> {{ $info->carryover_from_previous_month*1 }}</td>
-                                                            <td> {{ $info->current_month_balance*1 }} </td>
-                                                            <td> {{ $info->total_available_balance*1 }} </td>
-                                                            <td> {{ $info->spent_balance*1 }} </td>
-                                                            <td> {{ $info->net_balance*1 }} </td>
+                                                         
+                                                            <td> {{ $info->carryover_from_previous_month * 1 }}</td>
+                                                            <td> {{ $info->current_month_balance * 1 }} </td>
+                                                            <td> {{ $info->total_available_balance * 1 }} </td>
+                                                            <td> {{ $info->spent_balance * 1 }} </td>
+                                                            <td> {{ $info->net_balance * 1 }} </td>
                                                             <td>{{ $info->added->name }}</td>
 
                                                             <td>
@@ -240,12 +249,9 @@
                                                     @endforeach
                                                 </tbody>
                                             </table>
-                                         
                                         @else
                                             <p class="bg-danger text-center">عفواً لا توجد بيانات لعرضها</p>
                                         @endif
-
-
                                     @else
                                         <p class="bg-danger text-center">عفواً لا توجد سنة مالية مفتوحة </p>
                                     @endif
@@ -260,7 +266,7 @@
 
 
                             </div>
-                           
+
 
                         </div>
 
@@ -273,6 +279,25 @@
         </div>
     </div>
 
+    <div class="modal fade" id="EditModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content bg-info">
+                <div class="modal-header">
+                    <h4 class="modal-title">تحديث الرصيد السنوي المستهلك للموظف بهذا الشهر يدويا </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="EditModalBady" style="background-color: white; color: black;">
+
+
+                </div>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 
 
 
@@ -283,6 +308,85 @@
     <script>
         $(".select2").select2({
             theme: 'bootstrap4'
+        });
+
+
+        $(document).ready(function() {
+
+            $(document).on('click', '.load_edit_this_row', function(e) {
+                var id = $(this).data('id');
+                jQuery.ajax({
+                    url: '{{ route('EmployeeVacationsBalance.load_edit_row') }}',
+                    type: 'post',
+                    dataType: 'html',
+                    cache: false,
+                    data: {
+                        "_token": '{{ csrf_token() }}',
+                        id: id,
+                    },
+
+                    success: function(data) {
+                        $("#EditModalBady").html(data);
+                        $("#EditModal").modal("show");
+                    },
+                    error: function() {
+                        alert("عفواً حدث خطأ")
+                    }
+
+                });
+            });
+
+            $(document).on('click', '#do_edit_now', function(e) {
+                var spent_balance_edit = $("#spent_balance_edit").val();
+                var id = $(this).data("id");
+
+                if (spent_balance_edit == "") {
+                    alert("من فضلك ادخل رصيد الاجازات المستهلك لهذا الشهر");
+                    $("#spent_balance_edit").focus();
+                    return false;
+                }
+
+
+
+             
+
+
+                $('#backup_freeze_modal').modal('show');
+
+                jQuery.ajax({
+                    url: '{{ route('EmployeeVacationsBalance.do_edit_row') }}',
+                    type: 'post',
+                    dataType: 'html',
+                    cache: false,
+                    data: {
+                        "_token": '{{ csrf_token() }}',
+                        spent_balance: spent_balance_edit,
+                       
+                        id: id
+
+                    },
+
+                    success: function(data) {
+                        location.reload();
+                        setTimeout(() => {
+                            $('#backup_freeze_modal').modal(
+                                'hide');
+                        }, 1000);
+
+                    },
+                    error: function() {
+
+                        setTimeout(() => {
+                            $('#backup_freeze_modal').modal(
+                                'hide');
+                        }, 1000);
+                        alert("عفواً حدث خطأ");
+                    }
+
+                });
+
+            });
+
         });
     </script>
 @endsection

@@ -38,6 +38,7 @@ class Admin_panel_settingRequest extends FormRequest
             'sanctions_value_thaird_abcence' => 'required',
             'sanctions_value_forth_abcence' => 'required',
             'is_transfer_vacction' => 'required',
+            'is_pull_manull_days_from_passma' => 'required',
         ];
     }
     public function messages() {
@@ -59,6 +60,7 @@ class Admin_panel_settingRequest extends FormRequest
           'sanctions_value_thaird_abcence.required'=>'هذا الحقل مطلوب',
           'sanctions_value_forth_abcence.required'=>'هذا الحقل مطلوب',
           'is_transfer_vacction.required'=>'هذا الحقل مطلوب',
+          'is_pull_manull_days_from_passma.required'=>'هذا الحقل مطلوب',
         ];
       }
 

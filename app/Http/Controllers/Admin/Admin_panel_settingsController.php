@@ -53,6 +53,7 @@ class Admin_panel_settingsController extends Controller
         $dataToUpdate['less_than_miniute_neglecting_passma'] = $request->less_than_miniute_neglecting_passma;
         $dataToUpdate['max_hours_take_Pssma_as_additional'] = $request->max_hours_take_Pssma_as_additional;
         $dataToUpdate['is_transfer_vacction'] = $request->is_transfer_vacction;
+        $dataToUpdate['is_pull_manull_days_from_passma'] = $request->is_pull_manull_days_from_passma;
         $dataToUpdate['updated_by'] = auth()->user()->id;
 
         if ($request->has('image')) {

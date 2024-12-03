@@ -119,6 +119,13 @@
                     </tr>
 
                     <tr>
+
+                        <td class="width30">هل يتم سحب ايام اجازات السنوي تلقائي من تقفيل البصمة
+                        </td>
+                        <td>@if ($data['is_pull_manull_days_from_passma']==1) نعم  @else لا @endif</td>
+                    </tr>
+
+                    <tr>
                         <td class="width30">قيمة خصم الايام بعد ثاني مرة غياب بدون عذر</td>
                         <td>{{$data['sanctions_value_second_abcence']}}</td>
                     </tr>

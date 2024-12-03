@@ -369,8 +369,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
     Route::get('/EmployeeVacationsBalance', [MainVacationsBalanceController::class, 'index'])->name('EmployeeVacationsBalance.index');
     Route::post('/EmployeeVacationsBalance/ajaxSearch', [MainVacationsBalanceController::class, 'ajax_search'])->name('EmployeeVacationsBalance.ajaxSearch');
     Route::get('/EmployeeVacationsBalance/show/{id}', [MainVacationsBalanceController::class, 'show'])->name('EmployeeVacationsBalance.show');
-    Route::post('/EmployeeVacationsBalance/load_edit_balance', [MainVacationsBalanceController::class, 'load_edit_balance'])->name('EmployeeVacationsBalance.load_edit_balance');
-
+    Route::post('/EmployeeVacationsBalance/load_edit_row', [MainVacationsBalanceController::class, 'load_edit_row'])->name('EmployeeVacationsBalance.load_edit_row');
+    Route::post('/EmployeeVacationsBalance/do_edit_row', [MainVacationsBalanceController::class, 'do_edit_row'])->name('EmployeeVacationsBalance.do_edit_row');
 
     //----------------نهاية الرصيد ---------------------
 

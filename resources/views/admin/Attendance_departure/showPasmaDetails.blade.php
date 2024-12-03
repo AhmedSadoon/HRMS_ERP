@@ -37,6 +37,7 @@
                 </h3>
                 <input type="hidden" id="the_finance_cin_periods_id" value="{{ $finance_cin_periods_data['id'] }}">
                 <input type="hidden" id="the_employees_code" value="{{ $Employee_data['employees_code'] }}">
+                <input type="hidden" id="is_active_for_vaccation" value="{{ $Employee_data['is_active_for_vaccation'] }}">
                 <button class="btn btn-sm btn-yahoo" style="float: right;"
                     data-empcode="{{ $Employee_data['employees_code'] }}"
                     data-finclnid="{{ $finance_cin_periods_data['id'] }}" id="showArchivePassmaBtn">عرض سجل ارشيف

@@ -79,7 +79,7 @@
                                 @if (@isset($other['vacation_types']) && !@empty($other['vacation_types']))
                                     @foreach ($other['vacation_types'] as $vac)
                                         <option @if ($info->vacations_type_id == $vac->id) selected="selected" @endif
-                                            value="{{ $vac->id }}"> {{ $vac->name }}
+                                            value="{{ $vac->id }}" @if (($other['Employee_data']['is_active_for_vaccation']==0 or $other['Employee_data']['is_done_vaccation_formula']==0) and $vac->id==3 and $setting['is_pull_manull_days_from_passma']==0) disabled @endif > {{ $vac->name }}
                                         </option>
                                     @endforeach
                                 @endif
