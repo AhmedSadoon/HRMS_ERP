@@ -60,13 +60,13 @@
                     </div>
                     <td>
                         <div style="width: 14vw">
-                            <input type="text" class="form-control variables" name="variables{{ $info->id }}"
+                            <input type="text" class="form-control variables" @if($info->is_archived==1) readonly @endif name="variables{{ $info->id }}"
                                 id="variables{{ $info->id }}" value="{{ $info->variables }}">
                         </div>
                     </td>
                     <td>
                         <div style="width: 7vw">
-                            <input type="text" class="form-control cut" name="cut{{ $info->id }}"
+                            <input type="text" class="form-control cut" @if($info->is_archived==1) disabled @endif name="cut{{ $info->id }}"
                                 id="cut{{ $info->id }}" value="{{ $info->cut * 1 }}"
                                 oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
                         </div>
@@ -74,7 +74,7 @@
                     <td>
 
                         <div style="width: 10vw; text-align: center">
-                            <select name="vacation_types_id{{ $info->id }}"
+                            <select name="vacation_types_id{{ $info->id }}" @if($info->is_archived==1) disabled @endif
                                 id="vacation_types_id{{ $info->id }}" class="form-control vacation_types_id">
                                 @if (@isset($other['vacation_types']) && !@empty($other['vacation_types']))
                                     @foreach ($other['vacation_types'] as $vac)
@@ -93,7 +93,7 @@
                     </td>
                     <td>
                         <div style="width: 7vw">
-                            <input type="text" class="form-control attedance_dely"
+                            <input type="text" class="form-control attedance_dely" @if($info->is_archived==1) disabled @endif
                                 name="attedance_dely{{ $info->id }}" id="attedance_dely{{ $info->id }}"
                                 value="{{ $info->attedance_dely * 1 }}"
                                 oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
@@ -102,7 +102,7 @@
                     <td>
 
                         <div style="width: 7vw">
-                            <input type="text" class="form-control early_departure"
+                            <input type="text" class="form-control early_departure" @if($info->is_archived==1) disabled @endif
                                 name="early_departure{{ $info->id }}" id="early_departure{{ $info->id }}"
                                 value="{{ $info->early_departure * 1 }}"
                                 oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
@@ -111,13 +111,13 @@
                     </td>
                     <td>
                         <div style="width: 14vw">
-                            <input type="text" class="form-control azn_hours" name="azn_hours{{ $info->id }}"
+                            <input type="text" @if($info->is_archived==1) disabled @endif class="form-control azn_hours" name="azn_hours{{ $info->id }}"
                                 id="azn_hours{{ $info->id }}" value="{{ $info->azn_hours }}">
                         </div>
                     </td>
                     <td>
                         <div style="width: 7vw">
-                            <input disabled type="text" class="form-control total_hours"
+                            <input disabled type="text" class="form-control total_hours" @if($info->is_archived==1) disabled @endif
                                 name="total_hours{{ $info->id }}" id="total_hours{{ $info->id }}"
                                 value="{{ $info->total_hours * 1 }}"
                                 oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
@@ -125,7 +125,7 @@
                     </td>
                     <td>
                         <div style="width: 7vw">
-                            <input type="text" class="form-control absen_hours"
+                            <input type="text" class="form-control absen_hours" @if($info->is_archived==1) disabled @endif
                                 name="absen_hours{{ $info->id }}" id="absen_hours{{ $info->id }}"
                                 value="{{ $info->absen_hours * 1 }}"
                                 oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
@@ -133,7 +133,7 @@
                     </td>
                     <td>
                         <div style="width: 8vw">
-                            <input type="text" class="form-control additional_hours"
+                            <input type="text" class="form-control additional_hours" @if($info->is_archived==1) readonly @endif
                                 name="additional_hours{{ $info->id }}" id="additional_hours{{ $info->id }}"
                                 value="{{ $info->additional_hours * 1 }}"
                                 oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
@@ -141,8 +141,12 @@
                     </td>
                     <td id="make_save_changes_row{{ $info->id }}">
                         <div style="width: 4vw">
-                            <button class="btn btn-sm btn-danger make_save_changes_row"
-                                data-id="{{ $info->id }}">حفظ</button>
+                            @if($info->is_archived==0) 
+                            <button class="btn btn-sm btn-danger make_save_changes_row" data-id="{{ $info->id }}">حفظ</button>
+                            @else
+                            مؤرشف
+                             @endif
+                            
                         </div>
                     </td>
 

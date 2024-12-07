@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\admin_panel_setting;
+use App\Models\Attendance_departure;
+use App\Models\Attendance_departure_actions;
 use App\Models\Branche;
 use App\Models\Department;
 use App\Models\Employee;
@@ -552,6 +554,18 @@ class Main_salary_employeeController extends Controller
                 update(new Main_salary_employee_addition(), $dataToUpdate_variables, array('com_code' => $com_code, 'main_salary_employee_id' => $Main_salary_employeeID, 'finance_cin_periods_id'=>$finance_cin_periods_data['id']));
                 update(new Main_salary_employee_rewards(), $dataToUpdate_variables, array('com_code' => $com_code, 'main_salary_employee_id' => $Main_salary_employeeID, 'finance_cin_periods_id'=>$finance_cin_periods_data['id']));
                 update(new Main_salary_employee_allowances(), $dataToUpdate_variables, array('com_code' => $com_code, 'main_salary_employee_id' => $Main_salary_employeeID, 'finance_cin_periods_id'=>$finance_cin_periods_data['id']));
+
+                 // نأرشف المقابل له بموديول البصمة + السنوي
+
+            $dataToUpdate2['is_archived'] = 1;
+            $dataToUpdate2['archived_date'] = date("Y-m-d H:i:s");
+            $dataToUpdate2['archived_by'] = auth()->user()->id;
+
+            $dataToUpdate3['is_archived'] = 1;
+           
+
+             update(new Attendance_departure(),$dataToUpdate2,array('com_code'=>$com_code,'finance_cin_periods_id'=>$finance_cin_periods_data['id'],'employees_code'=>$MainSalaryEmployeeData['employees_code']));
+             update(new Attendance_departure_actions(),$dataToUpdate3,array('com_code'=>$com_code,'finance_cin_periods_id'=>$finance_cin_periods_data['id'],'employees_code'=>$MainSalaryEmployeeData['employees_code']));
 
                     return redirect()->back()->with('success', 'تم ارشفة الراتب');
                

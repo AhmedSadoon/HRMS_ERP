@@ -206,6 +206,7 @@ class MainVacationsBalanceController extends Controller
         $other['finance_calender_open_year'] = get_cols_where_row(new Finance_calender(), array('*'), array('com_code' => $com_code, 'open_yr_flag' => 1));
         if (!empty($other['finance_calender_open_year'])) {
             $other['main_employees_vacations_balance'] = get_cols_where(new MainVacationsBalance(), array('*'), array('employees_code' => $data['employees_code'], 'finance_yr' => $other['finance_calender_open_year']['finance_yr'], 'com_code' => $com_code), 'id', 'ASC');
+            
         }
         $admin_panel_settingsData = get_cols_where_row(new admin_panel_setting(), array('is_pull_manull_days_from_passma'), array('com_code' => $com_code));
         return view('admin.MainEmployeeVacationsBalance.show', ['data' => $data, 'other' => $other, 'admin_panel_settingsData' => $admin_panel_settingsData]);

@@ -279,7 +279,7 @@ class Attendance_departureController extends Controller
         $com_code = auth()->user()->com_code;
         if ($request->ajax()) {
 
-            $attendance_departure = get_cols_where_row(new Attendance_departure(), array('the_day_date','employees_code', 'year_and_month'), array('com_code' => $com_code, 'id' => $request->id, 'is_archived' => 0, 'finance_cin_periods_id' => $request->finance_cin_periods_id, 'employees_code' => $request->employees_code));
+            $attendance_departure = get_cols_where_row(new Attendance_departure(), array('the_day_date','vacations_type_id', 'year_and_month'), array('com_code' => $com_code, 'id' => $request->id, 'is_archived' => 0, 'finance_cin_periods_id' => $request->finance_cin_periods_id, 'employees_code' => $request->employees_code));
 
             if (!empty($attendance_departure)) {
                 $dataToUpdate['variables'] = $request->variables;
@@ -293,28 +293,38 @@ class Attendance_departureController extends Controller
                 $dataToUpdate['additional_hours'] = $request->additional_hours;
 
                 $flag = update(new Attendance_departure(), $dataToUpdate, array('com_code' => $com_code, 'id' => $request->id, 'is_archived' => 0, 'finance_cin_periods_id' => $request->finance_cin_periods_id, 'employees_code' => $request->employees_code));
-
+               
 
                 if ($flag) {
-                    if ($dataToUpdate['vacations_type_id'] == 3 || $attendance_departure['vacations_type_id'] == 3) {
+                    if ($dataToUpdate['vacations_type_id'] == 3 or $attendance_departure['vacations_type_id'] == 3) {
+                        
                         $this->calculate_employees_vacations_balance($request->employees_code);
                         $this->calculate_employees_vacations_balance($request->employees_code);
 
 
                         $setting = get_cols_where_row(new admin_panel_setting(), array('is_pull_manull_days_from_passma'), array('com_code' => $com_code));
                         $employees_data = get_cols_where_row(new Employee(), array("is_active_for_vaccation", "is_done_vaccation_formula"), array('com_code' => $com_code, 'employees_code' => $request->employees_code));
+                        
                         if (!empty($employees_data) and $setting['is_pull_manull_days_from_passma'] == 1) {
+                            
                             if ($employees_data['is_active_for_vaccation'] == 1 and $employees_data['is_done_vaccation_formula'] == 1) {
+                               
                                 $main_employees_vacations_balance = get_cols_where_row(new MainVacationsBalance(), array('spent_balance', 'id'), array('com_code' => $com_code, 'year_and_month' => $attendance_departure['year_and_month']));
+                                
                                 if (!empty($main_employees_vacations_balance)) {
-                                     $dataToUpdateVacation['spent_balance'] = get_count_where(new Attendance_departure(), array('com_code' => $com_code, 'vacations_type_id' => 3, 'finance_cin_periods_id' => $request->finance_cin_periods_id, 'employees_code' => $request->employees_code));
+                                     $dataToUpdateVacation['spent_balance'] =get_count_where(new Attendance_departure(), array('com_code' => $com_code, 'vacations_type_id' => 3, 'finance_cin_periods_id' => $request->finance_cin_periods_id, 'employees_code' => $request->employees_code));
+                                    
                                      $dataToUpdateVacation['updated_by']=auth()->user()->id;
-
+                                     
+                                     
                                 
                                     $result = update(new MainVacationsBalance(), $dataToUpdateVacation, array('id' => $main_employees_vacations_balance['id']));
+                                    
                                     if (!empty($result)) {
+                                        // اكو مشكلة بعرض الاجازات
+                                        $this->reupdate_vacations($request->employees_code);
 
-                                        $this->reupdate_vacations($attendance_departure['employees_code']);
+                                       
                                     }
                                 }
                             }

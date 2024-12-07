@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance_departure;
+use App\Models\Attendance_departure_actions;
 use App\Models\Employee;
 use App\Models\Finance_calender;
 use App\Models\Finance_cin_periods;
@@ -247,6 +249,18 @@ class MainSalaryRecordController extends Controller
 
                 }
             }
+            // نأرشف المقابل له بموديول البصمة + السنوي
+
+            $dataToUpdate2['is_archived'] = 1;
+            $dataToUpdate2['archived_date'] = date("Y-m-d H:i:s");
+            $dataToUpdate2['archived_by'] = auth()->user()->id;
+
+            $dataToUpdate3['is_archived'] = 1;
+           
+
+             update(new Attendance_departure(),$dataToUpdate2,array('com_code'=>$com_code,'finance_cin_periods_id'=>$id));
+             update(new Attendance_departure_actions(),$dataToUpdate3,array('com_code'=>$com_code,'finance_cin_periods_id'=>$id));
+
         }
 
         DB::commit();
