@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\Main_salary_employee_p_LoansController;
 use App\Http\Controllers\Admin\Main_salary_employee_RewardsController;
 use App\Http\Controllers\Admin\Main_salary_employee_sanctionsController;
 use App\Http\Controllers\Admin\Main_salary_employeeController;
+use App\Http\Controllers\Admin\MainEmployeesInvestigationsController;
 use App\Http\Controllers\Admin\MainSalaryRecordController;
 use App\Http\Controllers\Admin\MainVacationsBalanceController;
 use App\Http\Controllers\Admin\NationalitiesController;
@@ -374,6 +375,18 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
 
     //----------------نهاية الرصيد ---------------------
 
+        //----------------بداية التحقيقات---------------------
+        Route::get('/MainEmployeesInvestigations', [MainEmployeesInvestigationsController::class, 'index'])->name('MainEmployeesInvestigations.index');
+        Route::get('/MainEmployeesInvestigations/show/{id}', [MainEmployeesInvestigationsController::class, 'show'])->name('MainEmployeesInvestigations.show');
+        Route::post('/MainEmployeesInvestigations/checkExsistsBefor', [MainEmployeesInvestigationsController::class, 'checkExsistsBefor'])->name('MainEmployeesInvestigations.checkExsistsBefor');
+        Route::post('/MainEmployeesInvestigations/store', [MainEmployeesInvestigationsController::class, 'store'])->name('MainEmployeesInvestigations.store');
+        Route::post('/MainEmployeesInvestigations/ajaxSearch', [MainEmployeesInvestigationsController::class, 'ajax_search'])->name('MainEmployeesInvestigations.ajaxSearch');
+        Route::post('/MainEmployeesInvestigations/delete_row', [MainEmployeesInvestigationsController::class, 'delete_row'])->name('MainEmployeesInvestigations.delete_row');
+        Route::post('/MainEmployeesInvestigations/load_edit_row', [MainEmployeesInvestigationsController::class, 'load_edit_row'])->name('MainEmployeesInvestigations.load_edit_row');
+        Route::post('/MainEmployeesInvestigations/do_edit_row', [MainEmployeesInvestigationsController::class, 'do_edit_row'])->name('MainEmployeesInvestigations.do_edit_row');
+        Route::post('/MainEmployeesInvestigations/print_search', [MainEmployeesInvestigationsController::class, 'print_search'])->name('MainEmployeesInvestigations.print_search');
+    
+        //----------------نهاية التحقيقات ---------------------
 
 });
 

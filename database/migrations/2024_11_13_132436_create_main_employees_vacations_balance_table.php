@@ -18,8 +18,8 @@ return new class extends Migration
             $table->integer('finance_yr')->comment('السنة المالية')->nullable()->default('0');
             $table->decimal('carryover_from_previous_month',10,2)->comment('الرصيد المرحل من الشهر السابق ')->nullable()->default('0');
             $table->decimal('current_month_balance',10,2)->comment('الرصيد الشهر الحالي')->nullable()->default('0');
-            $table->decimal('total_available_balance',10,2)->comment(' الرصيد المستهلك')->nullable()->default('0');
-            $table->decimal('spent_balance',10,2)->comment('اجمالي الرصيد المتاح')->nullable()->default('0');
+            $table->decimal('total_available_balance',10,2)->comment(' الرصيد الكلي المتوفر')->nullable()->default('0');
+            $table->decimal('spent_balance',10,2)->comment(' الرصيد المستهلك')->nullable()->default('0');
             $table->decimal('net_balance',10,2)->comment(' صافي الرصيد')->nullable()->default('0');
             $table->foreignId('added_by')->references('id')->on('admins')->onUpdate('cascade');
             $table->foreignId('updated_by')->nullable()->references('id')->on('admins')->onUpdate('cascade');

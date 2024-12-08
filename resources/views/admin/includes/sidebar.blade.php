@@ -334,6 +334,36 @@
                 </ul>
             </li>
             {{-- نهاية الرصيد  --}}
+
+                 {{-- بداية التحقيقات الادارية --}}
+
+                 <li class="nav-item has-treeview  {{ (request()->is('admin/MainEmployeesInvestigations*')) ? 'menu-open' : ''}}">
+                    <a href="#" class="nav-link {{ (request()->is('admin/MainEmployeesInvestigations*')) ? 'active' : ''}}">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            قائمة التحقيقات الادارية 
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('MainEmployeesInvestigations.index') }}"
+                                class="nav-link {{ request()->is('admin/MainEmployeesInvestigations*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>التحقيقات</p>
+                            </a>
+                        </li>
+    
+                        
+    
+                        
+    
+                      
+    
+                    </ul>
+                </li>
+                {{-- نهاية التحقيقات الادارية  --}}
+
         </ul>
     </nav>
     <!-- /.sidebar-menu -->
