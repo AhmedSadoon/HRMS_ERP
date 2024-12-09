@@ -7,6 +7,11 @@
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{route('admin.dashboard')}}" class="nav-link">الرئيسية</a>
       </li>
+
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{{route('userProfile.index')}}" class="nav-link">البروفايل</a>
+      </li>
+
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{route('admin.logout')}}" class="nav-link">تسجيل الخروج</a>
       </li>

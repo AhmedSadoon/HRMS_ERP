@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Admin\ReligionsController;
 use App\Http\Controllers\Admin\ResignationsController;
 use App\Http\Controllers\Admin\ShiftsTypeController;
+use App\Http\Controllers\Admin\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -387,6 +388,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
         Route::post('/MainEmployeesInvestigations/print_search', [MainEmployeesInvestigationsController::class, 'print_search'])->name('MainEmployeesInvestigations.print_search');
     
         //----------------نهاية التحقيقات ---------------------
+
+               //----------------بداية البروفايل---------------------
+               Route::get('/userProfile/index', [UserProfileController::class, 'index'])->name('userProfile.index');
+               Route::get('/userProfile/edit', [UserProfileController::class, 'edit'])->name('userProfile.edit');
+               Route::post('/userProfile/update', [UserProfileController::class, 'update'])->name('userProfile.update');
+               
+           
+               //----------------نهاية البروفايل ---------------------
 
 });
 

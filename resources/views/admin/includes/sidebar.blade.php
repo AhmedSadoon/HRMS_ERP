@@ -2,8 +2,14 @@
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-            <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2"
-                alt="User Image">
+
+            @if (!@empty(auth()->user()->image))
+                <img src="{{ asset('assets/admin/uploads') . '/' . auth()->user()->image }}" class="img-circle elevation-2" alt="صورة الموظف">
+           
+                @else
+                <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="صورة الموظف">
+            @endif
+            
         </div>
         <div class="info">
             <a href="#" class="d-block">{{ auth()->user()->name }}</a>
@@ -121,8 +127,10 @@
 
             {{-- بداية شؤون الموظفين --}}
 
-            <li class="nav-item has-treeview  {{ request()->is('admin/Employees*')||request()->is('admin/additionalTypes*')||request()->is('admin/DiscountType*')||request()->is('admin/Allowances*') ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ request()->is('admin/Employees*')||request()->is('admin/additionalTypes*')||request()->is('admin/DiscountType*')||request()->is('admin/Allowances*') ? 'active' : '' }} ">
+            <li
+                class="nav-item has-treeview  {{ request()->is('admin/Employees*') || request()->is('admin/additionalTypes*') || request()->is('admin/DiscountType*') || request()->is('admin/Allowances*') ? 'menu-open' : '' }}">
+                <a href="#"
+                    class="nav-link {{ request()->is('admin/Employees*') || request()->is('admin/additionalTypes*') || request()->is('admin/DiscountType*') || request()->is('admin/Allowances*') ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     <p>
                         قائمة شؤون الموظفين
@@ -138,7 +146,7 @@
                         </a>
                     </li>
 
-              
+
 
                     <li class="nav-item">
                         <a href="{{ route('additionalTypes.index') }}"
@@ -164,16 +172,18 @@
                         </a>
                     </li>
 
-                  
+
 
                 </ul>
             </li>
             {{-- نهاية شؤون الموظفين --}}
 
-              {{-- بداية الرواتب --}}
+            {{-- بداية الرواتب --}}
 
-              <li class="nav-item has-treeview  {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')||request()->is('admin/MainSalaryRewards*')||request()->is('admin/MainSalaryAllowances*')||request()->is('admin/MainSalaryLoans*')||request()->is('admin/MainSalary_p_Loans*')||request()->is('admin/MainSalaryEmployee*')   ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ request()->is('admin/MainSalaryRecord*')||request()->is('admin/MainSalarySanctions*')||request()->is('admin/MainSalaryAbsence*')||request()->is('admin/MainSalaryAddition*')||request()->is('admin/MainSalaryDiscount*')||request()->is('admin/MainSalaryRewards*')||request()->is('admin/MainSalaryAllowances*')||request()->is('admin/MainSalaryLoans*')||request()->is('admin/MainSalary_p_Loans*')||request()->is('admin/MainSalaryEmployee*')   ? 'active' : '' }} ">
+            <li
+                class="nav-item has-treeview  {{ request()->is('admin/MainSalaryRecord*') || request()->is('admin/MainSalarySanctions*') || request()->is('admin/MainSalaryAbsence*') || request()->is('admin/MainSalaryAddition*') || request()->is('admin/MainSalaryDiscount*') || request()->is('admin/MainSalaryRewards*') || request()->is('admin/MainSalaryAllowances*') || request()->is('admin/MainSalaryLoans*') || request()->is('admin/MainSalary_p_Loans*') || request()->is('admin/MainSalaryEmployee*') ? 'menu-open' : '' }}">
+                <a href="#"
+                    class="nav-link {{ request()->is('admin/MainSalaryRecord*') || request()->is('admin/MainSalarySanctions*') || request()->is('admin/MainSalaryAbsence*') || request()->is('admin/MainSalaryAddition*') || request()->is('admin/MainSalaryDiscount*') || request()->is('admin/MainSalaryRewards*') || request()->is('admin/MainSalaryAllowances*') || request()->is('admin/MainSalaryLoans*') || request()->is('admin/MainSalary_p_Loans*') || request()->is('admin/MainSalaryEmployee*') ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     <p>
                         قائمة رواتب الموظفين
@@ -237,7 +247,7 @@
                         </a>
                     </li>
 
-                    
+
 
                     <li class="nav-item">
                         <a href="{{ route('MainSalaryRewards.index') }}"
@@ -255,9 +265,9 @@
                         </a>
                     </li>
 
-                
 
-      
+
+
 
                     <li class="nav-item">
                         <a href="{{ route('MainSalaryEmployee.index') }}"
@@ -267,23 +277,24 @@
                         </a>
                     </li>
 
-              
 
-                    
 
-                  
+
+
+
 
                 </ul>
             </li>
             {{-- نهاية الرواتب  --}}
 
-               {{-- بداية البصمة --}}
+            {{-- بداية البصمة --}}
 
-               <li class="nav-item has-treeview  {{ (request()->is('admin/AttendanceDeparture*')) ? 'menu-open' : ''}}">
-                <a href="#" class="nav-link {{ (request()->is('admin/AttendanceDeparture*')) ? 'active' : ''}}">
+            <li class="nav-item has-treeview  {{ request()->is('admin/AttendanceDeparture*') ? 'menu-open' : '' }}">
+                <a href="#"
+                    class="nav-link {{ request()->is('admin/AttendanceDeparture*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     <p>
-                        قائمة جهاز البصمة 
+                        قائمة جهاز البصمة
                         <i class="right fas fa-angle-left"></i>
                     </p>
                 </a>
@@ -296,23 +307,25 @@
                         </a>
                     </li>
 
-                    
 
-                    
 
-                  
+
+
+
 
                 </ul>
             </li>
             {{-- نهاية البصمة  --}}
 
-             {{-- بداية الرصيد --}}
+            {{-- بداية الرصيد --}}
 
-             <li class="nav-item has-treeview  {{ (request()->is('admin/EmployeeVacationsBalance*')) ? 'menu-open' : ''}}">
-                <a href="#" class="nav-link {{ (request()->is('admin/EmployeeVacationsBalance*')) ? 'active' : ''}}">
+            <li
+                class="nav-item has-treeview  {{ request()->is('admin/EmployeeVacationsBalance*') ? 'menu-open' : '' }}">
+                <a href="#"
+                    class="nav-link {{ request()->is('admin/EmployeeVacationsBalance*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     <p>
-                        قائمة رصيد السنوي 
+                        قائمة رصيد السنوي
                         <i class="right fas fa-angle-left"></i>
                     </p>
                 </a>
@@ -325,44 +338,46 @@
                         </a>
                     </li>
 
-                    
 
-                    
 
-                  
+
+
+
 
                 </ul>
             </li>
             {{-- نهاية الرصيد  --}}
 
-                 {{-- بداية التحقيقات الادارية --}}
+            {{-- بداية التحقيقات الادارية --}}
 
-                 <li class="nav-item has-treeview  {{ (request()->is('admin/MainEmployeesInvestigations*')) ? 'menu-open' : ''}}">
-                    <a href="#" class="nav-link {{ (request()->is('admin/MainEmployeesInvestigations*')) ? 'active' : ''}}">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>
-                            قائمة التحقيقات الادارية 
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('MainEmployeesInvestigations.index') }}"
-                                class="nav-link {{ request()->is('admin/MainEmployeesInvestigations*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>التحقيقات</p>
-                            </a>
-                        </li>
-    
-                        
-    
-                        
-    
-                      
-    
-                    </ul>
-                </li>
-                {{-- نهاية التحقيقات الادارية  --}}
+            <li
+                class="nav-item has-treeview  {{ request()->is('admin/MainEmployeesInvestigations*') ? 'menu-open' : '' }}">
+                <a href="#"
+                    class="nav-link {{ request()->is('admin/MainEmployeesInvestigations*') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                        قائمة التحقيقات الادارية
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('MainEmployeesInvestigations.index') }}"
+                            class="nav-link {{ request()->is('admin/MainEmployeesInvestigations*') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>التحقيقات</p>
+                        </a>
+                    </li>
+
+
+
+
+
+
+
+                </ul>
+            </li>
+            {{-- نهاية التحقيقات الادارية  --}}
 
         </ul>
     </nav>
