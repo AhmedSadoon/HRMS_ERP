@@ -149,7 +149,7 @@
                         </thead>
                         <tbody>
                             @foreach ($data as $info)
-                                <tr>
+                                <tr  @if ($info->is_marked == 1) style="background-color:lightgoldenrodyellow;"  @endif>
                                     <td> {{ $info->id }} </td>
                                     <td> {{ $info->alert_modules_name }} </td>
                                     <td> {{ $info->alert_movetype_name }} </td>
@@ -163,11 +163,11 @@
                                         @if ($info->is_marked == 0)
                                             لا <br>
                                             <button data-id="{{ $info->id }}"
-                                                class="btn btn-sm btn-danger are_you_shur">تمييز</button>
+                                                class="btn btn-sm btn-danger  do_undo_mark are_you_shur">تمييز</button>
                                         @else
                                             نعم <br>
                                             <button data-id="{{ $info->id }}"
-                                                class="btn btn-sm btn-danger are_you_shur">الغاء التمييز</button>
+                                                class="btn btn-sm btn-danger do_undo_mark are_you_shur">الغاء</button>
                                         @endif
                                     </td>
 
@@ -305,6 +305,33 @@
 
                 });
             }
+
+            
+            $(document).on('click', '.do_undo_mark', function(e) {
+                e.preventDefault();
+                var id=$(this).data("id");
+
+                jQuery.ajax({
+                    url: '{{ route('SystemMonitoring.do_undo_mark') }}',
+                    type: 'post',
+                    dataType: 'html',
+                    cache: false,
+                    data: {
+                        "_token": '{{ csrf_token() }}',
+                        id: id,
+                   
+                    },
+
+                    success: function(data) {
+                        ajax_search();
+                    },
+                    error: function() {
+                        alert("عفواً حدث خطأ")
+                    }
+
+                });
+
+            });
 
         });
     </script>

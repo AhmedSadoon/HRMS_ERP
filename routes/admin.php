@@ -399,8 +399,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
                  //----------------بداية المراقبة---------------------
                  Route::get('/SystemMonitoring/index', [Alerts_system_monitoringController::class, 'index'])->name('SystemMonitoring.index');
                  Route::post('/SystemMonitoring/ajaxSearch', [Alerts_system_monitoringController::class, 'ajaxSearch'])->name('SystemMonitoring.ajaxSearch');
-                 Route::post('/SystemMonitoring/do_mark', [Alerts_system_monitoringController::class, 'do_mark'])->name('SystemMonitoring.do_mark');
-                 Route::post('/SystemMonitoring/undo_mark', [Alerts_system_monitoringController::class, 'undo_mark'])->name('SystemMonitoring.undo_mark');
+                 Route::post('/SystemMonitoring/do_undo_mark', [Alerts_system_monitoringController::class, 'do_undo_mark'])->name('SystemMonitoring.do_undo_mark');
                  //----------------نهاية المراقبة ---------------------
 
 });

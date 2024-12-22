@@ -153,4 +153,24 @@ class Alerts_system_monitoringController extends Controller
         }
     }
 
+    public function do_undo_mark(Request $request)
+    {
+        $com_code = auth()->user()->com_code;
+
+        if ($request->ajax()) {
+            $data=get_cols_where_row(new Alerts_system_monitoring(),array('is_marked'),array('com_code'=>$com_code,'id'=>$request->id));
+            if(!empty($data)){
+                if($data['is_marked']==1){
+                    $dataToUpdate['is_marked']=0;
+                    $dataToUpdate['updated_by']=auth()->user()->id;
+                }else{
+                    $dataToUpdate['is_marked']=1;
+                    $dataToUpdate['updated_by']=auth()->user()->id;
+                }
+
+                update(new Alerts_system_monitoring(),$dataToUpdate,array('com_code'=>$com_code,'id'=>$request->id));
+            }
+        }
+    }
+
 }
