@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\additionalTypesController;
 use App\Http\Controllers\Admin\Admin_panel_settingsController;
+use App\Http\Controllers\Admin\Alerts_system_monitoringController;
 use App\Http\Controllers\Admin\AllowanceController;
 use App\Http\Controllers\Admin\Attendance_departureController;
 use App\Http\Controllers\Admin\BranchesController;
@@ -392,10 +393,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
                //----------------بداية البروفايل---------------------
                Route::get('/userProfile/index', [UserProfileController::class, 'index'])->name('userProfile.index');
                Route::get('/userProfile/edit', [UserProfileController::class, 'edit'])->name('userProfile.edit');
-               Route::post('/userProfile/update', [UserProfileController::class, 'update'])->name('userProfile.update');
-               
-           
+               Route::post('/userProfile/update', [UserProfileController::class, 'update'])->name('userProfile.update'); 
                //----------------نهاية البروفايل ---------------------
+
+                 //----------------بداية المراقبة---------------------
+                 Route::get('/SystemMonitoring/index', [Alerts_system_monitoringController::class, 'index'])->name('SystemMonitoring.index');
+                 Route::post('/SystemMonitoring/ajaxSearch', [Alerts_system_monitoringController::class, 'ajaxSearch'])->name('SystemMonitoring.ajaxSearch');
+                 Route::post('/SystemMonitoring/do_mark', [Alerts_system_monitoringController::class, 'do_mark'])->name('SystemMonitoring.do_mark');
+                 Route::post('/SystemMonitoring/undo_mark', [Alerts_system_monitoringController::class, 'undo_mark'])->name('SystemMonitoring.undo_mark');
+                 //----------------نهاية المراقبة ---------------------
 
 });
 

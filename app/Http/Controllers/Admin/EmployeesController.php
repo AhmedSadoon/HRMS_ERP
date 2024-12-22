@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeRequest;
 use App\Http\Requests\EmployeeUpdateRequest;
+use App\Models\admin_panel_setting;
+use App\Models\Alerts_system_monitoring;
 use App\Models\Allowance;
 use App\Models\Blood_Group;
 use App\Models\Branche;
@@ -214,6 +216,10 @@ class EmployeesController extends Controller
                 $dataToInsert['day_price'] = ($request->emp_salary / 30);
             }
 
+            if (empty($request->emp_salary)) {
+                $dataToInsert['day_price'] = 0;
+            }
+
             if ($request->has('emp_photo')) {
                 $request->validate([
                     'emp_photo' => 'required|mimes:png,jpg,jpeg|max:2000'
@@ -247,6 +253,21 @@ class EmployeesController extends Controller
 
                     insert(new Employee_salary_achive(), $dataToInsertSalaryArchive);
                 }
+
+                
+                    $is_active_alerts_system_monitorig=get_field_value(new admin_panel_setting(),"is_active_alerts_system_monitorig",array('com_code'=>$com_code));
+                    if($is_active_alerts_system_monitorig==1){
+                        $data_monitoring_insert['alert_modules_id']=2;
+                        $data_monitoring_insert['alert_movetype_id']=33;
+                        $data_monitoring_insert['content']="اضافة موظف جديد بأسم ".$request->emp_name;
+                        $data_monitoring_insert['foreign_key_table_id']=$flag['id'];
+                        $data_monitoring_insert['added_by']=auth()->user()->id;
+                        $data_monitoring_insert['com_code']=$com_code;
+                        $data_monitoring_insert['date']=date('Y-m-d');
+                        insert(new Alerts_system_monitoring(),$data_monitoring_insert,array('com_code'=>$com_code));
+                      
+                    }
+                
             }
 
             DB::commit();
@@ -475,6 +496,8 @@ class EmployeesController extends Controller
                     $dataToInsertSalaryArchive['com_code'] = $com_code;
 
                     insert(new Employee_salary_achive(), $dataToInsertSalaryArchive);
+                    
+                
                 }
 
 
@@ -488,6 +511,52 @@ class EmployeesController extends Controller
                 if (!empty($currentSalaryData)) {
                     $this->Recalculate_main_salary_employee($currentSalaryData['id']);
                 }
+
+                $is_active_alerts_system_monitorig=get_field_value(new admin_panel_setting(),"is_active_alerts_system_monitorig",array('com_code'=>$com_code));
+                if($is_active_alerts_system_monitorig==1){
+                    $data_monitoring_insert['alert_modules_id']=2;
+                    $data_monitoring_insert['alert_movetype_id']=34;
+                    $updateLable='';
+                    if($data['emp_name']!=$dataToUpdate['emp_name']){
+                        $updateLable.='تغير الاسم من '.$data['emp_name'].' الى'.' '.$dataToUpdate['emp_name'];
+                    }
+
+                    if($data['zketo_code']!=$dataToUpdate['zketo_code']){
+                        $updateLable.='تغير كود البصمة من '.$data['zketo_code'].' الى'." ".$dataToUpdate['zketo_code'];
+                    }
+
+                    if($data['emp_start_date']!=$dataToUpdate['emp_start_date']){
+                        $updateLable.='تغير تاريخ التعين من '.$data['emp_start_date'].' الى'." ".$dataToUpdate['emp_start_date'];
+                    }
+
+                    if($data['function_status']!=$dataToUpdate['function_status']){
+                        if($data['function_status']==1){
+                            $old_function_status='بالخدمة';
+                        }else{
+                            $old_function_status='خارج الخدمة';
+                        }
+
+                        if($dataToUpdate['function_status']==1){
+                            $new_function_status='بالخدمة';
+                        }else{
+                            $new_function_status='خارج الخدمة';
+                        }
+                        $updateLable.='تغير الحالة الوظيفية من '." ".$old_function_status.' الى'." ".$new_function_status;
+                    }
+
+                    if($data['emp_salary']!=$dataToUpdate['emp_salary']){
+                        $updateLable.='تغير الراتب من '.$data['emp_salary']*(1).' الى'." ".$dataToUpdate['emp_salary']*(1);
+                    }
+
+                    $data_monitoring_insert['content']="تعديل بيانات موظف بأسم ".$data['emp_name']." ".$updateLable;
+                    $data_monitoring_insert['foreign_key_table_id']=$id;
+                    $data_monitoring_insert['added_by']=auth()->user()->id;
+                    $data_monitoring_insert['com_code']=$com_code;
+                    $data_monitoring_insert['date']=date('Y-m-d');
+                    insert(new Alerts_system_monitoring(),$data_monitoring_insert,array('com_code'=>$com_code));
+                  
+                }
+
             }
             DB::commit();
             return redirect()->route('Employees.index')->with('success', 'تم تحديث البيانات بنجاح');

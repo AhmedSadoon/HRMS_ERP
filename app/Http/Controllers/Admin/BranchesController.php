@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BranchesRequest;
+use App\Models\admin_panel_setting;
+use App\Models\Alerts_system_monitoring;
 use App\Models\Branche;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -57,7 +59,21 @@ class BranchesController extends Controller
             $dataToInsert['added_by']=auth()->user()->id;
             $dataToInsert['com_code']=$com_code;
             
-            insert(new Branche(),$dataToInsert);
+            $flag=insert(new Branche(),$dataToInsert,true);
+            if($flag){
+                $is_active_alerts_system_monitorig=get_field_value(new admin_panel_setting(),"is_active_alerts_system_monitorig",array('com_code'=>$com_code,));
+                if($is_active_alerts_system_monitorig==1){
+                    $data_monitoring_insert['alert_modules_id']=1;
+                    $data_monitoring_insert['alert_movetype_id']=6;
+                    $data_monitoring_insert['content']="اضافة فرع جديد بأسم ".$request->name;
+                    $data_monitoring_insert['foreign_key_table_id']=$flag['id'];
+                    $data_monitoring_insert['added_by']=auth()->user()->id;
+                    $data_monitoring_insert['com_code']=$com_code;
+                    $data_monitoring_insert['date']=date('Y-m-d');
+                    insert(new Alerts_system_monitoring(),$data_monitoring_insert,array('com_code'=>$com_code));
+                  
+                }
+            }
             DB::commit();
             return redirect()->route('branches.index')->with(['success'=>'تم اضافة الفرع بنجاح']);
 
@@ -106,7 +122,25 @@ class BranchesController extends Controller
             $dataToUpdate['active']=$request->active;
             $dataToUpdate['updated_by']=auth()->user()->id;
 
-            update(new Branche(),$dataToUpdate,array('id'=>$id,'com_code'=>$com_code));
+            $flag=update(new Branche(),$dataToUpdate,array('id'=>$id,'com_code'=>$com_code));
+            if($flag){
+                $is_active_alerts_system_monitorig=get_field_value(new admin_panel_setting(),"is_active_alerts_system_monitorig",array('com_code'=>$com_code,));
+                if($is_active_alerts_system_monitorig==1){
+                    $data_monitoring_insert['alert_modules_id']=1;
+                    $data_monitoring_insert['alert_movetype_id']=7;
+                    if($data['name']!=$dataToUpdate['name']){
+                        $updateLable='تم تغير الاسم من '.$data['name'].'الى '.' '.$request->name;
+                    }
+                    $data_monitoring_insert['content']="تعديل فرع بأسم ".$data['name']."" .$updateLable;
+                    
+                    $data_monitoring_insert['foreign_key_table_id']=$id;
+                    $data_monitoring_insert['added_by']=auth()->user()->id;
+                    $data_monitoring_insert['com_code']=$com_code;
+                    $data_monitoring_insert['date']=date('Y-m-d');
+                    insert(new Alerts_system_monitoring(),$data_monitoring_insert,array('com_code'=>$com_code));
+                  
+                }
+            }
             DB::commit();
             return redirect()->route('branches.index')->with(['success'=>'تم تعديل الفرع بنجاح']);
 
@@ -139,7 +173,21 @@ class BranchesController extends Controller
                 return redirect()->route('branches.index')->with(['error'=>'عفواً لا يمكن حذف البيانات لانه تم استخدامها سابقاً']); 
             }
             DB::beginTransaction();
-            destroy(new Branche(),array('id'=>$id,'com_code'=>$com_code));
+            $flag=destroy(new Branche(),array('id'=>$id,'com_code'=>$com_code));
+            if($flag){
+                $is_active_alerts_system_monitorig=get_field_value(new admin_panel_setting(),"is_active_alerts_system_monitorig",array('com_code'=>$com_code,));
+                if($is_active_alerts_system_monitorig==1){
+                    $data_monitoring_insert['alert_modules_id']=1;
+                    $data_monitoring_insert['alert_movetype_id']=8;
+                    $data_monitoring_insert['content']="حذف فرع بأسم ".$data['name'];
+                    $data_monitoring_insert['foreign_key_table_id']=$id;
+                    $data_monitoring_insert['added_by']=auth()->user()->id;
+                    $data_monitoring_insert['com_code']=$com_code;
+                    $data_monitoring_insert['date']=date('Y-m-d');
+                    insert(new Alerts_system_monitoring(),$data_monitoring_insert,array('com_code'=>$com_code));
+                  
+                }
+            }
             DB::commit();
             return redirect()->route('branches.index')->with(['success'=>'تم حذف الفرع بنجاح']);
 
