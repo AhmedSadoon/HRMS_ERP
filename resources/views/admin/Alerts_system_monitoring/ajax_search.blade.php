@@ -9,7 +9,7 @@
         <th style="width:30% ">البيان</th>
         <th>تاريخ الحركة</th>
         <th>هل مميز</th>
-    </thead>
+    </thead>  
     <tbody>
         @foreach ($data as $info)
         <tr  @if ($info->is_marked == 1) style="background-color:lightgoldenrodyellow;"  @endif>
